@@ -5,5 +5,22 @@ edition = "2021"
 
 [dependencies]
 anyhow = "1"
-gpui = { git = "https://github.com/zed-industries/zed.git" }
-gpui-component = { git = "https://github.com/longbridge/gpui-component.git" }
+sysinfo = "0.37"
+base64 = "0.22"
+
+[dependencies.gpui]
+git = "https://github.com/zed-industries/zed.git"
+
+[dependencies.gpui-component]
+git = "https://github.com/longbridge/gpui-component.git"
+
+[dependencies.serde]
+version = "1.0"
+features = ["derive"]
+
+[profile.release]
+lto = true
+strip = true
+debug = false
+panic = 'abort'
+codegen-units = 1
