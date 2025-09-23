@@ -107,7 +107,7 @@ impl Render for Base64Page {
             .child(
                 div()
                     .v_flex()
-                    .gap_4()
+                    .gap(px(PAGE_GAP))
                     .flex_1()
                     .child(
                         div()
@@ -125,7 +125,7 @@ impl Render for Base64Page {
                                     .bg(input_bg)
                                     .border_1()
                                     .border_color(rgb(INPUT_BORDER))
-                                    .rounded_md()
+                                    .rounded_lg()
                                     .paddings(input_padding)
                                     .child(
                                         TextInput::new(&self.input)
@@ -152,7 +152,7 @@ impl Render for Base64Page {
                                     .bg(input_bg)
                                     .border_1()
                                     .border_color(rgb(INPUT_BORDER))
-                                    .rounded_md()
+                                    .rounded_lg()
                                     .paddings(input_padding)
                                     .child(
                                         TextInput::new(&self.output)
