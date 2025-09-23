@@ -1,11 +1,7 @@
-use base64::engine::general_purpose;
-use base64::Engine;
 use gpui::*;
-use gpui_component::input::InputState;
-use gpui_component::input::TextInput;
-use gpui_component::StyledExt;
+use gpui_component::input::{InputEvent, InputState, TextInput};
+use gpui_component::{v_flex, FocusableCycle, StyledExt};
 
-use crate::pages::utils::strip_str;
 use crate::MainView;
 use crate::CARD_BG;
 use crate::CARD_GAP;
@@ -16,93 +12,77 @@ use crate::INPUT_PADDING;
 use crate::PAGE_GAP;
 use crate::PAGE_PADDING;
 
-pub struct Base64Page {
-    input: Entity<InputState>,
-    output: Entity<InputState>,
-    last_input: SharedString,
-    last_output: SharedString,
-    updating: bool,
+pub struct DemoPage {
+    input1: Entity<InputState>,
+    input2: Entity<InputState>,
+    _subs: Vec<Subscription>,
 }
 
-impl Base64Page {
+impl DemoPage {
     pub fn build(window: &mut Window, cx: &mut Context<MainView>) -> AnyView {
         AnyView::from(cx.new(|cx| {
-            let input = cx.new(|cx| InputState::new(window, cx).multi_line());
-            let output = cx.new(|cx| InputState::new(window, cx).multi_line());
+            let input1 = cx.new(|cx| {
+                InputState::new(window, cx)
+                    .default_value("测试文本")
+            });
+            let input2 = cx.new(|cx| InputState::new(window, cx).placeholder("Another input"));
 
-            Self {
-                input,
-                output,
-                last_input: SharedString::default(),
-                last_output: SharedString::default(),
-                updating: false,
-            }
+            let subs = vec![
+                cx.subscribe_in(&input1, window, Self::on_input_event),
+                cx.subscribe_in(&input2, window, Self::on_input_event),
+            ];
+
+            Self { input1, input2, _subs: subs }
         }))
+    }
+
+    pub fn on_input_event(&mut self, _state: &Entity<InputState>, ev: &InputEvent, _w: &mut Window, _cx: &mut Context<Self>) {
+        match ev {
+            InputEvent::Focus => println!("[Demo] Focus"),
+            InputEvent::Blur => println!("[Demo] Blur"),
+            InputEvent::Change => println!("[Demo] Change"),
+            InputEvent::PressEnter { secondary } => println!("[Demo] Enter secondary={}", secondary),
+        }
     }
 }
 
-impl Render for Base64Page {
-    fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
-        if !self.updating {
-            let in_val = self.input.read(cx).value();
-            let out_val = self.output.read(cx).value();
+impl FocusableCycle for DemoPage {
+    fn cycle_focus_handles(&self, _: &mut Window, cx: &mut App) -> Vec<FocusHandle> {
+        vec![
+            self.input1.focus_handle(cx),
+            self.input2.focus_handle(cx),
+        ]
+    }
+}
 
-            enum Src {
-                In,
-                Out,
-            }
+impl Focusable for DemoPage {
+    fn focus_handle(&self, cx: &App) -> FocusHandle {
+        self.input1.focus_handle(cx)
+    }
+}
 
-            let src = if in_val != self.last_input {
-                Some(Src::In)
-            } else if out_val != self.last_output {
-                Some(Src::Out)
-            } else {
-                None
-            };
-
-            if let Some(src) = src {
-                self.updating = true;
-                match src {
-                    Src::In => {
-                        let enc = general_purpose::STANDARD.encode(in_val.as_str());
-                        self.output.update(cx, |state, cx2| state.set_value(enc, window, cx2));
-                        self.last_input = in_val;
-                        self.last_output = self.output.read(cx).value();
-                    }
-                    Src::Out => {
-                        let cleaned = strip_str(out_val.as_str());
-                        if let Ok(bytes) = general_purpose::STANDARD.decode(cleaned.as_bytes()) {
-                            let s = String::from_utf8(bytes)
-                                .unwrap_or_else(|e| String::from_utf8_lossy(e.as_bytes()).to_string());
-                            self.input.update(cx, |state, cx2| state.set_value(s, window, cx2));
-                        }
-                        self.last_input = self.input.read(cx).value();
-                        self.last_output = out_val;
-                    }
-                }
-                self.updating = false;
-            }
-        }
-
+impl Render for DemoPage {
+    fn render(&mut self, _window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
         let card_bg = rgb(CARD_BG);
         let input_bg = rgb(INPUT_BG);
-
         let page_padding = Edges::all(px(PAGE_PADDING));
         let card_padding = Edges::all(px(CARD_PADDING));
         let input_padding = Edges::all(px(INPUT_PADDING));
 
         div()
-            .key_context("Input")
+            .key_context("Demo")
+            .id("demo")
             .size_full()
             .paddings(page_padding)
             .gap(px(PAGE_GAP))
             .v_flex()
+            .track_focus(&self.focus_handle(cx))
             .child(
                 div()
                     .text_lg()
                     .font_semibold()
                     .text_color(white())
-                    .child("Base64 编解码"),
+                    .child("演示页面")
             )
             .child(
                 div()
@@ -111,14 +91,14 @@ impl Render for Base64Page {
                     .flex_1()
                     .child(
                         div()
-                            .flex_1()
+                            .h(px(240.))
                             .flex()
                             .flex_col()
                             .bg(card_bg)
                             .rounded_lg()
                             .paddings(card_padding)
                             .gap(px(CARD_GAP))
-                            .child(div().text_sm().text_color(white()).child("原始内容"))
+                            .child(div().text_sm().text_color(white()).child("输入框测试 1"))
                             .child(
                                 div()
                                     .flex_1()
@@ -128,24 +108,25 @@ impl Render for Base64Page {
                                     .rounded_md()
                                     .paddings(input_padding)
                                     .child(
-                                        TextInput::new(&self.input)
+                                        TextInput::new(&self.input1)
                                             .appearance(false)
                                             .focus_bordered(false)
                                             .text_color(white())
-                                            .h_full(),
+                                            .h_full()
+                                            .cleanable(),
                                     ),
                             ),
                     )
                     .child(
                         div()
-                            .flex_1()
+                            .h(px(240.))
                             .flex()
                             .flex_col()
                             .bg(card_bg)
                             .rounded_lg()
                             .paddings(card_padding)
                             .gap(px(CARD_GAP))
-                            .child(div().text_sm().text_color(white()).child("编码内容"))
+                            .child(div().text_sm().text_color(white()).child("输入框测试 2"))
                             .child(
                                 div()
                                     .flex_1()
@@ -155,7 +136,7 @@ impl Render for Base64Page {
                                     .rounded_md()
                                     .paddings(input_padding)
                                     .child(
-                                        TextInput::new(&self.output)
+                                        TextInput::new(&self.input2)
                                             .appearance(false)
                                             .focus_bordered(false)
                                             .text_color(white())

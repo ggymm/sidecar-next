@@ -1,3 +1,8 @@
+use std::borrow::Cow;
+use std::collections::HashMap;
+use std::fs::read;
+use std::path::PathBuf;
+
 use gpui::*;
 use gpui_component::init;
 use gpui_component::resizable::h_resizable;
@@ -12,12 +17,10 @@ use gpui_component::Collapsible;
 use gpui_component::Icon;
 use gpui_component::Root;
 use gpui_component::Theme;
-use std::borrow::Cow;
-use std::fs::read;
-use std::path::PathBuf;
 
 use crate::pages::convert::base64::Base64Page;
 use crate::pages::convert::timestamp::TimestampPage;
+use crate::pages::demo::DemoPage;
 use crate::pages::develop::cert::CertPage;
 use crate::pages::develop::crypto::CryptoPage;
 use crate::pages::develop::hash::HashPage;
@@ -63,6 +66,13 @@ static VIEWS: &[View] = &[
         title: "首页",
         group: None,
         build: HomePage::build,
+    },
+    View {
+        key: "/demo",
+        icon: "icons/apps.svg",
+        title: "演示页面",
+        group: None,
+        build: DemoPage::build,
     },
     View {
         key: "/toolkit/share",
@@ -158,18 +168,22 @@ static VIEWS: &[View] = &[
 ];
 
 pub struct MainView {
-    current: Option<AnyView>,
+    views: HashMap<&'static str, AnyView>,
     selected: SharedString,
     resizable_state: Entity<ResizableState>,
 }
 
 impl MainView {
-    fn new(_window: &mut Window, cx: &mut Context<Self>) -> Self {
-        let resizable_state = ResizableState::new(cx);
+    fn new(window: &mut Window, cx: &mut Context<Self>) -> Self {
+        let mut views = HashMap::new();
+        for view in VIEWS.iter() {
+            views.insert(view.key, (view.build)(window, cx));
+        }
+
         Self {
-            current: None,
+            views,
             selected: "/home".into(),
-            resizable_state,
+            resizable_state: ResizableState::new(cx),
         }
     }
 
@@ -183,20 +197,15 @@ impl MainView {
         let mut item = SidebarMenuItem::new(label)
             .active(self.selected.as_str() == key)
             .on_click(cx.listener(move |this, _ev: &ClickEvent, window, _cx| {
-                this.select(key);
+                if this.selected.as_str() != key {
+                    this.selected = key.to_string().into();
+                }
                 window.refresh();
             }));
         if !icon.is_empty() {
             item = item.icon(Icon::default().path(icon));
         }
         item
-    }
-
-    fn select(&mut self, key: &str) {
-        if self.selected.as_str() != key {
-            self.selected = key.to_string().into();
-            self.current = None;
-        }
     }
 
     fn sidebar(&mut self, _window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
@@ -247,7 +256,8 @@ impl MainView {
             let mut sidebar = Sidebar::left()
                 .width(relative(1.0))
                 .header(SidebarHeader::new().child("Sidecar"))
-                .child(Section::Menu(SidebarMenu::new().child(self.menu(cx, "/home"))));
+                .child(Section::Menu(SidebarMenu::new().child(self.menu(cx, "/home"))))
+                .child(Section::Menu(SidebarMenu::new().child(self.menu(cx, "/demo"))));
             for (name, keys) in groups {
                 let mut menus = SidebarMenu::new();
                 for key in keys {
@@ -259,16 +269,17 @@ impl MainView {
         }
     }
 
-    fn content(&mut self, window: &mut Window, cx: &mut Context<Self>) -> AnyElement {
-        if self.current.is_none() {
-            let view = VIEWS
-                .iter()
-                .find(|d| d.key == self.selected.as_str())
-                .map(|d| (d.build)(window, cx))
-                .unwrap_or_else(|| AnyView::from(cx.new(|_| EmptyView)));
-            self.current = Some(view);
-        }
-        self.current.clone().unwrap().into_any_element()
+    fn content(&mut self, _window: &mut Window, _cx: &mut Context<Self>) -> AnyElement {
+        self.views
+            .get(self.selected.as_str())
+            .cloned()
+            .unwrap_or_else(|| {
+                self.views
+                    .get("/home")
+                    .cloned()
+                    .unwrap_or_else(|| AnyView::from(_cx.new(|_| EmptyView)))
+            })
+            .into_any_element()
     }
 }
 

@@ -20,6 +20,7 @@ pub mod snippet {
     pub mod code;
     pub mod manual;
 }
+pub mod demo;
 pub mod home;
 pub mod setting;
-mod utils;
+pub mod utils;

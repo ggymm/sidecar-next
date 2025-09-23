@@ -5,8 +5,11 @@ edition = "2021"
 
 [dependencies]
 anyhow = "1"
-sysinfo = "0.37"
 base64 = "0.22"
+chrono = "0.4"
+sysinfo = "0.37"
+x509-parser = "0.17"
+pem = "3.0"
 
 [dependencies.gpui]
 git = "https://github.com/zed-industries/zed.git"
