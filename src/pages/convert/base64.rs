@@ -19,9 +19,9 @@ use crate::PAGE_PADDING;
 pub struct Base64Page {
     input: Entity<InputState>,
     output: Entity<InputState>,
-    updating: bool,
     last_input: SharedString,
     last_output: SharedString,
+    updating: bool,
 }
 
 impl Base64Page {
@@ -33,9 +33,9 @@ impl Base64Page {
             Self {
                 input,
                 output,
-                updating: false,
                 last_input: SharedString::default(),
                 last_output: SharedString::default(),
+                updating: false,
             }
         }))
     }
