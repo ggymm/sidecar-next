@@ -34,54 +34,168 @@ use crate::pages::toolkit::share::SharePage;
 mod pages;
 mod plugins;
 
-pub const COLOR_SIDEBAR_BG: u32 = 0x202020; 
-pub const COLOR_CONTENT_BG: u32 = 0x282828;
+pub const SIDE_BG: u32 = 0x202020;
+
+pub const PAGE_BG: u32 = 0x282828;
+pub const PAGE_GAP: f32 = 20.0;
+pub const PAGE_PADDING: f32 = 20.0;
+
+pub const CARD_BG: u32 = 0x333333;
+pub const CARD_GAP: f32 = 12.0;
+pub const CARD_PADDING: f32 = 20.0;
+
+pub const INPUT_BG: u32 = 0x242424;
+pub const INPUT_BORDER: u32 = 0x404040;
+pub const INPUT_PADDING: f32 = 8.0;
+
+struct View {
+    key: &'static str,
+    icon: &'static str,
+    title: &'static str,
+    group: Option<&'static str>,
+    build: fn(&mut Window, &mut Context<MainView>) -> AnyView,
+}
+
+static VIEWS: &[View] = &[
+    View {
+        key: "/home",
+        icon: "icons/home.svg",
+        title: "首页",
+        group: None,
+        build: HomePage::build,
+    },
+    View {
+        key: "/toolkit/share",
+        icon: "icons/share.svg",
+        title: "文件分享",
+        group: Some("便捷工具"),
+        build: SharePage::build,
+    },
+    View {
+        key: "/convert/base64",
+        icon: "icons/base64.svg",
+        title: "Base64",
+        group: Some("转换工具"),
+        build: Base64Page::build,
+    },
+    View {
+        key: "/convert/timestamp",
+        icon: "icons/timestamp.svg",
+        title: "时间戳转换",
+        group: Some("转换工具"),
+        build: TimestampPage::build,
+    },
+    View {
+        key: "/develop/cert",
+        icon: "icons/cert.svg",
+        title: "证书解析",
+        group: Some("开发工具"),
+        build: CertPage::build,
+    },
+    View {
+        key: "/develop/hash",
+        icon: "icons/hash.svg",
+        title: "哈希散列",
+        group: Some("开发工具"),
+        build: HashPage::build,
+    },
+    View {
+        key: "/develop/crypto",
+        icon: "icons/crypto.svg",
+        title: "加解密工具",
+        group: Some("开发工具"),
+        build: CryptoPage::build,
+    },
+    View {
+        key: "/develop/random",
+        icon: "icons/random.svg",
+        title: "随机数据",
+        group: Some("开发工具"),
+        build: RandomPage::build,
+    },
+    View {
+        key: "/develop/qrcode",
+        icon: "icons/qrcode.svg",
+        title: "二维码",
+        group: Some("开发工具"),
+        build: QrcodePage::build,
+    },
+    View {
+        key: "/network/dns",
+        icon: "icons/dns.svg",
+        title: "域名查询",
+        group: Some("网络工具"),
+        build: DnsPage::build,
+    },
+    View {
+        key: "/network/port",
+        icon: "icons/port.svg",
+        title: "端口占用查询",
+        group: Some("网络工具"),
+        build: PortPage::build,
+    },
+    View {
+        key: "/snippet/code",
+        icon: "icons/code.svg",
+        title: "代码库",
+        group: Some("代码片段"),
+        build: CodePage::build,
+    },
+    View {
+        key: "/snippet/manual",
+        icon: "icons/manual.svg",
+        title: "命令手册",
+        group: Some("代码片段"),
+        build: ManualPage::build,
+    },
+    View {
+        key: "/setting",
+        icon: "icons/setting.svg",
+        title: "设置",
+        group: None,
+        build: SettingPage::build,
+    },
+];
 
 pub struct MainView {
+    current: Option<AnyView>,
     selected: SharedString,
     resizable_state: Entity<ResizableState>,
-    current_view: Option<AnyView>,
 }
 
 impl MainView {
     fn new(_window: &mut Window, cx: &mut Context<Self>) -> Self {
         let resizable_state = ResizableState::new(cx);
         Self {
+            current: None,
             selected: "/home".into(),
             resizable_state,
-            current_view: None,
         }
     }
 
-    fn menu_item(&mut self, cx: &mut Context<Self>, label: &'static str, path: &'static str) -> SidebarMenuItem {
-        let seg = path.trim_start_matches('/').split('/').last().unwrap_or("");
-        let icon = Icon::default().path(format!("icons/{seg}.svg"));
-        SidebarMenuItem::new(label)
-            .icon(icon)
-            .active(self.selected.as_str() == path)
+    fn menu(&mut self, cx: &mut Context<Self>, key: &'static str) -> SidebarMenuItem {
+        let (icon, label) = VIEWS
+            .iter()
+            .find(|d| d.key == key)
+            .map(|d| (d.icon, d.title))
+            .unwrap_or(("", "未命名"));
+
+        let mut item = SidebarMenuItem::new(label)
+            .active(self.selected.as_str() == key)
             .on_click(cx.listener(move |this, _ev: &ClickEvent, window, _cx| {
-                this.select(path);
+                this.select(key);
                 window.refresh();
-            }))
-    }
-
-    fn menu_group(
-        &mut self,
-        cx: &mut Context<Self>,
-        label: &'static str,
-        items: &[(&'static str, &'static str)],
-    ) -> SidebarGroup<SidebarMenu> {
-        let mut menu = SidebarMenu::new();
-        for (label, path) in items {
-            menu = menu.child(self.menu_item(cx, *label, *path));
+            }));
+        if !icon.is_empty() {
+            item = item.icon(Icon::default().path(icon));
         }
-        SidebarGroup::new(label).child(menu)
+        item
     }
 
-    fn select(&mut self, path: &str) {
-        if self.selected.as_str() != path {
-            self.selected = path.to_string().into();
-            self.current_view = None;
+    fn select(&mut self, key: &str) {
+        if self.selected.as_str() != key {
+            self.selected = key.to_string().into();
+            self.current = None;
         }
     }
 
@@ -89,6 +203,16 @@ impl MainView {
         enum Section {
             Menu(SidebarMenu),
             Group(SidebarGroup<SidebarMenu>),
+        }
+
+        impl IntoElement for Section {
+            type Element = AnyElement;
+            fn into_element(self) -> Self::Element {
+                match self {
+                    Section::Menu(m) => div().p_2().child(m).into_any_element(),
+                    Section::Group(g) => g.into_any_element(),
+                }
+            }
         }
 
         impl Collapsible for Section {
@@ -106,84 +230,51 @@ impl MainView {
             }
         }
 
-        impl IntoElement for Section {
-            type Element = AnyElement;
-            fn into_element(self) -> Self::Element {
-                match self {
-                    Section::Menu(m) => div().p_2().child(m).into_any_element(),
-                    Section::Group(g) => g.into_any_element(),
+        {
+            // 分组侧边菜单
+            let mut groups: Vec<(&'static str, Vec<&'static str>)> = Vec::new();
+            for v in VIEWS.iter() {
+                if let Some(group) = v.group {
+                    if let Some((_, keys)) = groups.iter_mut().find(|(g, _)| *g == group) {
+                        keys.push(v.key);
+                    } else {
+                        groups.push((group, vec![v.key]));
+                    }
                 }
             }
-        }
 
-        Sidebar::left()
-            .width(relative(1.0))
-            .header(SidebarHeader::new().child("Sidecar"))
-            .child(Section::Menu(
-                SidebarMenu::new().child(self.menu_item(cx, "首页", "/home")),
-            ))
-            .child(Section::Group(self.menu_group(
-                cx,
-                "便捷工具",
-                &[("文件分享", "/toolkit/share")],
-            )))
-            .child(Section::Group(self.menu_group(
-                cx,
-                "转换工具",
-                &[("Base64", "/convert/base64"), ("时间戳转换", "/convert/timestamp")],
-            )))
-            .child(Section::Group(self.menu_group(
-                cx,
-                "开发工具",
-                &[
-                    ("证书解析", "/develop/cert"),
-                    ("哈希散列", "/develop/hash"),
-                    ("加解密工具", "/develop/crypto"),
-                    ("随机数据", "/develop/random"),
-                    ("二维码", "/develop/qrcode"),
-                ],
-            )))
-            .child(Section::Group(self.menu_group(
-                cx,
-                "网络工具",
-                &[("域名查询", "/network/dns"), ("端口占用查询", "/network/port")],
-            )))
-            .child(Section::Group(self.menu_group(
-                cx,
-                "代码片段",
-                &[("代码库", "/snippet/code"), ("命令手册", "/snippet/manual")],
-            )))
-            .footer(SidebarMenu::new().child(self.menu_item(cx, "设置", "/setting")))
+            // 构建侧边菜单
+            let mut sidebar = Sidebar::left()
+                .width(relative(1.0))
+                .header(SidebarHeader::new().child("Sidecar"))
+                .child(Section::Menu(SidebarMenu::new().child(self.menu(cx, "/home"))));
+            for (name, keys) in groups {
+                let mut menus = SidebarMenu::new();
+                for key in keys {
+                    menus = menus.child(self.menu(cx, key));
+                }
+                sidebar = sidebar.child(Section::Group(SidebarGroup::new(name).child(menus)));
+            }
+            sidebar.footer(SidebarMenu::new().child(self.menu(cx, "/setting")))
+        }
     }
 
     fn content(&mut self, window: &mut Window, cx: &mut Context<Self>) -> AnyElement {
-        if self.current_view.is_none() {
-            let view = match self.selected.as_str() {
-                "/home" => AnyView::from(cx.new(|_| HomePage::new())),
-                "/toolkit/share" => AnyView::from(cx.new(|_| SharePage)),
-                "/convert/base64" => AnyView::from(cx.new(|cx| Base64Page::new(window, cx))),
-                "/convert/timestamp" => AnyView::from(cx.new(|_| TimestampPage)),
-                "/develop/cert" => AnyView::from(cx.new(|_| CertPage)),
-                "/develop/hash" => AnyView::from(cx.new(|_| HashPage)),
-                "/develop/crypto" => AnyView::from(cx.new(|_| CryptoPage)),
-                "/develop/random" => AnyView::from(cx.new(|_| RandomPage)),
-                "/develop/qrcode" => AnyView::from(cx.new(|_| QrcodePage)),
-                "/network/dns" => AnyView::from(cx.new(|_| DnsPage)),
-                "/network/port" => AnyView::from(cx.new(|_| PortPage)),
-                "/snippet/code" => AnyView::from(cx.new(|_| CodePage)),
-                "/snippet/manual" => AnyView::from(cx.new(|_| ManualPage)),
-                "/setting" => AnyView::from(cx.new(|_| SettingPage)),
-                _ => AnyView::from(cx.new(|_| EmptyView)),
-            };
-            self.current_view = Some(view);
+        if self.current.is_none() {
+            let view = VIEWS
+                .iter()
+                .find(|d| d.key == self.selected.as_str())
+                .map(|d| (d.build)(window, cx))
+                .unwrap_or_else(|| AnyView::from(cx.new(|_| EmptyView)));
+            self.current = Some(view);
         }
-        self.current_view.clone().unwrap().into_any_element()
+        self.current.clone().unwrap().into_any_element()
     }
 }
 
 impl Render for MainView {
     fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
-        div().size_full().bg(rgb(COLOR_CONTENT_BG)).child(
+        div().size_full().bg(rgb(PAGE_BG)).child(
             h_resizable("layout", self.resizable_state.clone())
                 .child(
                     resizable_panel()
@@ -200,7 +291,7 @@ pub struct EmptyView;
 
 impl Render for EmptyView {
     fn render(&mut self, _window: &mut Window, _cx: &mut Context<Self>) -> impl IntoElement {
-        div().size_full().bg(rgb(COLOR_CONTENT_BG))
+        div().size_full().bg(rgb(PAGE_BG))
     }
 }
 
@@ -241,7 +332,7 @@ fn main() {
 
         let window_size = size(px(1280.), px(800.));
         let window_bounds = Bounds::centered(None, window_size, cx);
-        Theme::global_mut(cx).sidebar = rgb(COLOR_SIDEBAR_BG).into();
+        Theme::global_mut(cx).sidebar = rgb(SIDE_BG).into();
 
         cx.spawn(async move |cx| {
             let options = WindowOptions {

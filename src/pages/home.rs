@@ -3,6 +3,7 @@ use gpui_component::StyledExt;
 
 use crate::plugins::system::basic_info::collect_basic_info;
 use crate::plugins::system::basic_info::BasicInfo;
+use crate::MainView;
 
 pub struct HomePage {
     system_info: Option<BasicInfo>,
@@ -11,6 +12,10 @@ pub struct HomePage {
 impl HomePage {
     pub fn new() -> Self {
         Self { system_info: None }
+    }
+
+    pub fn build(_window: &mut Window, cx: &mut Context<MainView>) -> AnyView {
+        AnyView::from(cx.new(|_| HomePage::new()))
     }
 
     fn load_system_info(&mut self, cx: &mut Context<Self>) {

@@ -1,7 +1,14 @@
 use gpui::*;
 use gpui_component::StyledExt;
+use crate::MainView;
 
 pub struct TimestampPage;
+
+impl TimestampPage {
+    pub fn build(_window: &mut Window, cx: &mut Context<MainView>) -> AnyView {
+        AnyView::from(cx.new(|_| TimestampPage))
+    }
+}
 
 impl Render for TimestampPage {
     fn render(&mut self, _window: &mut Window, _cx: &mut Context<Self>) -> impl IntoElement {

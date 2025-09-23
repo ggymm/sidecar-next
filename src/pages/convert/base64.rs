@@ -5,7 +5,16 @@ use gpui_component::input::InputState;
 use gpui_component::input::TextInput;
 use gpui_component::StyledExt;
 
-use crate::pages::theme;
+use crate::pages::utils::strip_str;
+use crate::MainView;
+use crate::CARD_BG;
+use crate::CARD_GAP;
+use crate::CARD_PADDING;
+use crate::INPUT_BG;
+use crate::INPUT_BORDER;
+use crate::INPUT_PADDING;
+use crate::PAGE_GAP;
+use crate::PAGE_PADDING;
 
 pub struct Base64Page {
     input: Entity<InputState>,
@@ -16,57 +25,77 @@ pub struct Base64Page {
 }
 
 impl Base64Page {
-    pub fn new(window: &mut Window, cx: &mut Context<Self>) -> Self {
-        let input = cx.new(|cx| InputState::new(window, cx).multi_line().placeholder("输入内容"));
-        let output = cx.new(|cx| InputState::new(window, cx).multi_line().placeholder("输出内容"));
+    pub fn build(window: &mut Window, cx: &mut Context<MainView>) -> AnyView {
+        AnyView::from(cx.new(|cx| {
+            let input = cx.new(|cx| InputState::new(window, cx).multi_line().placeholder("输入内容"));
+            let output = cx.new(|cx| InputState::new(window, cx).multi_line().placeholder("输出内容"));
 
-        Self {
-            input,
-            output,
-            updating: false,
-            last_input: SharedString::default(),
-            last_output: SharedString::default(),
-        }
+            Self {
+                input,
+                output,
+                updating: false,
+                last_input: SharedString::default(),
+                last_output: SharedString::default(),
+            }
+        }))
     }
 }
 
 impl Render for Base64Page {
     fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
-        // 双向同步（左输入→右Base64，右输入→左解码）。仅在内容变化时触发，避免循环。
         if !self.updating {
             let in_val = self.input.read(cx).value();
-            if in_val != self.last_input {
-                self.updating = true;
-                let enc = general_purpose::STANDARD.encode(in_val.as_str());
-                self.output.update(cx, |state, cx2| state.set_value(enc, window, cx2));
-                self.last_input = in_val;
-                self.last_output = self.output.read(cx).value();
-                self.updating = false;
+            let out_val = self.output.read(cx).value();
+
+            enum Src {
+                In,
+                Out,
+            }
+
+            let src = if in_val != self.last_input {
+                Some(Src::In)
+            } else if out_val != self.last_output {
+                Some(Src::Out)
             } else {
-                let out_val = self.output.read(cx).value();
-                if out_val != self.last_output {
-                    self.updating = true;
-                    let cleaned: String = out_val.as_str().chars().filter(|c| !c.is_whitespace()).collect();
-                    if let Ok(bytes) = general_purpose::STANDARD.decode(cleaned.as_bytes()) {
-                        let s = String::from_utf8(bytes)
-                            .unwrap_or_else(|e| String::from_utf8_lossy(e.as_bytes()).to_string());
-                        self.input.update(cx, |state, cx2| state.set_value(s, window, cx2));
+                None
+            };
+
+            if let Some(src) = src {
+                self.updating = true;
+                match src {
+                    Src::In => {
+                        let enc = general_purpose::STANDARD.encode(in_val.as_str());
+                        self.output.update(cx, |state, cx2| state.set_value(enc, window, cx2));
+                        self.last_input = in_val;
+                        self.last_output = self.output.read(cx).value();
                     }
-                    self.last_output = out_val;
-                    self.last_input = self.input.read(cx).value();
-                    self.updating = false;
+                    Src::Out => {
+                        let cleaned = strip_str(out_val.as_str());
+                        if let Ok(bytes) = general_purpose::STANDARD.decode(cleaned.as_bytes()) {
+                            let s = String::from_utf8(bytes)
+                                .unwrap_or_else(|e| String::from_utf8_lossy(e.as_bytes()).to_string());
+                            self.input.update(cx, |state, cx2| state.set_value(s, window, cx2));
+                        }
+                        self.last_input = self.input.read(cx).value();
+                        self.last_output = out_val;
+                    }
                 }
+                self.updating = false;
             }
         }
 
-        let card_bg = rgb(theme::COLOR_CARD_BG);
-        let input_bg = rgb(theme::COLOR_INPUT_BG);
+        let card_bg = rgb(CARD_BG);
+        let input_bg = rgb(INPUT_BG);
+
+        let page_padding = Edges::all(px(PAGE_PADDING));
+        let card_padding = Edges::all(px(CARD_PADDING));
+        let input_padding = Edges::all(px(INPUT_PADDING));
 
         div()
             .key_context("Input")
             .size_full()
-            .paddings(Edges::all(px(theme::SPACE_PAGE)))
-            .gap(px(theme::SPACE_SECTION_GAP))
+            .paddings(page_padding)
+            .gap(px(PAGE_GAP))
             .v_flex()
             .child(
                 div()
@@ -76,12 +105,10 @@ impl Render for Base64Page {
                     .child("Base64 编解码"),
             )
             .child(
-                // 垂直堆叠：上 原始内容 / 下 编码内容
                 div()
                     .v_flex()
                     .gap_4()
                     .flex_1()
-                    // 上：原始内容
                     .child(
                         div()
                             .flex_1()
@@ -89,17 +116,17 @@ impl Render for Base64Page {
                             .flex_col()
                             .bg(card_bg)
                             .rounded_lg()
-                            .paddings(Edges::all(px(theme::SPACE_CARD_PADDING)))
-                            .gap(px(theme::SPACE_CARD_GAP))
+                            .paddings(card_padding)
+                            .gap(px(CARD_GAP))
                             .child(div().text_sm().text_color(white()).child("原始内容"))
                             .child(
                                 div()
                                     .flex_1()
                                     .bg(input_bg)
                                     .border_1()
-                                    .border_color(rgb(theme::COLOR_CARD_INNER_BORDER))
+                                    .border_color(rgb(INPUT_BORDER))
                                     .rounded_md()
-                                    .paddings(Edges::all(px(theme::SPACE_INNER_PADDING)))
+                                    .paddings(input_padding)
                                     .child(
                                         TextInput::new(&self.input)
                                             .appearance(false)
@@ -109,7 +136,6 @@ impl Render for Base64Page {
                                     ),
                             ),
                     )
-                    // 下：编码内容
                     .child(
                         div()
                             .flex_1()
@@ -117,17 +143,17 @@ impl Render for Base64Page {
                             .flex_col()
                             .bg(card_bg)
                             .rounded_lg()
-                            .paddings(gpui::Edges::all(px(theme::SPACE_CARD_PADDING)))
-                            .gap(px(theme::SPACE_CARD_GAP))
+                            .paddings(card_padding)
+                            .gap(px(CARD_GAP))
                             .child(div().text_sm().text_color(white()).child("编码内容"))
                             .child(
                                 div()
                                     .flex_1()
                                     .bg(input_bg)
                                     .border_1()
-                                    .border_color(rgb(theme::COLOR_CARD_INNER_BORDER))
+                                    .border_color(rgb(INPUT_BORDER))
                                     .rounded_md()
-                                    .paddings(gpui::Edges::all(px(theme::SPACE_INNER_PADDING)))
+                                    .paddings(input_padding)
                                     .child(
                                         TextInput::new(&self.output)
                                             .appearance(false)
@@ -140,5 +166,3 @@ impl Render for Base64Page {
             )
     }
 }
-
-// 使用 base64 库进行编解码

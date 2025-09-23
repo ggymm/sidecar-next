@@ -22,5 +22,4 @@ pub mod snippet {
 }
 pub mod home;
 pub mod setting;
-
-pub mod theme;
+mod utils;
