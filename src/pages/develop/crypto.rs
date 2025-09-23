@@ -7,4 +7,3 @@ impl Render for CryptoPage {
         div().size_full()
     }
 }
-

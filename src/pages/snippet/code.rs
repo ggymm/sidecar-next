@@ -7,4 +7,3 @@ impl Render for CodePage {
         div().size_full()
     }
 }
-

@@ -7,4 +7,3 @@ impl Render for QrcodePage {
         div().size_full()
     }
 }
-

@@ -7,4 +7,3 @@ impl Render for ManualPage {
         div().size_full()
     }
 }
-

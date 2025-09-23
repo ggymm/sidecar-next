@@ -7,4 +7,3 @@ impl Render for PortPage {
         div().size_full()
     }
 }
-

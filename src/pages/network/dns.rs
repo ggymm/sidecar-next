@@ -7,4 +7,3 @@ impl Render for DnsPage {
         div().size_full()
     }
 }
-

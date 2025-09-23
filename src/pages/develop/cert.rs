@@ -7,4 +7,3 @@ impl Render for CertPage {
         div().size_full()
     }
 }
-

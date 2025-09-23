@@ -1,4 +1,3 @@
-pub mod home;
 pub mod toolkit {
     pub mod share;
 }
@@ -21,4 +20,7 @@ pub mod snippet {
     pub mod code;
     pub mod manual;
 }
+pub mod home;
 pub mod setting;
+
+pub mod theme;

@@ -7,4 +7,3 @@ impl Render for SettingPage {
         div().size_full()
     }
 }
-

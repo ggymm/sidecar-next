@@ -1,8 +1,11 @@
+use base64::engine::general_purpose;
+use base64::Engine;
 use gpui::*;
-use gpui_component::input::{InputState, TextInput};
+use gpui_component::input::InputState;
+use gpui_component::input::TextInput;
 use gpui_component::StyledExt;
-use crate::theme;
-use base64::{engine::general_purpose, Engine as _};
+
+use crate::pages::theme;
 
 pub struct Base64Page {
     input: Entity<InputState>,
@@ -16,11 +19,6 @@ impl Base64Page {
     pub fn new(window: &mut Window, cx: &mut Context<Self>) -> Self {
         let input = cx.new(|cx| InputState::new(window, cx).multi_line().placeholder("输入内容"));
         let output = cx.new(|cx| InputState::new(window, cx).multi_line().placeholder("输出内容"));
-
-        // 下一帧聚焦输入框，保证可输入
-        cx.on_next_frame(window, |this, window, cx| {
-            cx.focus_view(&this.input, window);
-        });
 
         Self {
             input,
@@ -40,8 +38,7 @@ impl Render for Base64Page {
             if in_val != self.last_input {
                 self.updating = true;
                 let enc = general_purpose::STANDARD.encode(in_val.as_str());
-                self.output
-                    .update(cx, |state, cx2| state.set_value(enc, window, cx2));
+                self.output.update(cx, |state, cx2| state.set_value(enc, window, cx2));
                 self.last_input = in_val;
                 self.last_output = self.output.read(cx).value();
                 self.updating = false;
@@ -53,8 +50,7 @@ impl Render for Base64Page {
                     if let Ok(bytes) = general_purpose::STANDARD.decode(cleaned.as_bytes()) {
                         let s = String::from_utf8(bytes)
                             .unwrap_or_else(|e| String::from_utf8_lossy(e.as_bytes()).to_string());
-                        self.input
-                            .update(cx, |state, cx2| state.set_value(s, window, cx2));
+                        self.input.update(cx, |state, cx2| state.set_value(s, window, cx2));
                     }
                     self.last_output = out_val;
                     self.last_input = self.input.read(cx).value();
@@ -63,18 +59,22 @@ impl Render for Base64Page {
             }
         }
 
-        // UI：左右两栏面板 + 标题，深色主题风格
-        let panel_bg = rgb(theme::COLOR_PANEL_BG);
-        let inner_bg = rgb(theme::COLOR_PANEL_INNER_BG);
-        let border = rgb(theme::COLOR_PANEL_BORDER);
+        let card_bg = rgb(theme::COLOR_CARD_BG);
+        let input_bg = rgb(theme::COLOR_INPUT_BG);
 
         div()
             .key_context("Input")
             .size_full()
-            .p_6()
-            .gap_4()
+            .paddings(Edges::all(px(theme::SPACE_PAGE)))
+            .gap(px(theme::SPACE_SECTION_GAP))
             .v_flex()
-            .child(div().text_lg().font_semibold().text_color(white()).child("Base64 编解码"))
+            .child(
+                div()
+                    .text_lg()
+                    .font_semibold()
+                    .text_color(white())
+                    .child("Base64 编解码"),
+            )
             .child(
                 // 垂直堆叠：上 原始内容 / 下 编码内容
                 div()
@@ -87,21 +87,19 @@ impl Render for Base64Page {
                             .flex_1()
                             .flex()
                             .flex_col()
-                            .bg(panel_bg)
-                            .border_1()
-                            .border_color(border)
+                            .bg(card_bg)
                             .rounded_lg()
-                            .p_5()
-                            .gap_3()
+                            .paddings(Edges::all(px(theme::SPACE_CARD_PADDING)))
+                            .gap(px(theme::SPACE_CARD_GAP))
                             .child(div().text_sm().text_color(white()).child("原始内容"))
                             .child(
                                 div()
                                     .flex_1()
-                                    .bg(inner_bg)
+                                    .bg(input_bg)
                                     .border_1()
-                                    .border_color(rgb(0x404040))
+                                    .border_color(rgb(theme::COLOR_CARD_INNER_BORDER))
                                     .rounded_md()
-                                    .p_2()
+                                    .paddings(Edges::all(px(theme::SPACE_INNER_PADDING)))
                                     .child(
                                         TextInput::new(&self.input)
                                             .appearance(false)
@@ -117,21 +115,19 @@ impl Render for Base64Page {
                             .flex_1()
                             .flex()
                             .flex_col()
-                            .bg(panel_bg)
-                            .border_1()
-                            .border_color(border)
+                            .bg(card_bg)
                             .rounded_lg()
-                            .p_5()
-                            .gap_3()
+                            .paddings(gpui::Edges::all(px(theme::SPACE_CARD_PADDING)))
+                            .gap(px(theme::SPACE_CARD_GAP))
                             .child(div().text_sm().text_color(white()).child("编码内容"))
                             .child(
                                 div()
                                     .flex_1()
-                                    .bg(inner_bg)
+                                    .bg(input_bg)
                                     .border_1()
-                                    .border_color(rgb(0x404040))
+                                    .border_color(rgb(theme::COLOR_CARD_INNER_BORDER))
                                     .rounded_md()
-                                    .p_2()
+                                    .paddings(gpui::Edges::all(px(theme::SPACE_INNER_PADDING)))
                                     .child(
                                         TextInput::new(&self.output)
                                             .appearance(false)
@@ -144,6 +140,5 @@ impl Render for Base64Page {
             )
     }
 }
-
 
 // 使用 base64 库进行编解码

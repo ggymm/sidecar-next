@@ -11,13 +11,7 @@ impl Render for TimestampPage {
             .flex_col()
             .gap_4()
             .p_6()
-            .child(
-                div()
-                    .text_lg()
-                    .font_semibold()
-                    .text_color(white())
-                    .child("时间戳转换")
-            )
+            .child(div().text_lg().font_semibold().text_color(white()).child("时间戳转换"))
             .child(
                 div()
                     .flex()
@@ -33,12 +27,7 @@ impl Render for TimestampPage {
                             .border_color(rgb(0x3C3C3C))
                             .rounded_lg()
                             .p_5()
-                            .child(
-                                div()
-                                    .text_sm()
-                                    .text_color(white())
-                                    .child("时间戳")
-                            )
+                            .child(div().text_sm().text_color(white()).child("时间戳"))
                             .child(
                                 div()
                                     .flex()
@@ -53,7 +42,7 @@ impl Render for TimestampPage {
                                             .rounded_md()
                                             .p_3()
                                             .text_color(white())
-                                            .child("输入时间戳...")
+                                            .child("输入时间戳..."),
                                     )
                                     .child(
                                         div()
@@ -65,7 +54,7 @@ impl Render for TimestampPage {
                                             .p_3()
                                             .text_sm()
                                             .text_color(white())
-                                            .child("毫秒")
+                                            .child("毫秒"),
                                     )
                                     .child(
                                         div()
@@ -77,9 +66,9 @@ impl Render for TimestampPage {
                                             .text_color(white())
                                             .cursor_pointer()
                                             .hover(|style| style.bg(rgb(0x106EBE)))
-                                            .child("当前时间")
-                                    )
-                            )
+                                            .child("当前时间"),
+                                    ),
+                            ),
                     )
                     .child(
                         div()
@@ -91,12 +80,7 @@ impl Render for TimestampPage {
                             .border_color(rgb(0x3C3C3C))
                             .rounded_lg()
                             .p_5()
-                            .child(
-                                div()
-                                    .text_sm()
-                                    .text_color(white())
-                                    .child("时区选择")
-                            )
+                            .child(div().text_sm().text_color(white()).child("时区选择"))
                             .child(
                                 div()
                                     .w(px(480.))
@@ -107,8 +91,8 @@ impl Render for TimestampPage {
                                     .p_3()
                                     .text_sm()
                                     .text_color(white())
-                                    .child("(UTC+08:00) 中国标准时间")
-                            )
+                                    .child("(UTC+08:00) 中国标准时间"),
+                            ),
                     )
                     .child(
                         div()
@@ -120,18 +104,8 @@ impl Render for TimestampPage {
                             .border_color(rgb(0x3C3C3C))
                             .rounded_lg()
                             .p_5()
-                            .child(
-                                div()
-                                    .text_sm()
-                                    .text_color(white())
-                                    .child("Common")
-                            )
-                            .child(
-                                div()
-                                    .text_sm()
-                                    .text_color(rgb(0xA0A0A0))
-                                    .child("2024-01-01 00:00:00")
-                            )
+                            .child(div().text_sm().text_color(white()).child("Common"))
+                            .child(div().text_sm().text_color(rgb(0xA0A0A0)).child("2024-01-01 00:00:00")),
                     )
                     .child(
                         div()
@@ -143,18 +117,13 @@ impl Render for TimestampPage {
                             .border_color(rgb(0x3C3C3C))
                             .rounded_lg()
                             .p_5()
-                            .child(
-                                div()
-                                    .text_sm()
-                                    .text_color(white())
-                                    .child("ISO 8601")
-                            )
+                            .child(div().text_sm().text_color(white()).child("ISO 8601"))
                             .child(
                                 div()
                                     .text_sm()
                                     .text_color(rgb(0xA0A0A0))
-                                    .child("2024-01-01T00:00:00+08:00")
-                            )
+                                    .child("2024-01-01T00:00:00+08:00"),
+                            ),
                     )
                     .child(
                         div()
@@ -166,20 +135,14 @@ impl Render for TimestampPage {
                             .border_color(rgb(0x3C3C3C))
                             .rounded_lg()
                             .p_5()
-                            .child(
-                                div()
-                                    .text_sm()
-                                    .text_color(white())
-                                    .child("RFC 7231")
-                            )
+                            .child(div().text_sm().text_color(white()).child("RFC 7231"))
                             .child(
                                 div()
                                     .text_sm()
                                     .text_color(rgb(0xA0A0A0))
-                                    .child("Mon, 01 Jan 2024 00:00:00 GMT")
-                            )
-                    )
+                                    .child("Mon, 01 Jan 2024 00:00:00 GMT"),
+                            ),
+                    ),
             )
     }
 }
-

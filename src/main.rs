@@ -1,8 +1,19 @@
-mod pages;
-mod plugins;
-mod theme;
-
+use gpui::*;
+use gpui_component::init;
+use gpui_component::resizable::h_resizable;
+use gpui_component::resizable::resizable_panel;
+use gpui_component::resizable::ResizableState;
+use gpui_component::sidebar::Sidebar;
+use gpui_component::sidebar::SidebarGroup;
+use gpui_component::sidebar::SidebarHeader;
+use gpui_component::sidebar::SidebarMenu;
+use gpui_component::sidebar::SidebarMenuItem;
+use gpui_component::Collapsible;
+use gpui_component::Icon;
+use gpui_component::Root;
+use gpui_component::Theme;
 use std::borrow::Cow;
+use std::fs::read;
 use std::path::PathBuf;
 
 use crate::pages::convert::base64::Base64Page;
@@ -20,12 +31,11 @@ use crate::pages::snippet::code::CodePage;
 use crate::pages::snippet::manual::ManualPage;
 use crate::pages::toolkit::share::SharePage;
 
-use gpui::*;
-use gpui_component::{
-    resizable::{h_resizable, resizable_panel, ResizableState},
-    sidebar::{Sidebar, SidebarGroup, SidebarHeader, SidebarMenu, SidebarMenuItem},
-    Icon, Root, Theme,
-};
+mod pages;
+mod plugins;
+
+pub const COLOR_SIDEBAR_BG: u32 = 0x202020; 
+pub const COLOR_CONTENT_BG: u32 = 0x282828;
 
 pub struct MainView {
     selected: SharedString,
@@ -81,7 +91,7 @@ impl MainView {
             Group(SidebarGroup<SidebarMenu>),
         }
 
-        impl gpui_component::Collapsible for Section {
+        impl Collapsible for Section {
             fn collapsed(self, collapsed: bool) -> Self {
                 match self {
                     Section::Menu(m) => Section::Menu(m.collapsed(collapsed)),
@@ -173,7 +183,7 @@ impl MainView {
 
 impl Render for MainView {
     fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
-        div().size_full().bg(rgb(theme::COLOR_CONTENT_BG)).child(
+        div().size_full().bg(rgb(COLOR_CONTENT_BG)).child(
             h_resizable("layout", self.resizable_state.clone())
                 .child(
                     resizable_panel()
@@ -190,7 +200,7 @@ pub struct EmptyView;
 
 impl Render for EmptyView {
     fn render(&mut self, _window: &mut Window, _cx: &mut Context<Self>) -> impl IntoElement {
-        div().size_full().bg(rgb(theme::COLOR_CONTENT_BG))
+        div().size_full().bg(rgb(COLOR_CONTENT_BG))
     }
 }
 
@@ -205,13 +215,13 @@ impl AssetSource for FsAssets {
         let manifest_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
         let full = manifest_dir.join("assets").join(path);
 
-        match std::fs::read(full) {
+        match read(full) {
             Ok(data) => Ok(Some(Cow::Owned(data))),
             Err(_) => Ok(None),
         }
     }
 
-    fn list(&self, _path: &str) -> gpui::Result<Vec<gpui::SharedString>> {
+    fn list(&self, _path: &str) -> Result<Vec<SharedString>> {
         Ok(Vec::new())
     }
 }
@@ -220,9 +230,8 @@ fn main() {
     let app = Application::new().with_assets(FsAssets);
 
     app.run(move |cx| {
-        gpui_component::init(cx);
+        init(cx);
         cx.activate(true);
-
         cx.on_window_closed(|cx| {
             if cx.windows().is_empty() {
                 cx.quit();
@@ -232,7 +241,7 @@ fn main() {
 
         let window_size = size(px(1280.), px(800.));
         let window_bounds = Bounds::centered(None, window_size, cx);
-        Theme::global_mut(cx).sidebar = rgb(theme::COLOR_SIDEBAR_BG).into();
+        Theme::global_mut(cx).sidebar = rgb(COLOR_SIDEBAR_BG).into();
 
         cx.spawn(async move |cx| {
             let options = WindowOptions {

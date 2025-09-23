@@ -7,4 +7,3 @@ impl Render for HashPage {
         div().size_full()
     }
 }
-

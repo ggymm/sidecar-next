@@ -7,4 +7,3 @@ impl Render for SharePage {
         div().size_full()
     }
 }
-

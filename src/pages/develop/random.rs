@@ -7,4 +7,3 @@ impl Render for RandomPage {
         div().size_full()
     }
 }
-
