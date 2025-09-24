@@ -83,7 +83,7 @@ impl TimestampPage {
         }
     }
 
-    fn set_current_timestamp(&mut self, window: &mut Window, cx: &mut Context<Self>) {
+    fn update_timestamp(&mut self, window: &mut Window, cx: &mut Context<Self>) {
         let ts = Utc::now().timestamp().to_string();
         self.ts_input
             .update(cx, |state, cx2| state.set_value(ts.clone(), window, cx2));
@@ -159,7 +159,7 @@ impl Render for TimestampPage {
                                     .on_mouse_down(
                                         MouseButton::Left,
                                         cx.listener(|this, _ev: &MouseDownEvent, window, cx| {
-                                            this.set_current_timestamp(window, cx);
+                                            this.update_timestamp(window, cx);
                                         }),
                                     ),
                             ),
