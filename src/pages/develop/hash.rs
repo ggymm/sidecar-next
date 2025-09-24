@@ -48,17 +48,10 @@ impl Render for HashPage {
 
         div()
             .key_context("Input")
-            .size_full()
+            .w_full()
             .paddings(page_padding)
             .gap(px(PAGE_GAP))
             .v_flex()
-            .child(
-                div()
-                    .text_lg()
-                    .font_semibold()
-                    .text_color(white())
-                    .child("哈希散列"),
-            )
             .child(
                 div()
                     .v_flex()
@@ -87,12 +80,7 @@ impl Render for HashPage {
                                     .paddings(input_padding)
                                     .flex()
                                     .items_center()
-                                    .child(
-                                        div()
-                                            .text_sm()
-                                            .text_color(white())
-                                            .child(self.input_type.clone())
-                                    ),
+                                    .child(div().text_sm().text_color(white()).child(self.input_type.clone())),
                             ),
                     )
                     .child(
@@ -124,12 +112,7 @@ impl Render for HashPage {
                                                     .flex()
                                                     .items_center()
                                                     .justify_center()
-                                                    .child(
-                                                        div()
-                                                            .text_sm()
-                                                            .text_color(white())
-                                                            .child("选择文件")
-                                                    ),
+                                                    .child(div().text_sm().text_color(white()).child("选择文件")),
                                             )
                                             .child(
                                                 div()
@@ -140,12 +123,7 @@ impl Render for HashPage {
                                                     .flex()
                                                     .items_center()
                                                     .justify_center()
-                                                    .child(
-                                                        div()
-                                                            .text_sm()
-                                                            .text_color(white())
-                                                            .child("计算 Hash")
-                                                    ),
+                                                    .child(div().text_sm().text_color(white()).child("计算 Hash")),
                                             ),
                                     ),
                             )

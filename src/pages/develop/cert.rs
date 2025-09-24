@@ -2,8 +2,6 @@ use gpui::*;
 use gpui_component::input::InputState;
 use gpui_component::input::TextInput;
 use gpui_component::StyledExt;
-use ::pem;
-use x509_parser::prelude::*;
 
 use crate::MainView;
 use crate::CARD_BG;
@@ -36,57 +34,11 @@ impl CertPage {
             }
         }))
     }
-
 }
 
 impl Render for CertPage {
-    fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
-        if !self.updating {
-            let in_val = self.input.read(cx).value();
-
-            if in_val != self.last_input {
-                self.updating = true;
-
-                // 解析 x509 证书
-                let parsed_result = if in_val.is_empty() {
-                    String::new()
-                } else {
-                    // 如果输入文本包含 字符串的 \n 替换为实际换行符
-                    let text = in_val.replace("\\n", "\n");
-
-                    match ::pem::parse(&text) {
-                        Ok(pem_data) => {
-                            match X509Certificate::from_der(&pem_data.contents()) {
-                                Ok((_, cert)) => {
-                                    let mut result = String::new();
-                                    result.push_str("证书信息:\n");
-                                    result.push_str("===========================================\n\n");
-
-                                    result.push_str(&format!("主题: {}\n\n", cert.subject()));
-                                    result.push_str(&format!("颁发者: {}\n\n", cert.issuer()));
-                                    result.push_str(&format!("序列号: {}\n\n", cert.serial.to_str_radix(16).to_uppercase()));
-                                    result.push_str(&format!("版本: v{}\n\n", cert.version()));
-
-                                    result.push_str("有效期:\n");
-                                    result.push_str(&format!("  从: {}\n", cert.validity().not_before));
-                                    result.push_str(&format!("  到: {}\n\n", cert.validity().not_after));
-
-                                    result.push_str(&format!("签名算法: {}\n", cert.signature_algorithm.algorithm));
-
-                                    result
-                                }
-                                Err(e) => format!("解析失败: {}", e),
-                            }
-                        }
-                        Err(e) => format!("解析失败: {}", e),
-                    }
-                };
-
-                self.output.update(cx, |state, cx2| state.set_value(parsed_result, window, cx2));
-                self.last_input = in_val;
-                self.updating = false;
-            }
-        }
+    fn render(&mut self, _window: &mut Window, _cx: &mut Context<Self>) -> impl IntoElement {
+        if !self.updating {}
 
         let card_bg = rgb(CARD_BG);
         let input_bg = rgb(INPUT_BG);
@@ -97,17 +49,10 @@ impl Render for CertPage {
 
         div()
             .key_context("Input")
-            .size_full()
+            .w_full()
             .paddings(page_padding)
             .gap(px(PAGE_GAP))
             .v_flex()
-            .child(
-                div()
-                    .text_lg()
-                    .font_semibold()
-                    .text_color(white())
-                    .child("证书解析"),
-            )
             .child(
                 div()
                     .v_flex()

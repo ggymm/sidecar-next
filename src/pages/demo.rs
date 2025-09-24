@@ -21,10 +21,7 @@ pub struct DemoPage {
 impl DemoPage {
     pub fn build(window: &mut Window, cx: &mut Context<MainView>) -> AnyView {
         AnyView::from(cx.new(|cx| {
-            let input1 = cx.new(|cx| {
-                InputState::new(window, cx)
-                    .default_value("测试文本")
-            });
+            let input1 = cx.new(|cx| InputState::new(window, cx).default_value("测试文本"));
             let input2 = cx.new(|cx| InputState::new(window, cx).placeholder("Another input"));
 
             let subs = vec![
@@ -32,11 +29,21 @@ impl DemoPage {
                 cx.subscribe_in(&input2, window, Self::on_input_event),
             ];
 
-            Self { input1, input2, _subs: subs }
+            Self {
+                input1,
+                input2,
+                _subs: subs,
+            }
         }))
     }
 
-    pub fn on_input_event(&mut self, _state: &Entity<InputState>, ev: &InputEvent, _w: &mut Window, _cx: &mut Context<Self>) {
+    pub fn on_input_event(
+        &mut self,
+        _state: &Entity<InputState>,
+        ev: &InputEvent,
+        _w: &mut Window,
+        _cx: &mut Context<Self>,
+    ) {
         match ev {
             InputEvent::Focus => println!("[Demo] Focus"),
             InputEvent::Blur => println!("[Demo] Blur"),
@@ -48,10 +55,7 @@ impl DemoPage {
 
 impl FocusableCycle for DemoPage {
     fn cycle_focus_handles(&self, _: &mut Window, cx: &mut App) -> Vec<FocusHandle> {
-        vec![
-            self.input1.focus_handle(cx),
-            self.input2.focus_handle(cx),
-        ]
+        vec![self.input1.focus_handle(cx), self.input2.focus_handle(cx)]
     }
 }
 
@@ -72,18 +76,11 @@ impl Render for DemoPage {
         div()
             .key_context("Demo")
             .id("demo")
-            .size_full()
+            .w_full()
             .paddings(page_padding)
             .gap(px(PAGE_GAP))
             .v_flex()
             .track_focus(&self.focus_handle(cx))
-            .child(
-                div()
-                    .text_lg()
-                    .font_semibold()
-                    .text_color(white())
-                    .child("演示页面")
-            )
             .child(
                 div()
                     .v_flex()
@@ -106,13 +103,13 @@ impl Render for DemoPage {
                                     .border_1()
                                     .border_color(rgb(INPUT_BORDER))
                                     .rounded_md()
+                                    .overflow_hidden()
                                     .paddings(input_padding)
                                     .child(
                                         TextInput::new(&self.input1)
                                             .appearance(false)
                                             .focus_bordered(false)
                                             .text_color(white())
-                                            .h_full()
                                             .cleanable(),
                                     ),
                             ),

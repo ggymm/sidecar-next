@@ -1,20 +1,20 @@
-use base64::engine::general_purpose;
 use base64::Engine;
+use base64::engine::general_purpose;
 use gpui::*;
+use gpui_component::StyledExt;
 use gpui_component::input::InputState;
 use gpui_component::input::TextInput;
-use gpui_component::StyledExt;
 
-use crate::pages::utils::strip_str;
-use crate::MainView;
 use crate::CARD_BG;
 use crate::CARD_GAP;
 use crate::CARD_PADDING;
 use crate::INPUT_BG;
 use crate::INPUT_BORDER;
 use crate::INPUT_PADDING;
+use crate::MainView;
 use crate::PAGE_GAP;
 use crate::PAGE_PADDING;
+use crate::pages::utils::strip_str;
 
 pub struct Base64Page {
     input: Entity<InputState>,
@@ -99,68 +99,55 @@ impl Render for Base64Page {
             .v_flex()
             .child(
                 div()
-                    .text_lg()
-                    .font_semibold()
-                    .text_color(white())
-                    .child("Base64 编解码"),
+                    .flex_1()
+                    .flex()
+                    .flex_col()
+                    .bg(card_bg)
+                    .rounded_lg()
+                    .paddings(card_padding)
+                    .gap(px(CARD_GAP))
+                    .child(div().text_sm().text_color(white()).child("原始内容"))
+                    .child(
+                        div()
+                            .flex_1()
+                            .bg(input_bg)
+                            .border_1()
+                            .border_color(rgb(INPUT_BORDER))
+                            .rounded_lg()
+                            .paddings(input_padding)
+                            .child(
+                                TextInput::new(&self.input)
+                                    .appearance(false)
+                                    .focus_bordered(false)
+                                    .text_color(white())
+                                    .h_full(),
+                            ),
+                    ),
             )
             .child(
                 div()
-                    .v_flex()
-                    .gap(px(PAGE_GAP))
                     .flex_1()
+                    .flex()
+                    .flex_col()
+                    .bg(card_bg)
+                    .rounded_lg()
+                    .paddings(card_padding)
+                    .gap(px(CARD_GAP))
+                    .child(div().text_sm().text_color(white()).child("编码内容"))
                     .child(
                         div()
                             .flex_1()
-                            .flex()
-                            .flex_col()
-                            .bg(card_bg)
+                            .bg(input_bg)
+                            .border_1()
+                            .border_color(rgb(INPUT_BORDER))
                             .rounded_lg()
-                            .paddings(card_padding)
-                            .gap(px(CARD_GAP))
-                            .child(div().text_sm().text_color(white()).child("原始内容"))
+                            .paddings(input_padding)
                             .child(
-                                div()
-                                    .flex_1()
-                                    .bg(input_bg)
-                                    .border_1()
-                                    .border_color(rgb(INPUT_BORDER))
-                                    .rounded_lg()
-                                    .paddings(input_padding)
-                                    .child(
-                                        TextInput::new(&self.input)
-                                            .appearance(false)
-                                            .focus_bordered(false)
-                                            .text_color(white())
-                                            .h_full(),
-                                    ),
-                            ),
-                    )
-                    .child(
-                        div()
-                            .flex_1()
-                            .flex()
-                            .flex_col()
-                            .bg(card_bg)
-                            .rounded_lg()
-                            .paddings(card_padding)
-                            .gap(px(CARD_GAP))
-                            .child(div().text_sm().text_color(white()).child("编码内容"))
-                            .child(
-                                div()
-                                    .flex_1()
-                                    .bg(input_bg)
-                                    .border_1()
-                                    .border_color(rgb(INPUT_BORDER))
-                                    .rounded_lg()
-                                    .paddings(input_padding)
-                                    .child(
-                                        TextInput::new(&self.output)
-                                            .appearance(false)
-                                            .focus_bordered(false)
-                                            .text_color(white())
-                                            .h_full(),
-                                    ),
+                                TextInput::new(&self.output)
+                                    .appearance(false)
+                                    .focus_bordered(false)
+                                    .text_color(white())
+                                    .h_full(),
                             ),
                     ),
             )

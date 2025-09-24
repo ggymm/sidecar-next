@@ -149,55 +149,41 @@ impl Render for HomePage {
         // 加载系统信息
         self.load_system_info(cx);
 
-        div()
-            .size_full()
-            .bg(rgb(0x202020))
-            .flex()
-            .flex_col()
-            .child(
-                // 页面标题
-                div()
-                    .px_6()
-                    .py_4()
-                    .border_b_1()
-                    .border_color(rgb(0x3C3C3C))
-                    .child(div().text_xl().font_semibold().text_color(white()).child("首页")),
-            )
-            .child(
-                // 内容区域
-                div()
-                    .flex_1()
-                    .px_6()
-                    .py_6()
-                    .child(if let Some(info) = &self.system_info {
-                        div()
-                            .flex()
-                            .flex_col()
-                            .gap_5()
-                            .child(
-                                // 第一行：CPU 和 内存
-                                div()
-                                    .flex()
-                                    .gap_5()
-                                    .child(self.build_cpu_card(info))
-                                    .child(self.build_memory_card(info)),
-                            )
-                            .child(
-                                // 第二行：系统 和 网络
-                                div()
-                                    .flex()
-                                    .gap_5()
-                                    .child(self.build_os_card(info))
-                                    .child(self.build_network_card(info)),
-                            )
-                    } else {
-                        div()
-                            .flex_1()
-                            .flex()
-                            .items_center()
-                            .justify_center()
-                            .child(div().text_lg().text_color(rgb(0x808080)).child("正在加载系统信息..."))
-                    }),
-            )
+        div().w_full().flex().flex_col().child(
+            // 内容区域
+            div()
+                .flex_1()
+                .px_6()
+                .py_6()
+                .child(if let Some(info) = &self.system_info {
+                    div()
+                        .flex()
+                        .flex_col()
+                        .gap_5()
+                        .child(
+                            // 第一行：CPU 和 内存
+                            div()
+                                .flex()
+                                .gap_5()
+                                .child(self.build_cpu_card(info))
+                                .child(self.build_memory_card(info)),
+                        )
+                        .child(
+                            // 第二行：系统 和 网络
+                            div()
+                                .flex()
+                                .gap_5()
+                                .child(self.build_os_card(info))
+                                .child(self.build_network_card(info)),
+                        )
+                } else {
+                    div()
+                        .flex_1()
+                        .flex()
+                        .items_center()
+                        .justify_center()
+                        .child(div().text_lg().text_color(rgb(0x808080)).child("正在加载系统信息..."))
+                }),
+        )
     }
 }

@@ -22,9 +22,21 @@ pub struct RandomPage {
 impl RandomPage {
     pub fn build(window: &mut Window, cx: &mut Context<MainView>) -> AnyView {
         AnyView::from(cx.new(|cx| {
-            let mac_input = cx.new(|cx| InputState::new(window, cx).placeholder("MAC地址").default_value("\u{200B}"));
-            let uuid_input = cx.new(|cx| InputState::new(window, cx).placeholder("UUID.v4").default_value("\u{200B}"));
-            let phone_input = cx.new(|cx| InputState::new(window, cx).placeholder("手机号码").default_value("\u{200B}"));
+            let mac_input = cx.new(|cx| {
+                InputState::new(window, cx)
+                    .placeholder("MAC地址")
+                    .default_value("\u{200B}")
+            });
+            let uuid_input = cx.new(|cx| {
+                InputState::new(window, cx)
+                    .placeholder("UUID.v4")
+                    .default_value("\u{200B}")
+            });
+            let phone_input = cx.new(|cx| {
+                InputState::new(window, cx)
+                    .placeholder("手机号码")
+                    .default_value("\u{200B}")
+            });
 
             Self {
                 mac_input,
@@ -55,8 +67,17 @@ impl RandomPage {
                 div()
                     .flex()
                     .gap_4()
+                    .child(div().w(px(480.)).child(TextInput::new(input)))
                     .child(
-                        div().w(px(480.)).child(TextInput::new(input)),
+                        div()
+                            .w(px(100.))
+                            .h(px(34.))
+                            .bg(button_bg)
+                            .rounded_md()
+                            .flex()
+                            .items_center()
+                            .justify_center()
+                            .child(div().text_sm().text_color(white()).child("生成")),
                     )
                     .child(
                         div()
@@ -67,28 +88,7 @@ impl RandomPage {
                             .flex()
                             .items_center()
                             .justify_center()
-                            .child(
-                                div()
-                                    .text_sm()
-                                    .text_color(white())
-                                    .child("生成")
-                            ),
-                    )
-                    .child(
-                        div()
-                            .w(px(100.))
-                            .h(px(34.))
-                            .bg(button_bg)
-                            .rounded_md()
-                            .flex()
-                            .items_center()
-                            .justify_center()
-                            .child(
-                                div()
-                                    .text_sm()
-                                    .text_color(white())
-                                    .child("复制")
-                            ),
+                            .child(div().text_sm().text_color(white()).child("复制")),
                     ),
             )
     }
@@ -99,17 +99,10 @@ impl Render for RandomPage {
         let page_padding = Edges::all(px(PAGE_PADDING));
 
         div()
-            .size_full()
+            .w_full()
             .paddings(page_padding)
             .gap(px(PAGE_GAP))
             .v_flex()
-            .child(
-                div()
-                    .text_lg()
-                    .font_semibold()
-                    .text_color(white())
-                    .child("随机数据"),
-            )
             .child(
                 div()
                     .v_flex()

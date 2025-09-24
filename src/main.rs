@@ -16,7 +16,10 @@ use gpui_component::sidebar::SidebarMenuItem;
 use gpui_component::Collapsible;
 use gpui_component::Icon;
 use gpui_component::Root;
+use gpui_component::StyledExt;
 use gpui_component::Theme;
+use indexmap::IndexMap;
+use once_cell::sync::Lazy;
 
 use crate::pages::convert::base64::Base64Page;
 use crate::pages::convert::timestamp::TimestampPage;
@@ -39,6 +42,9 @@ mod plugins;
 
 pub const SIDE_BG: u32 = 0x202020;
 
+pub const HEAD_BG: u32 = 0x282828;
+pub const HEAD_BORDER: u32 = 0x404040;
+
 pub const PAGE_BG: u32 = 0x282828;
 pub const PAGE_GAP: f32 = 20.0;
 pub const PAGE_PADDING: f32 = 20.0;
@@ -59,113 +65,160 @@ struct View {
     build: fn(&mut Window, &mut Context<MainView>) -> AnyView,
 }
 
-static VIEWS: &[View] = &[
-    View {
-        key: "/home",
-        icon: "icons/home.svg",
-        title: "首页",
-        group: None,
-        build: HomePage::build,
-    },
-    View {
-        key: "/demo",
-        icon: "icons/apps.svg",
-        title: "演示页面",
-        group: None,
-        build: DemoPage::build,
-    },
-    View {
-        key: "/toolkit/share",
-        icon: "icons/share.svg",
-        title: "文件分享",
-        group: Some("便捷工具"),
-        build: SharePage::build,
-    },
-    View {
-        key: "/convert/base64",
-        icon: "icons/base64.svg",
-        title: "Base64",
-        group: Some("转换工具"),
-        build: Base64Page::build,
-    },
-    View {
-        key: "/convert/timestamp",
-        icon: "icons/timestamp.svg",
-        title: "时间戳转换",
-        group: Some("转换工具"),
-        build: TimestampPage::build,
-    },
-    View {
-        key: "/develop/cert",
-        icon: "icons/cert.svg",
-        title: "证书解析",
-        group: Some("开发工具"),
-        build: CertPage::build,
-    },
-    View {
-        key: "/develop/hash",
-        icon: "icons/hash.svg",
-        title: "哈希散列",
-        group: Some("开发工具"),
-        build: HashPage::build,
-    },
-    View {
-        key: "/develop/crypto",
-        icon: "icons/crypto.svg",
-        title: "加解密工具",
-        group: Some("开发工具"),
-        build: CryptoPage::build,
-    },
-    View {
-        key: "/develop/random",
-        icon: "icons/random.svg",
-        title: "随机数据",
-        group: Some("开发工具"),
-        build: RandomPage::build,
-    },
-    View {
-        key: "/develop/qrcode",
-        icon: "icons/qrcode.svg",
-        title: "二维码",
-        group: Some("开发工具"),
-        build: QrcodePage::build,
-    },
-    View {
-        key: "/network/dns",
-        icon: "icons/dns.svg",
-        title: "域名查询",
-        group: Some("网络工具"),
-        build: DnsPage::build,
-    },
-    View {
-        key: "/network/port",
-        icon: "icons/port.svg",
-        title: "端口占用查询",
-        group: Some("网络工具"),
-        build: PortPage::build,
-    },
-    View {
-        key: "/snippet/code",
-        icon: "icons/code.svg",
-        title: "代码库",
-        group: Some("代码片段"),
-        build: CodePage::build,
-    },
-    View {
-        key: "/snippet/manual",
-        icon: "icons/manual.svg",
-        title: "命令手册",
-        group: Some("代码片段"),
-        build: ManualPage::build,
-    },
-    View {
-        key: "/setting",
-        icon: "icons/setting.svg",
-        title: "设置",
-        group: None,
-        build: SettingPage::build,
-    },
-];
+static VIEWS: Lazy<IndexMap<&'static str, View>> = Lazy::new(|| {
+    let mut m: IndexMap<&'static str, View> = IndexMap::new();
+    m.insert(
+        "/home",
+        View {
+            key: "/home",
+            icon: "icons/home.svg",
+            title: "首页",
+            group: None,
+            build: HomePage::build,
+        },
+    );
+    m.insert(
+        "/demo",
+        View {
+            key: "/demo",
+            icon: "icons/apps.svg",
+            title: "演示页面",
+            group: None,
+            build: DemoPage::build,
+        },
+    );
+    m.insert(
+        "/toolkit/share",
+        View {
+            key: "/toolkit/share",
+            icon: "icons/share.svg",
+            title: "文件分享",
+            group: Some("便捷工具"),
+            build: SharePage::build,
+        },
+    );
+    m.insert(
+        "/convert/base64",
+        View {
+            key: "/convert/base64",
+            icon: "icons/base64.svg",
+            title: "Base64",
+            group: Some("转换工具"),
+            build: Base64Page::build,
+        },
+    );
+    m.insert(
+        "/convert/timestamp",
+        View {
+            key: "/convert/timestamp",
+            icon: "icons/timestamp.svg",
+            title: "时间戳转换",
+            group: Some("转换工具"),
+            build: TimestampPage::build,
+        },
+    );
+    m.insert(
+        "/develop/cert",
+        View {
+            key: "/develop/cert",
+            icon: "icons/cert.svg",
+            title: "证书解析",
+            group: Some("开发工具"),
+            build: CertPage::build,
+        },
+    );
+    m.insert(
+        "/develop/hash",
+        View {
+            key: "/develop/hash",
+            icon: "icons/hash.svg",
+            title: "哈希散列",
+            group: Some("开发工具"),
+            build: HashPage::build,
+        },
+    );
+    m.insert(
+        "/develop/crypto",
+        View {
+            key: "/develop/crypto",
+            icon: "icons/crypto.svg",
+            title: "加解密工具",
+            group: Some("开发工具"),
+            build: CryptoPage::build,
+        },
+    );
+    m.insert(
+        "/develop/random",
+        View {
+            key: "/develop/random",
+            icon: "icons/random.svg",
+            title: "随机数据",
+            group: Some("开发工具"),
+            build: RandomPage::build,
+        },
+    );
+    m.insert(
+        "/develop/qrcode",
+        View {
+            key: "/develop/qrcode",
+            icon: "icons/qrcode.svg",
+            title: "二维码",
+            group: Some("开发工具"),
+            build: QrcodePage::build,
+        },
+    );
+    m.insert(
+        "/network/dns",
+        View {
+            key: "/network/dns",
+            icon: "icons/dns.svg",
+            title: "域名查询",
+            group: Some("网络工具"),
+            build: DnsPage::build,
+        },
+    );
+    m.insert(
+        "/network/port",
+        View {
+            key: "/network/port",
+            icon: "icons/port.svg",
+            title: "端口占用查询",
+            group: Some("网络工具"),
+            build: PortPage::build,
+        },
+    );
+    m.insert(
+        "/snippet/code",
+        View {
+            key: "/snippet/code",
+            icon: "icons/code.svg",
+            title: "代码库",
+            group: Some("代码片段"),
+            build: CodePage::build,
+        },
+    );
+    m.insert(
+        "/snippet/manual",
+        View {
+            key: "/snippet/manual",
+            icon: "icons/manual.svg",
+            title: "命令手册",
+            group: Some("代码片段"),
+            build: ManualPage::build,
+        },
+    );
+    m.insert(
+        "/setting",
+        View {
+            key: "/setting",
+            icon: "icons/setting.svg",
+            title: "设置",
+            group: None,
+            build: SettingPage::build,
+        },
+    );
+    m
+});
 
 pub struct MainView {
     views: HashMap<&'static str, AnyView>,
@@ -176,7 +229,7 @@ pub struct MainView {
 impl MainView {
     fn new(window: &mut Window, cx: &mut Context<Self>) -> Self {
         let mut views = HashMap::new();
-        for view in VIEWS.iter() {
+        for view in VIEWS.values() {
             views.insert(view.key, (view.build)(window, cx));
         }
 
@@ -188,11 +241,7 @@ impl MainView {
     }
 
     fn menu(&mut self, cx: &mut Context<Self>, key: &'static str) -> SidebarMenuItem {
-        let (icon, label) = VIEWS
-            .iter()
-            .find(|d| d.key == key)
-            .map(|d| (d.icon, d.title))
-            .unwrap_or(("", "未命名"));
+        let (icon, label) = VIEWS.get(key).map(|d| (d.icon, d.title)).unwrap_or(("", "未命名"));
 
         let mut item = SidebarMenuItem::new(label)
             .active(self.selected.as_str() == key)
@@ -242,7 +291,7 @@ impl MainView {
         {
             // 分组侧边菜单
             let mut groups: Vec<(&'static str, Vec<&'static str>)> = Vec::new();
-            for v in VIEWS.iter() {
+            for v in VIEWS.values() {
                 if let Some(group) = v.group {
                     if let Some((_, keys)) = groups.iter_mut().find(|(g, _)| *g == group) {
                         keys.push(v.key);
@@ -285,6 +334,7 @@ impl MainView {
 
 impl Render for MainView {
     fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
+        let header_title: &str = VIEWS.get(self.selected.as_str()).map(|v| v.title).unwrap_or("未命名");
         div().size_full().bg(rgb(PAGE_BG)).child(
             h_resizable("layout", self.resizable_state.clone())
                 .child(
@@ -293,7 +343,34 @@ impl Render for MainView {
                         .size_range(px(180.)..px(360.))
                         .child(self.sidebar(window, cx)),
                 )
-                .child(resizable_panel().child(self.content(window, cx))),
+                .child(
+                    div()
+                        .flex_1()
+                        .v_flex()
+                        .h_full()
+                        .min_h_0()
+                        .overflow_hidden()
+                        .child(
+                            div()
+                                .id("head")
+                                .px_6()
+                                .py_3()
+                                .flex()
+                                .items_center()
+                                .border_b_1()
+                                .border_color(rgb(HEAD_BORDER))
+                                .child(div().text_lg().font_semibold().text_color(white()).child(header_title)),
+                        )
+                        .child(
+                            div()
+                                .id("content")
+                                .flex_1()
+                                .min_h_0()
+                                .overflow_y_scroll()
+                                .child(self.content(window, cx)),
+                        )
+                        .into_any_element(),
+                ),
         )
     }
 }
@@ -354,8 +431,8 @@ fn main() {
                     traffic_light_position: None,
                 }),
                 window_min_size: Some(Size {
-                    width: px(1280.),
-                    height: px(800.),
+                    width: px(600.),
+                    height: px(400.),
                 }),
                 kind: WindowKind::Normal,
                 #[cfg(target_os = "linux")]

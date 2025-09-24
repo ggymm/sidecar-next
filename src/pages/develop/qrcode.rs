@@ -45,17 +45,10 @@ impl Render for QrcodePage {
 
         div()
             .key_context("Input")
-            .size_full()
+            .w_full()
             .paddings(page_padding)
             .gap(px(PAGE_GAP))
             .v_flex()
-            .child(
-                div()
-                    .text_lg()
-                    .font_semibold()
-                    .text_color(white())
-                    .child("二维码解析"),
-            )
             .child(
                 div()
                     .v_flex()
@@ -86,34 +79,16 @@ impl Render for QrcodePage {
                                             .flex()
                                             .items_center()
                                             .justify_center()
-                                            .child(
-                                                div()
-                                                    .text_sm()
-                                                    .text_color(white())
-                                                    .child("选择文件")
-                                            ),
+                                            .child(div().text_sm().text_color(white()).child("选择文件")),
                                     ),
                             )
-                            .child(
-                                div()
-                                    .flex_1()
-                                    .flex()
-                                    .items_center()
-                                    .justify_center()
-                                    .child(
-                                        if self.selected_file.is_some() {
-                                            div()
-                                                .text_sm()
-                                                .text_color(rgb(0x808080))
-                                                .child("图片预览区域")
-                                        } else {
-                                            div()
-                                                .text_sm()
-                                                .text_color(rgb(0x808080))
-                                                .child("请选择二维码图片文件")
-                                        }
-                                    ),
-                            ),
+                            .child(div().flex_1().flex().items_center().justify_center().child(
+                                if self.selected_file.is_some() {
+                                    div().text_sm().text_color(rgb(0x808080)).child("图片预览区域")
+                                } else {
+                                    div().text_sm().text_color(rgb(0x808080)).child("请选择二维码图片文件")
+                                },
+                            )),
                     )
                     .child(
                         // Parse result card

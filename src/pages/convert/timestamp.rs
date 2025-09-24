@@ -1,39 +1,100 @@
 use gpui::*;
+use gpui_component::input::InputState;
+use gpui_component::input::TextInput;
+use gpui_component::scroll::ScrollbarAxis;
 use gpui_component::StyledExt;
-use crate::MainView;
 
-pub struct TimestampPage;
+use crate::MainView;
+use crate::CARD_BG;
+use crate::CARD_GAP;
+use crate::CARD_PADDING;
+use crate::INPUT_BG;
+use crate::INPUT_BORDER;
+use crate::INPUT_PADDING;
+use crate::PAGE_GAP;
+use crate::PAGE_PADDING;
+
+pub struct TimestampPage {
+    timezone_input: Entity<InputState>,
+    timestamp_input: Entity<InputState>,
+}
 
 impl TimestampPage {
-    pub fn build(_window: &mut Window, cx: &mut Context<MainView>) -> AnyView {
-        AnyView::from(cx.new(|_| TimestampPage))
+    pub fn build(window: &mut Window, cx: &mut Context<MainView>) -> AnyView {
+        AnyView::from(cx.new(|cx| {
+            let timezone_input = cx.new(|cx| {
+                InputState::new(window, cx)
+                    .placeholder("时区...")
+                    .default_value("(UTC+08:00) 中国标准时间")
+            });
+            
+            let timestamp_input = cx.new(|cx| InputState::new(window, cx).placeholder("输入时间戳..."));
+
+            Self {
+                timezone_input,
+                timestamp_input,
+            }
+        }))
     }
 }
 
 impl Render for TimestampPage {
     fn render(&mut self, _window: &mut Window, _cx: &mut Context<Self>) -> impl IntoElement {
+        let card_bg = rgb(CARD_BG);
+        let input_bg = rgb(INPUT_BG);
+        let page_padding = Edges::all(px(PAGE_PADDING));
+        let card_padding = Edges::all(px(CARD_PADDING));
+        let input_padding = Edges::all(px(INPUT_PADDING));
+
         div()
-            .size_full()
-            .flex()
-            .flex_col()
-            .gap_4()
-            .p_6()
-            .child(div().text_lg().font_semibold().text_color(white()).child("时间戳转换"))
+            .paddings(page_padding)
+            .gap(px(PAGE_GAP))
+            .v_flex()
+            // 页面内不再显示标题
             .child(
                 div()
-                    .flex()
-                    .flex_col()
-                    .gap_5()
+                    .v_flex()
+                    .gap(px(PAGE_GAP))
                     .child(
                         div()
                             .flex()
                             .items_center()
                             .justify_between()
-                            .bg(rgb(0x2D2D2D))
+                            .bg(card_bg)
                             .border_1()
-                            .border_color(rgb(0x3C3C3C))
+                            .border_color(rgb(INPUT_BORDER))
                             .rounded_lg()
-                            .p_5()
+                            .paddings(card_padding)
+                            .child(div().text_sm().text_color(white()).child("时区"))
+                            .child(
+                                div()
+                                    .w(px(480.))
+                                    .h(px(36.))
+                                    .overflow_hidden()
+                                    .bg(input_bg)
+                                    .border_1()
+                                    .border_color(rgb(INPUT_BORDER))
+                                    .rounded_lg()
+                                    .paddings(input_padding)
+                                    .child(
+                                        TextInput::new(&self.timezone_input)
+                                            .appearance(false)
+                                            .focus_bordered(false)
+                                            .text_color(white())
+                                            .h_full(),
+                                    ),
+                            ),
+                    )
+                    .child(
+                        div()
+                            .flex()
+                            .items_center()
+                            .justify_between()
+                            .bg(card_bg)
+                            .border_1()
+                            .border_color(rgb(INPUT_BORDER))
+                            .rounded_lg()
+                            .paddings(card_padding)
                             .child(div().text_sm().text_color(white()).child("时间戳"))
                             .child(
                                 div()
@@ -43,25 +104,19 @@ impl Render for TimestampPage {
                                     .child(
                                         div()
                                             .w(px(240.))
-                                            .bg(rgb(0x1E1E1E))
+                                            .h(px(36.))
+                                            .overflow_hidden()
+                                            .bg(input_bg)
                                             .border_1()
-                                            .border_color(rgb(0x404040))
-                                            .rounded_md()
-                                            .p_3()
-                                            .text_color(white())
-                                            .child("输入时间戳..."),
-                                    )
-                                    .child(
-                                        div()
-                                            .w(px(96.))
-                                            .bg(rgb(0x1E1E1E))
-                                            .border_1()
-                                            .border_color(rgb(0x404040))
-                                            .rounded_md()
-                                            .p_3()
-                                            .text_sm()
-                                            .text_color(white())
-                                            .child("毫秒"),
+                                            .border_color(rgb(INPUT_BORDER))
+                                            .rounded_lg()
+                                            .paddings(input_padding)
+                                            .child(
+                                                TextInput::new(&self.timestamp_input)
+                                                    .appearance(false)
+                                                    .focus_bordered(false)
+                                                    .text_color(white()),
+                                            ),
                                     )
                                     .child(
                                         div()
@@ -76,41 +131,22 @@ impl Render for TimestampPage {
                                             .child("当前时间"),
                                     ),
                             ),
-                    )
+                    ),
+            )
+            .child(
+                div()
+                    .v_flex()
+                    .gap(px(PAGE_GAP))
                     .child(
                         div()
                             .flex()
                             .items_center()
                             .justify_between()
-                            .bg(rgb(0x2D2D2D))
+                            .bg(card_bg)
                             .border_1()
-                            .border_color(rgb(0x3C3C3C))
+                            .border_color(rgb(INPUT_BORDER))
                             .rounded_lg()
-                            .p_5()
-                            .child(div().text_sm().text_color(white()).child("时区选择"))
-                            .child(
-                                div()
-                                    .w(px(480.))
-                                    .bg(rgb(0x1E1E1E))
-                                    .border_1()
-                                    .border_color(rgb(0x404040))
-                                    .rounded_md()
-                                    .p_3()
-                                    .text_sm()
-                                    .text_color(white())
-                                    .child("(UTC+08:00) 中国标准时间"),
-                            ),
-                    )
-                    .child(
-                        div()
-                            .flex()
-                            .items_center()
-                            .justify_between()
-                            .bg(rgb(0x2D2D2D))
-                            .border_1()
-                            .border_color(rgb(0x3C3C3C))
-                            .rounded_lg()
-                            .p_5()
+                            .paddings(card_padding)
                             .child(div().text_sm().text_color(white()).child("Common"))
                             .child(div().text_sm().text_color(rgb(0xA0A0A0)).child("2024-01-01 00:00:00")),
                     )
@@ -119,11 +155,11 @@ impl Render for TimestampPage {
                             .flex()
                             .items_center()
                             .justify_between()
-                            .bg(rgb(0x2D2D2D))
+                            .bg(card_bg)
                             .border_1()
-                            .border_color(rgb(0x3C3C3C))
+                            .border_color(rgb(INPUT_BORDER))
                             .rounded_lg()
-                            .p_5()
+                            .paddings(card_padding)
                             .child(div().text_sm().text_color(white()).child("ISO 8601"))
                             .child(
                                 div()
@@ -137,11 +173,11 @@ impl Render for TimestampPage {
                             .flex()
                             .items_center()
                             .justify_between()
-                            .bg(rgb(0x2D2D2D))
+                            .bg(card_bg)
                             .border_1()
-                            .border_color(rgb(0x3C3C3C))
+                            .border_color(rgb(INPUT_BORDER))
                             .rounded_lg()
-                            .p_5()
+                            .paddings(card_padding)
                             .child(div().text_sm().text_color(white()).child("RFC 7231"))
                             .child(
                                 div()
