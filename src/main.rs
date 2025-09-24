@@ -59,7 +59,7 @@ pub const CARD_PADDING: f32 = 20.0;
 
 pub const INPUT_BG: u32 = 0x242424;
 pub const INPUT_BORDER: u32 = 0x404040;
-pub const INPUT_PADDING: f32 = 8.0;
+pub const INPUT_PADDING: f32 = 4.0;
 
 struct View {
     key: &'static str,
