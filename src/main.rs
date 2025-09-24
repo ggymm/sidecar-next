@@ -4,20 +4,20 @@ use std::fs::read;
 use std::path::PathBuf;
 
 use gpui::*;
-use gpui_component::init;
-use gpui_component::resizable::h_resizable;
-use gpui_component::resizable::resizable_panel;
-use gpui_component::resizable::ResizableState;
-use gpui_component::sidebar::Sidebar;
-use gpui_component::sidebar::SidebarGroup;
-use gpui_component::sidebar::SidebarHeader;
-use gpui_component::sidebar::SidebarMenu;
-use gpui_component::sidebar::SidebarMenuItem;
 use gpui_component::Collapsible;
 use gpui_component::Icon;
 use gpui_component::Root;
 use gpui_component::StyledExt;
 use gpui_component::Theme;
+use gpui_component::init;
+use gpui_component::resizable::ResizableState;
+use gpui_component::resizable::h_resizable;
+use gpui_component::resizable::resizable_panel;
+use gpui_component::sidebar::Sidebar;
+use gpui_component::sidebar::SidebarGroup;
+use gpui_component::sidebar::SidebarHeader;
+use gpui_component::sidebar::SidebarMenu;
+use gpui_component::sidebar::SidebarMenuItem;
 use indexmap::IndexMap;
 use once_cell::sync::Lazy;
 
@@ -41,9 +41,13 @@ mod pages;
 mod plugins;
 
 pub const SIDE_BG: u32 = 0x202020;
+pub const SIDE_MIN: f32 = 120.;
+pub const SIDE_MAX: f32 = 360.;
+pub const SIDE_SIZE: f32 = 240.;
 
-pub const HEAD_BG: u32 = 0x282828;
 pub const HEAD_BORDER: u32 = 0x404040;
+pub const HEAD_PADDING_X: f32 = 20.0;
+pub const HEAD_PADDING_Y: f32 = 12.0;
 
 pub const PAGE_BG: u32 = 0x282828;
 pub const PAGE_GAP: f32 = 20.0;
@@ -222,6 +226,7 @@ static VIEWS: Lazy<IndexMap<&'static str, View>> = Lazy::new(|| {
 
 pub struct MainView {
     views: HashMap<&'static str, AnyView>,
+    title: SharedString,
     selected: SharedString,
     resizable_state: Entity<ResizableState>,
 }
@@ -235,18 +240,20 @@ impl MainView {
 
         Self {
             views,
+            title: "首页".into(),
             selected: "/home".into(),
             resizable_state: ResizableState::new(cx),
         }
     }
 
     fn menu(&mut self, cx: &mut Context<Self>, key: &'static str) -> SidebarMenuItem {
-        let (icon, label) = VIEWS.get(key).map(|d| (d.icon, d.title)).unwrap_or(("", "未命名"));
+        let (icon, title) = VIEWS.get(key).map(|d| (d.icon, d.title)).unwrap_or_default();
 
-        let mut item = SidebarMenuItem::new(label)
+        let mut item = SidebarMenuItem::new(title)
             .active(self.selected.as_str() == key)
             .on_click(cx.listener(move |this, _ev: &ClickEvent, window, _cx| {
                 if this.selected.as_str() != key {
+                    this.title = title.into();
                     this.selected = key.to_string().into();
                 }
                 window.refresh();
@@ -318,7 +325,7 @@ impl MainView {
         }
     }
 
-    fn content(&mut self, _window: &mut Window, _cx: &mut Context<Self>) -> AnyElement {
+    fn content(&mut self, _window: &mut Window, _cx: &mut Context<Self>) -> impl IntoElement {
         self.views
             .get(self.selected.as_str())
             .cloned()
@@ -334,13 +341,12 @@ impl MainView {
 
 impl Render for MainView {
     fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
-        let header_title: &str = VIEWS.get(self.selected.as_str()).map(|v| v.title).unwrap_or("未命名");
         div().size_full().bg(rgb(PAGE_BG)).child(
             h_resizable("layout", self.resizable_state.clone())
                 .child(
                     resizable_panel()
-                        .size(px(240.))
-                        .size_range(px(180.)..px(360.))
+                        .size(px(SIDE_SIZE))
+                        .size_range(px(SIDE_MIN)..px(SIDE_MAX))
                         .child(self.sidebar(window, cx)),
                 )
                 .child(
@@ -353,13 +359,23 @@ impl Render for MainView {
                         .child(
                             div()
                                 .id("head")
-                                .px_6()
-                                .py_3()
                                 .flex()
                                 .items_center()
                                 .border_b_1()
                                 .border_color(rgb(HEAD_BORDER))
-                                .child(div().text_lg().font_semibold().text_color(white()).child(header_title)),
+                                .paddings(Edges {
+                                    top: px(HEAD_PADDING_Y),
+                                    right: px(HEAD_PADDING_X),
+                                    bottom: px(HEAD_PADDING_Y),
+                                    left: px(HEAD_PADDING_X),
+                                })
+                                .child(
+                                    div()
+                                        .text_lg()
+                                        .font_semibold()
+                                        .text_color(white())
+                                        .child(self.title.clone()),
+                                ),
                         )
                         .child(
                             div()
