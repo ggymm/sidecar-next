@@ -57,6 +57,8 @@ pub const INPUT_BG: u32 = 0x242424;
 pub const INPUT_BORDER: u32 = 0x404040;
 pub const INPUT_PADDING: f32 = 4.0;
 pub const COMMON_GAP: f32 = 20.0;
+pub const COMMON_PADDING: f32 = 20.0;
+pub const COMMON_PADDING_M: f32 = 12.0;
 
 struct View {
     key: &'static str,
@@ -380,12 +382,8 @@ impl Render for MainView {
                                 .items_center()
                                 .border_b_1()
                                 .border_color(rgb(HEAD_BORDER))
-                                .paddings(Edges {
-                                    top: px(HEAD_PADDING_Y),
-                                    right: px(HEAD_PADDING_X),
-                                    bottom: px(HEAD_PADDING_Y),
-                                    left: px(HEAD_PADDING_X),
-                                })
+                                .px(px(HEAD_PADDING_X))
+                                .py(px(HEAD_PADDING_Y))
                                 .child(
                                     div()
                                         .text_lg()

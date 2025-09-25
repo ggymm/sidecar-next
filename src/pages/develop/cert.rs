@@ -50,14 +50,14 @@ impl Render for CertPage {
 
             self.updating = true;
             if in_val != self.last_input {
-                let s = if in_val.is_empty() {
+                let out_val = if in_val.is_empty() {
                     String::new()
                 } else {
                     String::new()
                 };
 
                 self.output.update(cx, |state, cx2| {
-                    state.set_value(s, window, cx2);
+                    state.set_value(out_val, window, cx2);
                 });
                 self.last_input = in_val;
             }
