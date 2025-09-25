@@ -72,7 +72,6 @@ impl Render for CertPage {
         let input_padding = Edges::all(px(INPUT_PADDING));
 
         div()
-            .key_context("Input")
             .v_flex()
             .size_full()
             .paddings(page_padding)

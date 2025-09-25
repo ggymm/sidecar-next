@@ -10,6 +10,7 @@ use gpui_component::input::TextInput;
 
 use crate::CARD_BG;
 use crate::CARD_PADDING;
+use crate::COMMON_GAP;
 use crate::INPUT_BG;
 use crate::INPUT_BORDER;
 use crate::INPUT_PADDING;
@@ -145,7 +146,7 @@ impl Render for TimestampPage {
                         div()
                             .flex()
                             .items_center()
-                            .gap_5()
+                            .gap(px(COMMON_GAP))
                             .child(
                                 div()
                                     .w(px(240.))

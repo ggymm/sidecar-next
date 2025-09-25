@@ -88,7 +88,6 @@ impl Render for DemoPage {
         let input_padding = Edges::all(px(INPUT_PADDING));
 
         div()
-            .key_context("Demo")
             .id("demo")
             .w_full()
             .paddings(page_padding)
@@ -116,7 +115,7 @@ impl Render for DemoPage {
                                     .bg(input_bg)
                                     .border_1()
                                     .border_color(rgb(INPUT_BORDER))
-                                    .rounded_md()
+                                    .rounded_lg()
                                     .overflow_hidden()
                                     .paddings(input_padding)
                                     .child(
@@ -144,7 +143,7 @@ impl Render for DemoPage {
                                     .bg(input_bg)
                                     .border_1()
                                     .border_color(rgb(INPUT_BORDER))
-                                    .rounded_md()
+                                    .rounded_lg()
                                     .paddings(input_padding)
                                     .child(
                                         TextInput::new(&self.input2)
