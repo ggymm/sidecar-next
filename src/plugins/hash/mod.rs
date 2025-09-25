@@ -1,27 +1,17 @@
 use std::fs::File;
-use std::io;
 use std::io::BufReader;
 use std::io::Read;
-use std::sync::Arc;
-use std::thread;
+use std::io::Result;
 
-use crossbeam_channel::{Sender, bounded};
 use digest::Digest;
 use md5::Md5;
 use sha1::Sha1;
-use sha2::{Sha256, Sha512};
+use sha2::Sha256;
+use sha2::Sha512;
 
 const CHUNK_SIZE: usize = 512 * 1024 * 1024;
-const CHANNEL_CAPACITY: usize = 2;
 
 #[derive(Debug, Clone)]
-pub enum HashResult {
-    MD5(Vec<u8>),
-    SHA1(Vec<u8>),
-    SHA256(Vec<u8>),
-    SHA512(Vec<u8>),
-}
-
 pub struct HashResults {
     pub md5: String,
     pub sha1: String,
@@ -32,135 +22,81 @@ pub struct HashResults {
 impl HashResults {
     pub fn to_string(&self) -> String {
         format!(
-            "MD5:     {}\nSHA1:    {}\nSHA256:  {}\nSHA512:  {}",
+            "MD5       {}\nSHA1      {}\nSHA256    {}\nSHA512    {}",
             self.md5, self.sha1, self.sha256, self.sha512
         )
     }
 }
 
-fn hash_worker<D: Digest + Send + 'static>(
-    data_rx: crossbeam_channel::Receiver<Vec<u8>>,
-    result_tx: Arc<Sender<HashResult>>,
-    hash_type: &str,
-) where
-    D: Default,
-{
-    let mut hasher = D::default();
-    while let Ok(chunk) = data_rx.recv() {
-        if chunk.is_empty() {
-            break;
-        }
-        hasher.update(&chunk);
-    }
+pub fn calc_text_hash(text: &str) -> Result<HashResults> {
+    let bytes = text.as_bytes();
 
-    let result = hasher.finalize().to_vec();
-    let hash_result = match hash_type {
-        "md5" => HashResult::MD5(result),
-        "sha1" => HashResult::SHA1(result),
-        "sha256" => HashResult::SHA256(result),
-        "sha512" => HashResult::SHA512(result),
-        _ => unreachable!(),
-    };
-    result_tx.send(hash_result).unwrap();
-}
+    let mut md5 = Md5::new();
+    let mut sha1 = Sha1::new();
+    let mut sha256 = Sha256::new();
+    let mut sha512 = Sha512::new();
 
-pub fn calculate_file_hash(path: &str) -> io::Result<HashResults> {
-    let file = File::open(path)?;
-    let mut reader = BufReader::with_capacity(CHUNK_SIZE, file);
-    let mut buffer = vec![0; CHUNK_SIZE];
-
-    let (md5_tx, md5_rx) = bounded(CHANNEL_CAPACITY);
-    let (sha1_tx, sha1_rx) = bounded(CHANNEL_CAPACITY);
-    let (sha256_tx, sha256_rx) = bounded(CHANNEL_CAPACITY);
-    let (sha512_tx, sha512_rx) = bounded(CHANNEL_CAPACITY);
-    let (result_tx, result_rx) = bounded(4);
-
-    let result_tx = Arc::new(result_tx);
-    let threads = vec![
-        thread::spawn({
-            let result_tx = Arc::clone(&result_tx);
-            move || hash_worker::<Md5>(md5_rx, result_tx, "md5")
-        }),
-        thread::spawn({
-            let result_tx = Arc::clone(&result_tx);
-            move || hash_worker::<Sha1>(sha1_rx, result_tx, "sha1")
-        }),
-        thread::spawn({
-            let result_tx = Arc::clone(&result_tx);
-            move || hash_worker::<Sha256>(sha256_rx, result_tx, "sha256")
-        }),
-        thread::spawn({
-            let result_tx = Arc::clone(&result_tx);
-            move || hash_worker::<Sha512>(sha512_rx, result_tx, "sha512")
-        }),
-    ];
-
-    let senders = [&md5_tx, &sha1_tx, &sha256_tx, &sha512_tx];
-
-    loop {
-        let bytes_read = reader.read(&mut buffer)?;
-        if bytes_read == 0 {
-            break;
-        }
-
-        let chunk = buffer[..bytes_read].to_vec();
-        for sender in &senders {
-            sender.send(chunk.clone()).unwrap();
-        }
-    }
-
-    for sender in &senders {
-        sender.send(Vec::new()).unwrap();
-    }
-
-    for thread in threads {
-        thread.join().unwrap();
-    }
-
-    let mut results = [None, None, None, None];
-    for _ in 0..4 {
-        match result_rx.recv().unwrap() {
-            hash @ HashResult::MD5(_) => results[0] = Some(hash),
-            hash @ HashResult::SHA1(_) => results[1] = Some(hash),
-            hash @ HashResult::SHA256(_) => results[2] = Some(hash),
-            hash @ HashResult::SHA512(_) => results[3] = Some(hash),
-        }
-    }
-
-    let mut md5 = String::new();
-    let mut sha1 = String::new();
-    let mut sha256 = String::new();
-    let mut sha512 = String::new();
-
-    for result in results.into_iter().flatten() {
-        match result {
-            HashResult::MD5(hash) => md5 = hex::encode(hash),
-            HashResult::SHA1(hash) => sha1 = hex::encode(hash),
-            HashResult::SHA256(hash) => sha256 = hex::encode(hash),
-            HashResult::SHA512(hash) => sha512 = hex::encode(hash),
-        }
-    }
+    md5.update(bytes);
+    sha1.update(bytes);
+    sha256.update(bytes);
+    sha512.update(bytes);
 
     Ok(HashResults {
-        md5,
-        sha1,
-        sha256,
-        sha512,
+        md5: hex::encode(md5.finalize()),
+        sha1: hex::encode(sha1.finalize()),
+        sha256: hex::encode(sha256.finalize()),
+        sha512: hex::encode(sha512.finalize()),
     })
 }
 
-pub fn calculate_text_hash(text: &str) -> HashResults {
-    let bytes = text.as_bytes();
+pub fn calc_file_hash(path: &str) -> Result<HashResults> {
+    // Stream the file once and update all hashers per chunk to minimize memory usage.
+    let file = File::open(path)?;
+    let mut reader = BufReader::with_capacity(CHUNK_SIZE, file);
+    let mut buffer = vec![0u8; CHUNK_SIZE];
 
-    let md5 = hex::encode(Md5::digest(bytes));
-    let sha1 = hex::encode(Sha1::digest(bytes));
-    let sha256 = hex::encode(Sha256::digest(bytes));
-    let sha512 = hex::encode(Sha512::digest(bytes));
+    let mut md5 = Md5::new();
+    let mut sha1 = Sha1::new();
+    let mut sha256 = Sha256::new();
+    let mut sha512 = Sha512::new();
 
-    HashResults {
-        md5,
-        sha1,
-        sha256,
-        sha512,
+    loop {
+        let n = reader.read(&mut buffer)?;
+        if n == 0 {
+            break;
+        }
+        let slice = &buffer[..n];
+        md5.update(slice);
+        sha1.update(slice);
+        sha256.update(slice);
+        sha512.update(slice);
+    }
+
+    Ok(HashResults {
+        md5: hex::encode(md5.finalize()),
+        sha1: hex::encode(sha1.finalize()),
+        sha256: hex::encode(sha256.finalize()),
+        sha512: hex::encode(sha512.finalize()),
+    })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_calc_text_hash() {
+        let text = "123456";
+        let results = calc_text_hash(text);
+
+        println!("{:?}", results);
+    }
+
+    #[test]
+    fn test_calc_file_hash() {
+        let path = "/Volumes/Data/Temp/qnt_robot-2025_09_06.sql.gz";
+        let results = calc_file_hash(path);
+
+        println!("{:?}", results);
     }
 }

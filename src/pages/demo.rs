@@ -1,14 +1,14 @@
 use gpui::*;
 use gpui_component::input::{InputEvent, InputState, TextInput};
-use gpui_component::{v_flex, FocusableCycle, StyledExt};
+use gpui_component::{FocusableCycle, StyledExt, v_flex};
 
-use crate::MainView;
 use crate::CARD_BG;
 use crate::CARD_GAP;
 use crate::CARD_PADDING;
 use crate::INPUT_BG;
 use crate::INPUT_BORDER;
 use crate::INPUT_PADDING;
+use crate::MainView;
 use crate::PAGE_GAP;
 use crate::PAGE_PADDING;
 
@@ -19,7 +19,10 @@ pub struct DemoPage {
 }
 
 impl DemoPage {
-    pub fn build(window: &mut Window, cx: &mut Context<MainView>) -> AnyView {
+    pub fn build(
+        window: &mut Window,
+        cx: &mut Context<MainView>,
+    ) -> AnyView {
         AnyView::from(cx.new(|cx| {
             let input1 = cx.new(|cx| InputState::new(window, cx).default_value("测试文本"));
             let input2 = cx.new(|cx| InputState::new(window, cx).placeholder("Another input"));
@@ -54,19 +57,30 @@ impl DemoPage {
 }
 
 impl FocusableCycle for DemoPage {
-    fn cycle_focus_handles(&self, _: &mut Window, cx: &mut App) -> Vec<FocusHandle> {
+    fn cycle_focus_handles(
+        &self,
+        _: &mut Window,
+        cx: &mut App,
+    ) -> Vec<FocusHandle> {
         vec![self.input1.focus_handle(cx), self.input2.focus_handle(cx)]
     }
 }
 
 impl Focusable for DemoPage {
-    fn focus_handle(&self, cx: &App) -> FocusHandle {
+    fn focus_handle(
+        &self,
+        cx: &App,
+    ) -> FocusHandle {
         self.input1.focus_handle(cx)
     }
 }
 
 impl Render for DemoPage {
-    fn render(&mut self, _window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
+    fn render(
+        &mut self,
+        _window: &mut Window,
+        cx: &mut Context<Self>,
+    ) -> impl IntoElement {
         let card_bg = rgb(CARD_BG);
         let input_bg = rgb(INPUT_BG);
         let page_padding = Edges::all(px(PAGE_PADDING));

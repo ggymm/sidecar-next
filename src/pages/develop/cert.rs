@@ -1,15 +1,15 @@
 use gpui::*;
+use gpui_component::StyledExt;
 use gpui_component::input::InputState;
 use gpui_component::input::TextInput;
-use gpui_component::StyledExt;
 
-use crate::MainView;
 use crate::CARD_BG;
 use crate::CARD_GAP;
 use crate::CARD_PADDING;
 use crate::INPUT_BG;
 use crate::INPUT_BORDER;
 use crate::INPUT_PADDING;
+use crate::MainView;
 use crate::PAGE_GAP;
 use crate::PAGE_PADDING;
 
@@ -21,7 +21,10 @@ pub struct CertPage {
 }
 
 impl CertPage {
-    pub fn build(window: &mut Window, cx: &mut Context<MainView>) -> AnyView {
+    pub fn build(
+        window: &mut Window,
+        cx: &mut Context<MainView>,
+    ) -> AnyView {
         AnyView::from(cx.new(|cx| {
             let input = cx.new(|cx| InputState::new(window, cx).multi_line().placeholder("输入证书内容"));
             let output = cx.new(|cx| InputState::new(window, cx).multi_line().placeholder("解析结果"));
@@ -37,8 +40,29 @@ impl CertPage {
 }
 
 impl Render for CertPage {
-    fn render(&mut self, _window: &mut Window, _cx: &mut Context<Self>) -> impl IntoElement {
-        if !self.updating {}
+    fn render(
+        &mut self,
+        window: &mut Window,
+        cx: &mut Context<Self>,
+    ) -> impl IntoElement {
+        if !self.updating {
+            let in_val = self.input.read(cx).value();
+
+            self.updating = true;
+            if in_val != self.last_input {
+                let s = if in_val.is_empty() {
+                    String::new()
+                } else {
+                    String::new()
+                };
+
+                self.output.update(cx, |state, cx2| {
+                    state.set_value(s, window, cx2);
+                });
+                self.last_input = in_val;
+            }
+            self.updating = false;
+        }
 
         let card_bg = rgb(CARD_BG);
         let input_bg = rgb(INPUT_BG);
@@ -49,67 +73,61 @@ impl Render for CertPage {
 
         div()
             .key_context("Input")
-            .w_full()
+            .v_flex()
+            .size_full()
             .paddings(page_padding)
             .gap(px(PAGE_GAP))
-            .v_flex()
             .child(
                 div()
-                    .v_flex()
-                    .gap_4()
-                    .flex_1()
-                    .child(
-                        div()
-                            .h(px(240.))
-                            .flex()
-                            .flex_col()
-                            .bg(card_bg)
-                            .rounded_lg()
-                            .paddings(card_padding)
-                            .gap(px(CARD_GAP))
-                            .child(div().text_sm().text_color(white()).child("证书"))
-                            .child(
-                                div()
-                                    .flex_1()
-                                    .bg(input_bg)
-                                    .border_1()
-                                    .border_color(rgb(INPUT_BORDER))
-                                    .rounded_md()
-                                    .paddings(input_padding)
-                                    .child(
-                                        TextInput::new(&self.input)
-                                            .appearance(false)
-                                            .focus_bordered(false)
-                                            .text_color(white())
-                                            .h_full(),
-                                    ),
-                            ),
-                    )
+                    .h(px(240.))
+                    .flex()
+                    .flex_col()
+                    .bg(card_bg)
+                    .rounded_lg()
+                    .paddings(card_padding)
+                    .gap(px(CARD_GAP))
+                    .child(div().text_sm().text_color(white()).child("证书"))
                     .child(
                         div()
                             .flex_1()
-                            .flex()
-                            .flex_col()
-                            .bg(card_bg)
+                            .bg(input_bg)
+                            .border_1()
+                            .border_color(rgb(INPUT_BORDER))
                             .rounded_lg()
-                            .paddings(card_padding)
-                            .gap(px(CARD_GAP))
-                            .child(div().text_sm().text_color(white()).child("解析结果"))
+                            .paddings(input_padding)
                             .child(
-                                div()
-                                    .flex_1()
-                                    .bg(input_bg)
-                                    .border_1()
-                                    .border_color(rgb(INPUT_BORDER))
-                                    .rounded_md()
-                                    .paddings(input_padding)
-                                    .child(
-                                        TextInput::new(&self.output)
-                                            .appearance(false)
-                                            .focus_bordered(false)
-                                            .text_color(white())
-                                            .h_full(),
-                                    ),
+                                TextInput::new(&self.input)
+                                    .appearance(false)
+                                    .focus_bordered(false)
+                                    .text_color(white())
+                                    .h_full(),
+                            ),
+                    ),
+            )
+            .child(
+                div()
+                    .flex_1()
+                    .flex()
+                    .flex_col()
+                    .bg(card_bg)
+                    .rounded_lg()
+                    .paddings(card_padding)
+                    .gap(px(CARD_GAP))
+                    .child(div().text_sm().text_color(white()).child("解析结果"))
+                    .child(
+                        div()
+                            .flex_1()
+                            .bg(input_bg)
+                            .border_1()
+                            .border_color(rgb(INPUT_BORDER))
+                            .rounded_lg()
+                            .paddings(input_padding)
+                            .child(
+                                TextInput::new(&self.output)
+                                    .appearance(false)
+                                    .focus_bordered(false)
+                                    .text_color(white())
+                                    .h_full(),
                             ),
                     ),
             )

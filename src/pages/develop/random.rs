@@ -1,13 +1,13 @@
 use gpui::*;
+use gpui_component::StyledExt;
 use gpui_component::input::InputState;
 use gpui_component::input::TextInput;
-use gpui_component::StyledExt;
 
-use crate::MainView;
 use crate::CARD_BG;
 use crate::CARD_PADDING;
 use crate::INPUT_BG;
 use crate::INPUT_PADDING;
+use crate::MainView;
 use crate::PAGE_GAP;
 use crate::PAGE_PADDING;
 
@@ -20,7 +20,10 @@ pub struct RandomPage {
 }
 
 impl RandomPage {
-    pub fn build(window: &mut Window, cx: &mut Context<MainView>) -> AnyView {
+    pub fn build(
+        window: &mut Window,
+        cx: &mut Context<MainView>,
+    ) -> AnyView {
         AnyView::from(cx.new(|cx| {
             let mac_input = cx.new(|cx| {
                 InputState::new(window, cx)
@@ -46,7 +49,11 @@ impl RandomPage {
         }))
     }
 
-    fn build_random_card(&self, label: &str, input: &Entity<InputState>) -> impl IntoElement {
+    fn build_random_card(
+        &self,
+        label: &str,
+        input: &Entity<InputState>,
+    ) -> impl IntoElement {
         let card_bg = rgb(CARD_BG);
         let input_bg = rgb(INPUT_BG);
         let button_bg = rgb(BUTTON_BG);
@@ -95,21 +102,20 @@ impl RandomPage {
 }
 
 impl Render for RandomPage {
-    fn render(&mut self, _window: &mut Window, _cx: &mut Context<Self>) -> impl IntoElement {
+    fn render(
+        &mut self,
+        _window: &mut Window,
+        _cx: &mut Context<Self>,
+    ) -> impl IntoElement {
         let page_padding = Edges::all(px(PAGE_PADDING));
 
-        div()
-            .w_full()
-            .paddings(page_padding)
-            .gap(px(PAGE_GAP))
-            .v_flex()
-            .child(
-                div()
-                    .v_flex()
-                    .gap_4()
-                    .child(self.build_random_card("MAC地址", &self.mac_input))
-                    .child(self.build_random_card("UUID.v4", &self.uuid_input))
-                    .child(self.build_random_card("手机号码", &self.phone_input)),
-            )
+        div().w_full().paddings(page_padding).gap(px(PAGE_GAP)).v_flex().child(
+            div()
+                .v_flex()
+                .gap_4()
+                .child(self.build_random_card("MAC地址", &self.mac_input))
+                .child(self.build_random_card("UUID.v4", &self.uuid_input))
+                .child(self.build_random_card("手机号码", &self.phone_input)),
+        )
     }
 }

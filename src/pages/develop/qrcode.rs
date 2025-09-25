@@ -1,15 +1,15 @@
 use gpui::*;
+use gpui_component::StyledExt;
 use gpui_component::input::InputState;
 use gpui_component::input::TextInput;
-use gpui_component::StyledExt;
 
-use crate::MainView;
 use crate::CARD_BG;
 use crate::CARD_GAP;
 use crate::CARD_PADDING;
 use crate::INPUT_BG;
 use crate::INPUT_BORDER;
 use crate::INPUT_PADDING;
+use crate::MainView;
 use crate::PAGE_GAP;
 use crate::PAGE_PADDING;
 
@@ -21,7 +21,10 @@ pub struct QrcodePage {
 }
 
 impl QrcodePage {
-    pub fn build(window: &mut Window, cx: &mut Context<MainView>) -> AnyView {
+    pub fn build(
+        window: &mut Window,
+        cx: &mut Context<MainView>,
+    ) -> AnyView {
         AnyView::from(cx.new(|cx| {
             let parsed_output = cx.new(|cx| InputState::new(window, cx).multi_line().placeholder("解析结果"));
 
@@ -34,7 +37,11 @@ impl QrcodePage {
 }
 
 impl Render for QrcodePage {
-    fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
+    fn render(
+        &mut self,
+        window: &mut Window,
+        cx: &mut Context<Self>,
+    ) -> impl IntoElement {
         let card_bg = rgb(CARD_BG);
         let input_bg = rgb(INPUT_BG);
         let button_bg = rgb(BUTTON_BG);

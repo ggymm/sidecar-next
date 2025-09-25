@@ -44,22 +44,19 @@ pub const SIDE_BG: u32 = 0x202020;
 pub const SIDE_MIN: f32 = 120.;
 pub const SIDE_MAX: f32 = 360.;
 pub const SIDE_SIZE: f32 = 240.;
-
 pub const HEAD_BORDER: u32 = 0x404040;
 pub const HEAD_PADDING_X: f32 = 20.0;
 pub const HEAD_PADDING_Y: f32 = 12.0;
-
 pub const PAGE_BG: u32 = 0x282828;
 pub const PAGE_GAP: f32 = 20.0;
 pub const PAGE_PADDING: f32 = 20.0;
-
 pub const CARD_BG: u32 = 0x333333;
 pub const CARD_GAP: f32 = 12.0;
 pub const CARD_PADDING: f32 = 20.0;
-
 pub const INPUT_BG: u32 = 0x242424;
 pub const INPUT_BORDER: u32 = 0x404040;
 pub const INPUT_PADDING: f32 = 4.0;
+pub const COMMON_GAP: f32 = 20.0;
 
 struct View {
     key: &'static str,
@@ -232,7 +229,10 @@ pub struct MainView {
 }
 
 impl MainView {
-    fn new(window: &mut Window, cx: &mut Context<Self>) -> Self {
+    fn new(
+        window: &mut Window,
+        cx: &mut Context<Self>,
+    ) -> Self {
         let mut views = HashMap::new();
         for view in VIEWS.values() {
             views.insert(view.key, (view.build)(window, cx));
@@ -246,7 +246,11 @@ impl MainView {
         }
     }
 
-    fn menu(&mut self, cx: &mut Context<Self>, key: &'static str) -> SidebarMenuItem {
+    fn menu(
+        &mut self,
+        cx: &mut Context<Self>,
+        key: &'static str,
+    ) -> SidebarMenuItem {
         let (icon, title) = VIEWS.get(key).map(|d| (d.icon, d.title)).unwrap_or_default();
 
         let mut item = SidebarMenuItem::new(title)
@@ -264,7 +268,11 @@ impl MainView {
         item
     }
 
-    fn sidebar(&mut self, _window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
+    fn sidebar(
+        &mut self,
+        _window: &mut Window,
+        cx: &mut Context<Self>,
+    ) -> impl IntoElement {
         enum Section {
             Menu(SidebarMenu),
             Group(SidebarGroup<SidebarMenu>),
@@ -281,7 +289,10 @@ impl MainView {
         }
 
         impl Collapsible for Section {
-            fn collapsed(self, collapsed: bool) -> Self {
+            fn collapsed(
+                self,
+                collapsed: bool,
+            ) -> Self {
                 match self {
                     Section::Menu(m) => Section::Menu(m.collapsed(collapsed)),
                     Section::Group(g) => Section::Group(g.collapsed(collapsed)),
@@ -296,7 +307,6 @@ impl MainView {
         }
 
         {
-            // 分组侧边菜单
             let mut groups: Vec<(&'static str, Vec<&'static str>)> = Vec::new();
             for v in VIEWS.values() {
                 if let Some(group) = v.group {
@@ -308,7 +318,6 @@ impl MainView {
                 }
             }
 
-            // 构建侧边菜单
             let mut sidebar = Sidebar::left()
                 .width(relative(1.0))
                 .header(SidebarHeader::new().child("Sidecar"))
@@ -325,7 +334,11 @@ impl MainView {
         }
     }
 
-    fn content(&mut self, _window: &mut Window, _cx: &mut Context<Self>) -> impl IntoElement {
+    fn content(
+        &mut self,
+        _window: &mut Window,
+        _cx: &mut Context<Self>,
+    ) -> impl IntoElement {
         self.views
             .get(self.selected.as_str())
             .cloned()
@@ -340,7 +353,11 @@ impl MainView {
 }
 
 impl Render for MainView {
-    fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
+    fn render(
+        &mut self,
+        window: &mut Window,
+        cx: &mut Context<Self>,
+    ) -> impl IntoElement {
         div().size_full().bg(rgb(PAGE_BG)).child(
             h_resizable("layout", self.resizable_state.clone())
                 .child(
@@ -394,7 +411,11 @@ impl Render for MainView {
 pub struct EmptyView;
 
 impl Render for EmptyView {
-    fn render(&mut self, _window: &mut Window, _cx: &mut Context<Self>) -> impl IntoElement {
+    fn render(
+        &mut self,
+        _window: &mut Window,
+        _cx: &mut Context<Self>,
+    ) -> impl IntoElement {
         div().size_full().bg(rgb(PAGE_BG))
     }
 }
@@ -402,7 +423,10 @@ impl Render for EmptyView {
 pub struct FsAssets;
 
 impl AssetSource for FsAssets {
-    fn load(&self, path: &str) -> Result<Option<Cow<'static, [u8]>>> {
+    fn load(
+        &self,
+        path: &str,
+    ) -> Result<Option<Cow<'static, [u8]>>> {
         if path.is_empty() {
             return Ok(None);
         }
@@ -416,7 +440,10 @@ impl AssetSource for FsAssets {
         }
     }
 
-    fn list(&self, _path: &str) -> Result<Vec<SharedString>> {
+    fn list(
+        &self,
+        _path: &str,
+    ) -> Result<Vec<SharedString>> {
         Ok(Vec::new())
     }
 }
@@ -447,8 +474,8 @@ fn main() {
                     traffic_light_position: None,
                 }),
                 window_min_size: Some(Size {
-                    width: px(600.),
-                    height: px(400.),
+                    width: window_size.width,
+                    height: window_size.height,
                 }),
                 kind: WindowKind::Normal,
                 #[cfg(target_os = "linux")]

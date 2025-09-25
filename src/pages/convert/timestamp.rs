@@ -26,7 +26,10 @@ pub struct TimestampPage {
 }
 
 impl TimestampPage {
-    pub fn build(window: &mut Window, cx: &mut Context<MainView>) -> AnyView {
+    pub fn build(
+        window: &mut Window,
+        cx: &mut Context<MainView>,
+    ) -> AnyView {
         AnyView::from(cx.new(|cx| {
             let ts = Utc::now().timestamp().to_string();
             let tz_input = cx.new(|cx| InputState::new(window, cx));
@@ -46,7 +49,10 @@ impl TimestampPage {
         }))
     }
 
-    fn update_outputs(&mut self, timestamp_str: &str) {
+    fn update_outputs(
+        &mut self,
+        timestamp_str: &str,
+    ) {
         if timestamp_str.trim().is_empty() {
             self.common_output = String::new();
             self.iso8601_output = String::new();
@@ -83,17 +89,26 @@ impl TimestampPage {
         }
     }
 
-    fn update_timestamp(&mut self, window: &mut Window, cx: &mut Context<Self>) {
+    fn update_timestamp(
+        &mut self,
+        window: &mut Window,
+        cx: &mut Context<Self>,
+    ) {
         let ts = Utc::now().timestamp().to_string();
-        self.ts_input
-            .update(cx, |state, cx2| state.set_value(ts.clone(), window, cx2));
+        self.ts_input.update(cx, |state, cx2| {
+            state.set_value(ts.clone(), window, cx2);
+        });
         self.update_outputs(&ts);
         cx.notify();
     }
 }
 
 impl Render for TimestampPage {
-    fn render(&mut self, _window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
+    fn render(
+        &mut self,
+        _window: &mut Window,
+        cx: &mut Context<Self>,
+    ) -> impl IntoElement {
         // 检查输入变化
         if !self.updating {
             let in_val = self.ts_input.read(cx).value();
@@ -110,11 +125,10 @@ impl Render for TimestampPage {
         let input_padding = Edges::all(px(INPUT_PADDING));
 
         div()
+            .v_flex()
             .paddings(page_padding)
             .gap(px(PAGE_GAP))
-            .v_flex()
             .child(
-                // 时间戳输入
                 div()
                     .flex()
                     .items_center()
@@ -166,7 +180,6 @@ impl Render for TimestampPage {
                     ),
             )
             .child(
-                // 时区输入
                 div()
                     .flex()
                     .items_center()
@@ -194,7 +207,6 @@ impl Render for TimestampPage {
                     ),
             )
             .child(
-                // Common格式输出
                 div()
                     .flex()
                     .items_center()
@@ -213,7 +225,6 @@ impl Render for TimestampPage {
                     ),
             )
             .child(
-                // ISO 8601格式输出
                 div()
                     .flex()
                     .items_center()
@@ -232,7 +243,6 @@ impl Render for TimestampPage {
                     ),
             )
             .child(
-                // RFC 7231格式输出
                 div()
                     .flex()
                     .items_center()

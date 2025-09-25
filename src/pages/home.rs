@@ -1,9 +1,9 @@
 use gpui::*;
 use gpui_component::StyledExt;
 
-use crate::plugins::system::basic_info::collect_basic_info;
-use crate::plugins::system::basic_info::BasicInfo;
 use crate::MainView;
+use crate::plugins::system::basic_info::BasicInfo;
+use crate::plugins::system::basic_info::collect_basic_info;
 
 pub struct HomePage {
     system_info: Option<BasicInfo>,
@@ -14,11 +14,17 @@ impl HomePage {
         Self { system_info: None }
     }
 
-    pub fn build(_window: &mut Window, cx: &mut Context<MainView>) -> AnyView {
+    pub fn build(
+        _window: &mut Window,
+        cx: &mut Context<MainView>,
+    ) -> AnyView {
         AnyView::from(cx.new(|_| HomePage::new()))
     }
 
-    fn load_system_info(&mut self, cx: &mut Context<Self>) {
+    fn load_system_info(
+        &mut self,
+        cx: &mut Context<Self>,
+    ) {
         if self.system_info.is_none() {
             // 在后台线程中收集系统信息
             let basic_info = collect_basic_info();
@@ -27,7 +33,10 @@ impl HomePage {
         }
     }
 
-    fn format_bytes(&self, bytes: u64) -> String {
+    fn format_bytes(
+        &self,
+        bytes: u64,
+    ) -> String {
         const UNITS: &[&str] = &["B", "KB", "MB", "GB", "TB"];
         let mut size = bytes as f64;
         let mut unit_index = 0;
@@ -40,7 +49,11 @@ impl HomePage {
         format!("{:.2} {}", size, UNITS[unit_index])
     }
 
-    fn build_info_row(&self, label: String, value: String) -> impl IntoElement {
+    fn build_info_row(
+        &self,
+        label: String,
+        value: String,
+    ) -> impl IntoElement {
         div()
             .flex()
             .py_2()
@@ -48,7 +61,10 @@ impl HomePage {
             .child(div().ml_5().flex_1().text_sm().text_color(white()).child(value))
     }
 
-    fn build_cpu_card(&self, info: &BasicInfo) -> impl IntoElement {
+    fn build_cpu_card(
+        &self,
+        info: &BasicInfo,
+    ) -> impl IntoElement {
         div()
             .flex_1()
             .bg(rgb(0x2D2D2D))
@@ -70,7 +86,10 @@ impl HomePage {
             .child(self.build_info_row("频率".to_string(), format!("{} MHz", info.cpu.frequency)))
     }
 
-    fn build_memory_card(&self, info: &BasicInfo) -> impl IntoElement {
+    fn build_memory_card(
+        &self,
+        info: &BasicInfo,
+    ) -> impl IntoElement {
         div()
             .flex_1()
             .bg(rgb(0x2D2D2D))
@@ -95,7 +114,10 @@ impl HomePage {
             ))
     }
 
-    fn build_os_card(&self, info: &BasicInfo) -> impl IntoElement {
+    fn build_os_card(
+        &self,
+        info: &BasicInfo,
+    ) -> impl IntoElement {
         div()
             .flex_1()
             .bg(rgb(0x2D2D2D))
@@ -117,7 +139,10 @@ impl HomePage {
             .child(self.build_info_row("序列号".to_string(), info.os.serial_number.clone()))
     }
 
-    fn build_network_card(&self, info: &BasicInfo) -> impl IntoElement {
+    fn build_network_card(
+        &self,
+        info: &BasicInfo,
+    ) -> impl IntoElement {
         div()
             .flex_1()
             .bg(rgb(0x2D2D2D))
@@ -145,7 +170,11 @@ impl HomePage {
 }
 
 impl Render for HomePage {
-    fn render(&mut self, _window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
+    fn render(
+        &mut self,
+        _window: &mut Window,
+        cx: &mut Context<Self>,
+    ) -> impl IntoElement {
         // 加载系统信息
         self.load_system_info(cx);
 

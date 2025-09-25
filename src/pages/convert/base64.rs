@@ -25,7 +25,10 @@ pub struct Base64Page {
 }
 
 impl Base64Page {
-    pub fn build(window: &mut Window, cx: &mut Context<MainView>) -> AnyView {
+    pub fn build(
+        window: &mut Window,
+        cx: &mut Context<MainView>,
+    ) -> AnyView {
         AnyView::from(cx.new(|cx| {
             let input = cx.new(|cx| InputState::new(window, cx).multi_line());
             let output = cx.new(|cx| InputState::new(window, cx).multi_line());
@@ -42,7 +45,11 @@ impl Base64Page {
 }
 
 impl Render for Base64Page {
-    fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
+    fn render(
+        &mut self,
+        window: &mut Window,
+        cx: &mut Context<Self>,
+    ) -> impl IntoElement {
         if !self.updating {
             let in_val = self.input.read(cx).value();
             let out_val = self.output.read(cx).value();
@@ -65,7 +72,9 @@ impl Render for Base64Page {
                 match src {
                     Src::In => {
                         let enc = general_purpose::STANDARD.encode(in_val.as_str());
-                        self.output.update(cx, |state, cx2| state.set_value(enc, window, cx2));
+                        self.output.update(cx, |state, cx2| {
+                            state.set_value(enc, window, cx2);
+                        });
                         self.last_input = in_val;
                         self.last_output = self.output.read(cx).value();
                     }
@@ -74,7 +83,9 @@ impl Render for Base64Page {
                         if let Ok(bytes) = general_purpose::STANDARD.decode(cleaned.as_bytes()) {
                             let s = String::from_utf8(bytes)
                                 .unwrap_or_else(|e| String::from_utf8_lossy(e.as_bytes()).to_string());
-                            self.input.update(cx, |state, cx2| state.set_value(s, window, cx2));
+                            self.input.update(cx, |state, cx2| {
+                                state.set_value(s, window, cx2);
+                            });
                         }
                         self.last_input = self.input.read(cx).value();
                         self.last_output = out_val;
@@ -93,10 +104,10 @@ impl Render for Base64Page {
 
         div()
             .key_context("Input")
+            .v_flex()
             .size_full()
             .paddings(page_padding)
             .gap(px(PAGE_GAP))
-            .v_flex()
             .child(
                 div()
                     .flex_1()
