@@ -3,6 +3,8 @@ use chrono::FixedOffset;
 use chrono::Utc;
 use gpui::*;
 use gpui_component::StyledExt;
+use gpui_component::button::Button;
+use gpui_component::button::ButtonVariants;
 use gpui_component::input::InputState;
 use gpui_component::input::TextInput;
 
@@ -160,22 +162,13 @@ impl Render for TimestampPage {
                                     ),
                             )
                             .child(
-                                div()
-                                    .px_4()
-                                    .py_2()
-                                    .bg(rgb(0x0078D4))
-                                    .rounded_md()
-                                    .text_sm()
-                                    .text_color(white())
-                                    .cursor_pointer()
-                                    .hover(|style| style.bg(rgb(0x106EBE)))
-                                    .child("当前时间")
-                                    .on_mouse_down(
-                                        MouseButton::Left,
-                                        cx.listener(|this, _ev: &MouseDownEvent, window, cx| {
-                                            this.update_timestamp(window, cx);
-                                        }),
-                                    ),
+                                Button::new("update_timestamp")
+                                    .info()
+                                    .label("当前时间")
+                                    .h_full()
+                                    .on_click(cx.listener(|this, _ev, window, cx| {
+                                        this.update_timestamp(window, cx);
+                                    })),
                             ),
                     ),
             )
@@ -192,7 +185,7 @@ impl Render for TimestampPage {
                     .child(div().text_sm().text_color(white()).child("时区"))
                     .child(
                         div()
-                            .w(px(480.))
+                            .w(px(360.))
                             .bg(input_bg)
                             .border_1()
                             .border_color(rgb(INPUT_BORDER))

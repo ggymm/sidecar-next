@@ -52,7 +52,7 @@ impl Render for QrcodePage {
 
         div()
             .key_context("Input")
-            .w_full()
+            .size_full()
             .paddings(page_padding)
             .gap(px(PAGE_GAP))
             .v_flex()
