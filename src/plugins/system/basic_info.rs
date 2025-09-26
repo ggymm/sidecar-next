@@ -184,3 +184,13 @@ fn get_system_serial_number() -> String {
 
     "Unknown".to_string()
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_collect_basic_info() {
+        collect_basic_info();
+    }
+}

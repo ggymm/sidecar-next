@@ -1,6 +1,9 @@
 use gpui::*;
-use gpui_component::input::{InputEvent, InputState, TextInput};
-use gpui_component::{FocusableCycle, StyledExt, v_flex};
+use gpui_component::FocusableCycle;
+use gpui_component::StyledExt;
+use gpui_component::input::InputEvent;
+use gpui_component::input::InputState;
+use gpui_component::input::TextInput;
 
 use crate::CARD_BG;
 use crate::CARD_GAP;

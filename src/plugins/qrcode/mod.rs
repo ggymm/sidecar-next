@@ -1,17 +1,19 @@
 use std::io::Error;
 use std::io::ErrorKind;
 use std::io::Result;
+use std::path::Path;
 
 use rqrr::PreparedImage;
 
-pub fn parse_qrcode(path: &str) -> Result<String> {
+pub fn parse_qrcode<P: AsRef<Path>>(path: P) -> Result<String> {
+    let p = path.as_ref();
     // 读取图片
-    let img = match image::open(path) {
+    let img = match image::open(p) {
         Ok(img) => img,
         Err(e) => {
             return Err(Error::new(
                 ErrorKind::InvalidInput,
-                format!("can not open image: {} {}", path, e),
+                format!("can not open image: {} {}", p.display(), e),
             ));
         }
     };
@@ -23,7 +25,7 @@ pub fn parse_qrcode(path: &str) -> Result<String> {
     if grids.is_empty() {
         return Err(Error::new(
             ErrorKind::InvalidInput,
-            format!("can not find qrcode in image: {}", path),
+            format!("can not find qrcode in image: {}", p.display()),
         ));
     }
 
@@ -32,7 +34,7 @@ pub fn parse_qrcode(path: &str) -> Result<String> {
         Err(e) => {
             return Err(Error::new(
                 ErrorKind::InvalidInput,
-                format!("can not decode qrcode in image: {} {}", path, e),
+                format!("can not decode qrcode in image: {} {}", p.display(), e),
             ));
         }
     };
@@ -43,10 +45,11 @@ pub fn parse_qrcode(path: &str) -> Result<String> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::path::Path;
 
     #[test]
     fn test_parse_qrcode() {
-        let path = "/Users/ggymm/Documents/qrcode.png";
+        let path = Path::new("/Users/ggymm/Documents/qrcode.png");
         let results = parse_qrcode(path);
 
         println!("{:?}", results);

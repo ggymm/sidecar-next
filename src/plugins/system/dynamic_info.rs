@@ -125,3 +125,13 @@ fn collect_processes_info() -> Vec<ProcessInfo> {
     processes.truncate(5);
     processes
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_collect_dynamic_info() {
+        collect_dynamic_info();
+    }
+}
