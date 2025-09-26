@@ -6,6 +6,7 @@ use gpui_component::input::InputState;
 use gpui_component::input::TextInput;
 use std::path::PathBuf;
 
+use crate::CARD_BG;
 use crate::CARD_GAP;
 use crate::CARD_PADDING;
 use crate::INPUT_BG;
@@ -15,7 +16,6 @@ use crate::MainView;
 use crate::PAGE_GAP;
 use crate::PAGE_PADDING;
 use crate::plugins::qrcode::parse_qrcode;
-use crate::{CARD_BG, COMMON_PADDING};
 
 pub struct QrcodePage {
     path: Option<PathBuf>,
@@ -55,8 +55,13 @@ impl QrcodePage {
                             });
                         });
 
-                        // 解析二维码
-                        let output = parse_qrcode(&path).unwrap_or_else(|e| format!("解析失败: {}", e));
+                        let qrcode = path.clone();
+                        let output = cx
+                            .background_executor()
+                            .spawn(async move { parse_qrcode(&qrcode) })
+                            .await
+                            .unwrap_or_else(|e| format!("解析失败: {}", e));
+
                         let _ = cx.update(|window, cx| {
                             let _ = this.update(cx, |this, cx| {
                                 this.output.update(cx, |state, cx2| {
@@ -110,6 +115,7 @@ impl Render for QrcodePage {
                     .flex_1()
                     .flex()
                     .flex_col()
+                    .min_w_0()
                     .min_h_0()
                     .bg(card_bg)
                     .rounded_lg()
@@ -138,7 +144,6 @@ impl Render for QrcodePage {
                             .justify_center()
                             .min_w_0()
                             .min_h_0()
-                            .overflow_hidden()
                             .child(if let Some(path) = &self.path {
                                 img(path.clone())
                                     .max_w_full()
