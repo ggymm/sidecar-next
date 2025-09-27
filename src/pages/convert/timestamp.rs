@@ -176,7 +176,7 @@ impl Render for TimestampPage {
                     .child(div().text_sm().text_color(white()).child("时区"))
                     .child(
                         TextInput::new(&self.tz_input)
-                            .w(px(240.))
+                            .w(px(360.))
                             .bg(input_bg)
                             .focus_bordered(false)
                             .text_color(white()),

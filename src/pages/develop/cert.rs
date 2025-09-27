@@ -1,3 +1,5 @@
+use openssl::x509::X509;
+
 use gpui::*;
 use gpui_component::StyledExt;
 use gpui_component::input::InputState;
@@ -47,21 +49,37 @@ impl Render for CertPage {
     ) -> impl IntoElement {
         if !self.updating {
             let in_val = self.input.read(cx).value();
-
-            self.updating = true;
             if in_val != self.last_input {
-                let out_val = if in_val.is_empty() {
-                    String::new()
-                } else {
-                    String::new()
-                };
+                self.updating = true;
 
-                self.output.update(cx, |state, cx2| {
-                    state.set_value(out_val, window, cx2);
-                });
-                self.last_input = in_val;
+                let pem = in_val.to_string();
+                cx.spawn_in(window, async move |this, cx| {
+                    // 后台解析，避免阻塞 UI
+                    let out_text = cx
+                        .background_executor()
+                        .spawn(async move {
+                            if pem.trim().is_empty() {
+                                return String::new();
+                            }
+                            X509::from_pem(pem.as_bytes())
+                                .and_then(|cert| cert.to_text())
+                                .map(|bytes| String::from_utf8_lossy(&bytes).into_owned())
+                                .unwrap_or_else(|e| format!("解析失败: {}", e))
+                        })
+                        .await;
+
+                    let _ = cx.update(|window, cx| {
+                        let _ = this.update(cx, |this, cx| {
+                            this.output.update(cx, |state, cx2| {
+                                state.set_value(out_text, window, cx2);
+                            });
+                            this.last_input = this.input.read(cx).value();
+                            this.updating = false;
+                        });
+                    });
+                })
+                .detach();
             }
-            self.updating = false;
         }
 
         let card_bg = rgb(CARD_BG);
