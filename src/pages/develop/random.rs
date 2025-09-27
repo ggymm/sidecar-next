@@ -8,7 +8,6 @@ use gpui_component::button::Button;
 use gpui_component::button::ButtonVariants;
 use gpui_component::input::InputState;
 use gpui_component::input::TextInput;
-use gpui_component::notification::{Notification, NotificationType};
 
 use crate::CARD_BG;
 use crate::CARD_PADDING;
