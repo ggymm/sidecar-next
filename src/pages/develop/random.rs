@@ -11,9 +11,8 @@ use gpui_component::input::TextInput;
 
 use crate::CARD_BG;
 use crate::CARD_PADDING;
+use crate::COMMON_GAP;
 use crate::INPUT_BG;
-use crate::INPUT_BORDER;
-use crate::INPUT_PADDING;
 use crate::MainView;
 use crate::PAGE_GAP;
 use crate::PAGE_PADDING;
@@ -94,10 +93,8 @@ impl RandomPage {
         generate: fn() -> String,
     ) -> impl IntoElement {
         let card_bg = rgb(CARD_BG);
-        let card_padding = Edges::all(px(CARD_PADDING));
-
         let input_bg = rgb(INPUT_BG);
-        let input_padding = Edges::all(px(INPUT_PADDING));
+        let card_padding = Edges::all(px(CARD_PADDING));
 
         let output_for_gen = output.clone();
         let output_for_copy = output.clone();
@@ -114,27 +111,19 @@ impl RandomPage {
             .child(
                 div()
                     .flex()
-                    .gap_4()
+                    .items_center()
+                    .gap(px(COMMON_GAP))
                     .child(
-                        div()
+                        TextInput::new(&output)
                             .w(px(480.))
                             .bg(input_bg)
-                            .border_1()
-                            .border_color(rgb(INPUT_BORDER))
-                            .rounded_lg()
-                            .paddings(input_padding)
-                            .child(
-                                TextInput::new(&output)
-                                    .appearance(false)
-                                    .focus_bordered(false)
-                                    .text_color(white()),
-                            ),
+                            .focus_bordered(false)
+                            .text_color(white()),
                     )
                     .child(
                         Button::new(("gen", output.entity_id()))
                             .info()
                             .label("生成")
-                            .h_full()
                             .on_click(cx.listener(move |_this, _ev, window, cx| {
                                 let val = generate();
                                 output_for_gen.update(cx, |state, cx2| {
@@ -146,7 +135,6 @@ impl RandomPage {
                         Button::new(("copy", output.entity_id()))
                             .info()
                             .label("复制")
-                            .h_full()
                             .on_click(cx.listener(move |_this, _ev, window, cx| {
                                 let value = output_for_copy.read(cx).value();
                                 if !value.is_empty() {

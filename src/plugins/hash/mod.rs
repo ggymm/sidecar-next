@@ -50,7 +50,6 @@ pub fn calc_text_hash(text: &str) -> Result<HashResults> {
 }
 
 pub fn calc_file_hash(path: &str) -> Result<HashResults> {
-    // Stream the file once and update all hashers per chunk to minimize memory usage.
     let file = File::open(path)?;
     let mut reader = BufReader::with_capacity(CHUNK_SIZE, file);
     let mut buffer = vec![0u8; CHUNK_SIZE];

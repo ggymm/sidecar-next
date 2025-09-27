@@ -13,7 +13,6 @@ use crate::CARD_PADDING;
 use crate::COMMON_GAP;
 use crate::INPUT_BG;
 use crate::INPUT_BORDER;
-use crate::INPUT_PADDING;
 use crate::MainView;
 use crate::PAGE_GAP;
 use crate::PAGE_PADDING;
@@ -125,7 +124,6 @@ impl Render for TimestampPage {
         let input_bg = rgb(INPUT_BG);
         let page_padding = Edges::all(px(PAGE_PADDING));
         let card_padding = Edges::all(px(CARD_PADDING));
-        let input_padding = Edges::all(px(INPUT_PADDING));
 
         div()
             .v_flex()
@@ -148,19 +146,11 @@ impl Render for TimestampPage {
                             .items_center()
                             .gap(px(COMMON_GAP))
                             .child(
-                                div()
+                                TextInput::new(&self.ts_input)
                                     .w(px(240.))
                                     .bg(input_bg)
-                                    .border_1()
-                                    .border_color(rgb(INPUT_BORDER))
-                                    .rounded_lg()
-                                    .paddings(input_padding)
-                                    .child(
-                                        TextInput::new(&self.ts_input)
-                                            .appearance(false)
-                                            .focus_bordered(false)
-                                            .text_color(white()),
-                                    ),
+                                    .focus_bordered(false)
+                                    .text_color(white()),
                             )
                             .child(
                                 Button::new("update_timestamp")
@@ -185,19 +175,11 @@ impl Render for TimestampPage {
                     .paddings(card_padding)
                     .child(div().text_sm().text_color(white()).child("时区"))
                     .child(
-                        div()
-                            .w(px(360.))
+                        TextInput::new(&self.tz_input)
+                            .w(px(240.))
                             .bg(input_bg)
-                            .border_1()
-                            .border_color(rgb(INPUT_BORDER))
-                            .rounded_lg()
-                            .paddings(input_padding)
-                            .child(
-                                TextInput::new(&self.tz_input)
-                                    .appearance(false)
-                                    .focus_bordered(false)
-                                    .text_color(white()),
-                            ),
+                            .focus_bordered(false)
+                            .text_color(white()),
                     ),
             )
             .child(
