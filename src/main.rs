@@ -360,49 +360,59 @@ impl Render for MainView {
         window: &mut Window,
         cx: &mut Context<Self>,
     ) -> impl IntoElement {
-        div().size_full().bg(rgb(PAGE_BG)).child(
-            h_resizable("layout", self.resizable_state.clone())
-                .child(
-                    resizable_panel()
-                        .size(px(SIDE_SIZE))
-                        .size_range(px(SIDE_MIN)..px(SIDE_MAX))
-                        .child(self.sidebar(window, cx)),
-                )
-                .child(
-                    div()
-                        .flex_1()
-                        .v_flex()
-                        .h_full()
-                        .min_h_0()
-                        .overflow_hidden()
-                        .child(
-                            div()
-                                .id("head")
-                                .flex()
-                                .items_center()
-                                .border_b_1()
-                                .border_color(rgb(HEAD_BORDER))
-                                .px(px(HEAD_PADDING_X))
-                                .py(px(HEAD_PADDING_Y))
-                                .child(
-                                    div()
-                                        .text_lg()
-                                        .font_semibold()
-                                        .text_color(white())
-                                        .child(self.title.clone()),
-                                ),
-                        )
-                        .child(
-                            div()
-                                .id("content")
-                                .flex_1()
-                                .min_h_0()
-                                .overflow_y_scroll()
-                                .child(self.content(window, cx)),
-                        )
-                        .into_any_element(),
-                ),
-        )
+        let modal_layer = Root::render_modal_layer(window, cx);
+        let drawer_layer = Root::render_drawer_layer(window, cx);
+        let notification_layer = Root::render_notification_layer(window, cx);
+
+        div()
+            .size_full()
+            .bg(rgb(PAGE_BG))
+            .child(
+                h_resizable("layout", self.resizable_state.clone())
+                    .child(
+                        resizable_panel()
+                            .size(px(SIDE_SIZE))
+                            .size_range(px(SIDE_MIN)..px(SIDE_MAX))
+                            .child(self.sidebar(window, cx)),
+                    )
+                    .child(
+                        div()
+                            .flex_1()
+                            .v_flex()
+                            .h_full()
+                            .min_h_0()
+                            .overflow_hidden()
+                            .child(
+                                div()
+                                    .id("head")
+                                    .flex()
+                                    .items_center()
+                                    .border_b_1()
+                                    .border_color(rgb(HEAD_BORDER))
+                                    .px(px(HEAD_PADDING_X))
+                                    .py(px(HEAD_PADDING_Y))
+                                    .child(
+                                        div()
+                                            .text_lg()
+                                            .font_semibold()
+                                            .text_color(white())
+                                            .child(self.title.clone()),
+                                    ),
+                            )
+                            .child(
+                                div()
+                                    .id("content")
+                                    .flex_1()
+                                    .min_h_0()
+                                    .overflow_y_scroll()
+                                    .child(self.content(window, cx)),
+                            )
+                            .into_any_element(),
+                    ),
+            )
+            .children(modal_layer)
+            .children(drawer_layer)
+            .children(notification_layer)
     }
 }
 
@@ -448,7 +458,6 @@ impl AssetSource for FsAssets {
 
 fn main() {
     let app = Application::new().with_assets(FsAssets);
-
     app.run(move |cx| {
         init(cx);
         cx.activate(true);
