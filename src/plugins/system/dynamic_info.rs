@@ -91,7 +91,7 @@ fn collect_usage_info() -> UsageInfo {
 fn collect_processes_info() -> Vec<ProcessInfo> {
     let sys = System::new_all();
 
-    let mut processes: Vec<_> = sys
+    let mut processes: Vec<ProcessInfo> = sys
         .processes()
         .iter()
         .filter_map(|(pid, process)| {
