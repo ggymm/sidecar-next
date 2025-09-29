@@ -1,4 +1,4 @@
-mod dns;
+pub mod dns;
 pub mod hash;
 pub mod qrcode;
 
