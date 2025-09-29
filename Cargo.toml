@@ -25,7 +25,6 @@ url = "2"
 sys-locale = "0.3"
 encoding_rs = "0.8"
 trust-dns-resolver = { version = "0.23", default-features = false, features = ["tokio-runtime"] }
-tokio = { version = "1", features = ["rt-multi-thread", "macros", "time"] }
 
 [dependencies.gpui]
 git = "https://github.com/zed-industries/zed.git"
@@ -41,9 +40,9 @@ git = "https://github.com/longbridge/gpui-component.git"
 version = "1.0"
 features = ["derive"]
 
-#[dependencies.tokio]
-#version = "1.0"
-#features = ["full"]
+[dependencies.tokio]
+version = "1.0"
+features = ["full"]
 
 #[dependencies.tokio-util]
 #version = "0.7"
