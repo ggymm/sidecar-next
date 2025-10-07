@@ -1,5 +1,5 @@
 use gpui::*;
-use gpui_component::StyledExt;
+use crate::comps::StyledExt;
 
 use crate::CARD_BG;
 use crate::CARD_PADDING;

@@ -2,9 +2,7 @@ use chrono::DateTime;
 use chrono::FixedOffset;
 use chrono::Utc;
 use gpui::*;
-use gpui_component::StyledExt;
-use gpui_component::button::Button;
-use gpui_component::button::ButtonVariants;
+use crate::comps::{Button, ButtonVariants, StyledExt};
 use gpui_component::input::InputState;
 use gpui_component::input::TextInput;
 

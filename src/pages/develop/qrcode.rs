@@ -1,7 +1,5 @@
 use gpui::*;
-use gpui_component::StyledExt;
-use gpui_component::button::Button;
-use gpui_component::button::ButtonVariants;
+use crate::comps::{Button, ButtonVariants, StyledExt};
 use gpui_component::input::InputState;
 use gpui_component::input::TextInput;
 use std::path::PathBuf;

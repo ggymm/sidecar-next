@@ -1,5 +1,5 @@
 use gpui::*;
-use gpui_component::StyledExt;
+use crate::comps::StyledExt;
 
 use crate::MainView;
 use crate::PAGE_PADDING;

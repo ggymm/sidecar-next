@@ -4,20 +4,13 @@ use std::fs::read;
 use std::path::PathBuf;
 
 use gpui::*;
-use gpui_component::Collapsible;
-use gpui_component::Icon;
+use crate::comps::{Collapsible, Icon, Sidebar, SidebarGroup, SidebarHeader, SidebarMenu, SidebarMenuItem, StyledExt};
 use gpui_component::Root;
-use gpui_component::StyledExt;
 use gpui_component::Theme;
 use gpui_component::init;
 use gpui_component::resizable::ResizableState;
 use gpui_component::resizable::h_resizable;
 use gpui_component::resizable::resizable_panel;
-use gpui_component::sidebar::Sidebar;
-use gpui_component::sidebar::SidebarGroup;
-use gpui_component::sidebar::SidebarHeader;
-use gpui_component::sidebar::SidebarMenu;
-use gpui_component::sidebar::SidebarMenuItem;
 use indexmap::IndexMap;
 use once_cell::sync::Lazy;
 
@@ -39,6 +32,7 @@ use crate::pages::toolkit::share::SharePage;
 
 mod pages;
 mod plugins;
+mod comps;
 
 pub const SIDE_BG: u32 = 0x202020;
 pub const SIDE_MIN: f32 = 120.;

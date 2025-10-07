@@ -1,7 +1,7 @@
 use base64::Engine;
 use base64::engine::general_purpose;
 use gpui::*;
-use gpui_component::StyledExt;
+use crate::comps::StyledExt;
 use gpui_component::input::InputState;
 use gpui_component::input::TextInput;
 

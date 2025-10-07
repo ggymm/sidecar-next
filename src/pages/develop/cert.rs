@@ -1,7 +1,7 @@
 use openssl::x509::X509;
 
 use gpui::*;
-use gpui_component::StyledExt;
+use crate::comps::StyledExt;
 use gpui_component::input::InputState;
 use gpui_component::input::TextInput;
 
