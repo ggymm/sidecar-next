@@ -1,9 +1,8 @@
-use openssl::x509::X509;
-
 use gpui::*;
-use crate::comps::StyledExt;
+use gpui_component::StyledExt;
 use gpui_component::input::InputState;
 use gpui_component::input::TextInput;
+use openssl::x509::X509;
 
 use crate::CARD_BG;
 use crate::CARD_GAP;

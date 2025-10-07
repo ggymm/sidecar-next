@@ -1,8 +1,11 @@
+use std::path::PathBuf;
+
 use gpui::*;
-use crate::comps::{Button, ButtonVariants, StyledExt};
+use gpui_component::StyledExt;
+use gpui_component::button::Button;
+use gpui_component::button::ButtonVariants;
 use gpui_component::input::InputState;
 use gpui_component::input::TextInput;
-use std::path::PathBuf;
 
 use crate::CARD_BG;
 use crate::CARD_GAP;

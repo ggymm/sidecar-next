@@ -1,5 +1,6 @@
 use gpui::*;
-use crate::comps::{FocusableCycle, StyledExt};
+use gpui_component::FocusableCycle;
+use gpui_component::StyledExt;
 use gpui_component::input::InputEvent;
 use gpui_component::input::InputState;
 use gpui_component::input::TextInput;

@@ -1,9 +1,9 @@
 use base64::Engine;
 use base64::engine::general_purpose;
 use gpui::*;
-use crate::comps::StyledExt;
 use gpui_component::input::InputState;
 use gpui_component::input::TextInput;
+use gpui_component::StyledExt;
 
 use crate::CARD_BG;
 use crate::CARD_GAP;

@@ -1,5 +1,6 @@
-use crate::MainView;
 use gpui::*;
+
+use crate::MainView;
 
 pub struct SettingPage;
 

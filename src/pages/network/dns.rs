@@ -1,5 +1,8 @@
 use gpui::*;
-use crate::comps::{Button, ButtonVariants, Disableable, StyledExt};
+use gpui_component::Disableable;
+use gpui_component::StyledExt;
+use gpui_component::button::Button;
+use gpui_component::button::ButtonVariants;
 use gpui_component::input::InputState;
 use gpui_component::input::TextInput;
 
@@ -26,12 +29,13 @@ impl DnsPage {
         cx: &mut Context<MainView>,
     ) -> AnyView {
         AnyView::from(cx.new(|cx| {
-            let input = cx.new(|cx| {
-                InputState::new(window, cx)
-                    .placeholder("输入域名，例如: example.com")
-            });
+            let input = cx.new(|cx| InputState::new(window, cx).placeholder("输入域名，例如: example.com"));
             let output = cx.new(|cx| InputState::new(window, cx).multi_line());
-            Self { input, output, running: false }
+            Self {
+                input,
+                output,
+                running: false,
+            }
         }))
     }
 
@@ -74,7 +78,6 @@ impl DnsPage {
         let rx = start_dns_query(domain.clone());
 
         cx.spawn_in(window, async move |this, cx| {
-            // Stream lines as they arrive
             while let Ok(line) = rx.recv() {
                 let _ = cx.update(|window, cx| {
                     let _ = this.update(cx, |this, cx| {

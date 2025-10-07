@@ -1,7 +1,10 @@
 use gpui::*;
-use crate::comps::{Button, ButtonVariants, Disableable, RadioGroup, StyledExt};
+use gpui_component::button::Button;
+use gpui_component::button::ButtonVariants;
 use gpui_component::input::InputState;
 use gpui_component::input::TextInput;
+use gpui_component::radio::RadioGroup;
+use gpui_component::{Disableable, StyledExt};
 
 use crate::CARD_BG;
 use crate::CARD_GAP;
