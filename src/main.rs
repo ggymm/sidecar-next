@@ -4,10 +4,11 @@ use std::fs::read;
 use std::path::PathBuf;
 
 use gpui::*;
-use gpui_component::{Collapsible, Theme};
+use gpui_component::Collapsible;
 use gpui_component::Icon;
 use gpui_component::Root;
 use gpui_component::StyledExt;
+use gpui_component::Theme;
 use gpui_component::init;
 use gpui_component::resizable::ResizableState;
 use gpui_component::resizable::h_resizable;
