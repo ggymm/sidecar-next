@@ -1,9 +1,24 @@
 use std::rc::Rc;
 
-use gpui::{
-    AnyElement, App, ClickEvent, Component, DefiniteLength, ElementId, InteractiveElement, IntoElement, ParentElement,
-    RenderOnce, SharedString, StatefulInteractiveElement, Styled, Window, div, px,
-};
+use gpui::AnyElement;
+use gpui::App;
+use gpui::ClickEvent;
+use gpui::Component;
+use gpui::DefiniteLength;
+use gpui::ElementId;
+use gpui::SharedString;
+use gpui::Window;
+
+use gpui::InteractiveElement;
+use gpui::IntoElement;
+use gpui::ParentElement;
+use gpui::RenderOnce;
+use gpui::StatefulInteractiveElement;
+use gpui::Styled;
+
+use gpui::div;
+use gpui::px;
+
 use gpui_component::ActiveTheme as _;
 
 use crate::comps::Collapsible;
@@ -31,7 +46,6 @@ impl Side {
     }
 }
 
-/// Container for navigation sections.
 pub struct Sidebar<E: Collapsible + IntoElement + 'static> {
     content: Vec<E>,
     header: Option<AnyElement>,
@@ -189,7 +203,6 @@ impl<E: Collapsible + IntoElement + 'static> IntoElement for Sidebar<E> {
     }
 }
 
-/// Vertical list of clickable entries.
 pub struct SidebarMenu {
     collapsed: bool,
     items: Vec<SidebarMenuItem>,
@@ -213,16 +226,16 @@ impl SidebarMenu {
 }
 
 impl Collapsible for SidebarMenu {
-    fn is_collapsed(&self) -> bool {
-        self.collapsed
-    }
-
     fn collapsed(
         mut self,
         collapsed: bool,
     ) -> Self {
         self.collapsed = collapsed;
         self
+    }
+
+    fn is_collapsed(&self) -> bool {
+        self.collapsed
     }
 }
 
@@ -249,12 +262,11 @@ impl IntoElement for SidebarMenu {
     }
 }
 
-/// Single clickable row within a menu.
 pub struct SidebarMenuItem {
     id: ElementId,
     icon: Option<Icon>,
     label: SharedString,
-    handler: Rc<dyn Fn(&ClickEvent, &mut Window, &mut App)>,
+    event: Rc<dyn Fn(&ClickEvent, &mut Window, &mut App)>,
     active: bool,
     collapsed: bool,
 }
@@ -265,7 +277,7 @@ impl SidebarMenuItem {
             id: ElementId::Integer(0),
             icon: None,
             label: label.into(),
-            handler: Rc::new(|_, _, _| {}),
+            event: Rc::new(|_, _, _| {}),
             active: false,
             collapsed: false,
         }
@@ -299,7 +311,7 @@ impl SidebarMenuItem {
         mut self,
         handler: impl Fn(&ClickEvent, &mut Window, &mut App) + 'static,
     ) -> Self {
-        self.handler = Rc::new(handler);
+        self.event = Rc::new(handler);
         self
     }
 
@@ -318,7 +330,7 @@ impl RenderOnce for SidebarMenuItem {
         _window: &mut Window,
         cx: &mut App,
     ) -> impl IntoElement {
-        let handler = self.handler.clone();
+        let event = self.event.clone();
         let mut row = div()
             .h_flex()
             .id(self.id.clone())
@@ -351,7 +363,7 @@ impl RenderOnce for SidebarMenuItem {
                 .font_semibold();
         }
 
-        row.on_click(move |ev, window, cx| (handler)(ev, window, cx))
+        row.on_click(move |ev, window, cx| event(ev, window, cx))
     }
 }
 

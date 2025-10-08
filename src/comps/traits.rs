@@ -1,25 +1,35 @@
-/// Trait to mark components that can be toggled between enabled and disabled states.
 use gpui::{App, FocusHandle, Window};
 
 pub trait Disableable: Sized {
-    /// Return a copy of the component with the disabled flag set.
-    fn disabled(self, disabled: bool) -> Self;
+    fn disabled(
+        self,
+        disabled: bool,
+    ) -> Self;
 }
 
-/// Trait for view types that support a collapsed/expanded state.
 pub trait Collapsible: Sized {
-    fn collapsed(self, collapsed: bool) -> Self;
+    fn collapsed(
+        self,
+        collapsed: bool,
+    ) -> Self;
     fn is_collapsed(&self) -> bool;
 }
 
-/// Trait providing focus cycling helper behaviour.
 pub trait FocusableCycle {
-    fn cycle_focus_handles(&self, window: &mut Window, cx: &mut App) -> Vec<FocusHandle>
+    fn cycle_focus_handles(
+        &self,
+        window: &mut Window,
+        cx: &mut App,
+    ) -> Vec<FocusHandle>
     where
         Self: Sized;
 
-    fn cycle_focus(&self, is_next: bool, window: &mut Window, cx: &mut App)
-    where
+    fn cycle_focus(
+        &self,
+        is_next: bool,
+        window: &mut Window,
+        cx: &mut App,
+    ) where
         Self: Sized,
     {
         let focused_handle = window.focused(cx);

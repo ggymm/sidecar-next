@@ -1,11 +1,21 @@
-use gpui::{
-    AnyElement, App, Component, InteractiveElement, IntoElement, ParentElement, RenderOnce, Styled, Window, div, px,
-};
+use gpui::AnyElement;
+use gpui::App;
+use gpui::Component;
+use gpui::Window;
+
+use gpui::InteractiveElement;
+use gpui::IntoElement;
+use gpui::ParentElement;
+use gpui::RenderOnce;
+use gpui::Styled;
+
+use gpui::div;
+use gpui::px;
+
 use gpui_component::ActiveTheme;
 
 use crate::comps::StyledExt;
 
-/// Header area at the top of the sidebar.
 pub struct SidebarHeader {
     children: Vec<AnyElement>,
     selected: bool,

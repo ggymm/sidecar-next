@@ -1,12 +1,22 @@
-use gpui::{
-    App, Component, ElementId, InteractiveElement, IntoElement, ParentElement, RenderOnce, SharedString, Styled,
-    Window, div, px,
-};
+use gpui::App;
+use gpui::Component;
+use gpui::ElementId;
+use gpui::SharedString;
+use gpui::Window;
+
+use gpui::InteractiveElement;
+use gpui::IntoElement;
+use gpui::ParentElement;
+use gpui::RenderOnce;
+use gpui::Styled;
+
+use gpui::div;
+use gpui::px;
+
 use gpui_component::ActiveTheme;
 
 use crate::comps::{Collapsible, StyledExt};
 
-/// Section grouping with optional label.
 pub struct SidebarGroup<E: Collapsible + IntoElement + 'static> {
     label: SharedString,
     collapsed: bool,

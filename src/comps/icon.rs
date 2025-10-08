@@ -1,10 +1,17 @@
-use gpui::{
-    svg, App, Component, IntoElement, RenderOnce, SharedString, StyleRefinement, Styled, Window,
-};
+use gpui::App;
+use gpui::Component;
+use gpui::SharedString;
+use gpui::StyleRefinement;
+use gpui::Window;
+
+use gpui::IntoElement;
+use gpui::RenderOnce;
+use gpui::Styled;
+
+use gpui::svg;
+
 use gpui_component::{Sizable, Size as UiSize};
 
-/// Minimal SVG icon component mirroring the subset of gpui-component's API
-/// consumed by this project.
 pub struct Icon {
     path: SharedString,
     style: StyleRefinement,
@@ -32,12 +39,13 @@ impl Clone for Icon {
 }
 
 impl Icon {
-    /// Update the SVG asset path, e.g. `icons/home.svg`.
-    pub fn path(mut self, path: impl Into<SharedString>) -> Self {
+    pub fn path(
+        mut self,
+        path: impl Into<SharedString>,
+    ) -> Self {
         self.path = path.into();
         self
     }
-
 }
 
 impl Styled for Icon {
@@ -45,24 +53,31 @@ impl Styled for Icon {
         &mut self.style
     }
 
-    fn text_color(mut self, color: impl Into<gpui::Hsla>) -> Self {
-        self.style
-            .text
-            .get_or_insert_with(Default::default)
-            .color = Some(color.into());
+    fn text_color(
+        mut self,
+        color: impl Into<gpui::Hsla>,
+    ) -> Self {
+        self.style.text.get_or_insert_with(Default::default).color = Some(color.into());
         self
     }
 }
 
 impl Sizable for Icon {
-    fn with_size(mut self, size: impl Into<UiSize>) -> Self {
+    fn with_size(
+        mut self,
+        size: impl Into<UiSize>,
+    ) -> Self {
         self.size = Some(size.into());
         self
     }
 }
 
 impl RenderOnce for Icon {
-    fn render(self, window: &mut Window, _cx: &mut App) -> impl IntoElement {
+    fn render(
+        self,
+        window: &mut Window,
+        _cx: &mut App,
+    ) -> impl IntoElement {
         let mut svg = svg().flex_none();
         *svg.style() = self.style;
 
@@ -83,19 +98,12 @@ impl RenderOnce for Icon {
             Some(UiSize::Medium) => svg.size_4(),
             Some(UiSize::Large) => svg.size_6(),
             None => {
-                let text_size = window
-                    .text_style()
-                    .font_size
-                    .to_pixels(window.rem_size());
+                let text_size = window.text_style().font_size.to_pixels(window.rem_size());
                 svg.size(text_size)
             }
         };
 
-        if self.path.is_empty() {
-            svg
-        } else {
-            svg.path(self.path)
-        }
+        if self.path.is_empty() { svg } else { svg.path(self.path) }
     }
 }
 
