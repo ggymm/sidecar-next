@@ -4,8 +4,6 @@ use std::fs::read;
 use std::path::PathBuf;
 
 use gpui::*;
-use gpui_component::Collapsible;
-use gpui_component::Icon;
 use gpui_component::Root;
 use gpui_component::StyledExt;
 use gpui_component::Theme;
@@ -13,13 +11,16 @@ use gpui_component::init;
 use gpui_component::resizable::ResizableState;
 use gpui_component::resizable::h_resizable;
 use gpui_component::resizable::resizable_panel;
-use gpui_component::sidebar::Sidebar;
-use gpui_component::sidebar::SidebarGroup;
-use gpui_component::sidebar::SidebarHeader;
-use gpui_component::sidebar::SidebarMenu;
-use gpui_component::sidebar::SidebarMenuItem;
 use indexmap::IndexMap;
 use once_cell::sync::Lazy;
+
+use crate::comps::Collapsible;
+use crate::comps::Icon;
+use crate::comps::Sidebar;
+use crate::comps::SidebarGroup;
+use crate::comps::SidebarHeader;
+use crate::comps::SidebarMenu;
+use crate::comps::SidebarMenuItem;
 
 use crate::pages::convert::base64::Base64Page;
 use crate::pages::convert::timestamp::TimestampPage;
@@ -37,6 +38,7 @@ use crate::pages::snippet::code::CodePage;
 use crate::pages::snippet::manual::ManualPage;
 use crate::pages::toolkit::share::SharePage;
 
+mod comps;
 mod pages;
 mod plugins;
 
