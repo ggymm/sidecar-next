@@ -1,7 +1,7 @@
 use gpui::*;
 
 use crate::comps::StyledExt;
-use crate::comps::ThemeAccess;
+use crate::comps::theme::ActiveTheme;
 
 pub struct SidebarHeader {
     children: Vec<AnyElement>,
@@ -61,26 +61,30 @@ impl RenderOnce for SidebarHeader {
         cx: &mut App,
     ) -> impl IntoElement {
         let content = div().h_flex().gap(px(8.)).children(self.children.into_iter());
+        let theme = cx.theme();
+        let radius = theme.radius;
+        let accent = theme.sidebar_accent;
+        let accent_fg = theme.sidebar_accent_foreground;
 
         let mut header = div()
             .h_flex()
             .gap(px(8.))
             .px(px(12.))
             .py(px(10.))
-            .rounded(cx.theme().radius)
+            .rounded(radius)
             .cursor_pointer()
             .hover(|style| {
                 style
-                    .bg(cx.theme().sidebar_accent)
-                    .text_color(cx.theme().sidebar_accent_foreground)
+                    .bg(accent)
+                    .text_color(accent_fg)
             });
 
         header = header.child(content);
 
         if self.selected {
             header = header
-                .bg(cx.theme().sidebar_accent)
-                .text_color(cx.theme().sidebar_accent_foreground);
+                .bg(accent)
+                .text_color(accent_fg);
         }
 
         if self.collapsed {

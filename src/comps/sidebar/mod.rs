@@ -5,7 +5,7 @@ use gpui::*;
 use crate::comps::Collapsible;
 use crate::comps::Icon;
 use crate::comps::StyledExt;
-use crate::comps::ThemeAccess;
+use crate::comps::ActiveTheme;
 
 mod group;
 mod header;
@@ -123,6 +123,7 @@ impl<E: Collapsible + IntoElement + 'static> RenderOnce for Sidebar<E> {
         } = self;
 
         let collapsed_width = px(COLLAPSED_WIDTH);
+        let theme = cx.theme();
 
         let mut container = div()
             .v_flex()
@@ -131,10 +132,10 @@ impl<E: Collapsible + IntoElement + 'static> RenderOnce for Sidebar<E> {
             .flex_shrink_0()
             .h_full()
             .overflow_hidden()
-            .bg(cx.theme().sidebar)
-            .text_color(cx.theme().sidebar_foreground)
+            .bg(theme.sidebar)
+            .text_color(theme.sidebar_foreground)
             .border_1()
-            .border_color(cx.theme().sidebar_border);
+            .border_color(theme.sidebar_border);
 
         if collapsed {
             container = container.w(collapsed_width);
@@ -313,6 +314,11 @@ impl RenderOnce for SidebarMenuItem {
         cx: &mut App,
     ) -> impl IntoElement {
         let event = self.event.clone();
+        let theme = cx.theme();
+        let radius = theme.radius;
+        let accent = theme.sidebar_accent;
+        let accent_fg = theme.sidebar_accent_foreground;
+        let accent_hover = accent.opacity(0.8);
         let mut row = div()
             .h_flex()
             .id(self.id.clone())
@@ -320,12 +326,12 @@ impl RenderOnce for SidebarMenuItem {
             .gap(px(8.))
             .px(px(12.))
             .py(px(8.))
-            .rounded(cx.theme().radius)
+            .rounded(radius)
             .cursor_pointer()
             .hover(|style| {
                 style
-                    .bg(cx.theme().sidebar_accent.opacity(0.8))
-                    .text_color(cx.theme().sidebar_accent_foreground)
+                    .bg(accent_hover)
+                    .text_color(accent_fg)
             });
 
         if let Some(icon) = self.icon.clone() {
@@ -340,8 +346,8 @@ impl RenderOnce for SidebarMenuItem {
 
         if self.active {
             row = row
-                .bg(cx.theme().sidebar_accent)
-                .text_color(cx.theme().sidebar_accent_foreground)
+                .bg(accent)
+                .text_color(accent_fg)
                 .font_semibold();
         }
 

@@ -2,7 +2,7 @@ use gpui::*;
 
 use crate::comps::Collapsible;
 use crate::comps::StyledExt;
-use crate::comps::ThemeAccess;
+use crate::comps::ActiveTheme;
 
 pub struct SidebarGroup<E: Collapsible + IntoElement + 'static> {
     label: SharedString,
@@ -57,6 +57,7 @@ impl<E: Collapsible + IntoElement + 'static> RenderOnce for SidebarGroup<E> {
         _window: &mut Window,
         cx: &mut App,
     ) -> impl IntoElement {
+        let theme = cx.theme();
         let label = self.label.clone();
         let items = self.children.into_iter().enumerate().map(|(ix, child)| {
             div()
@@ -70,7 +71,7 @@ impl<E: Collapsible + IntoElement + 'static> RenderOnce for SidebarGroup<E> {
             block = block.child(
                 div()
                     .text_xs()
-                    .text_color(cx.theme().sidebar_foreground.opacity(0.7))
+                    .text_color(theme.sidebar_foreground.opacity(0.7))
                     .child(label),
             );
         }
