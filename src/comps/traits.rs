@@ -1,4 +1,4 @@
-use gpui::{App, FocusHandle, Window};
+use gpui::*;
 
 pub trait Disableable: Sized {
     fn disabled(

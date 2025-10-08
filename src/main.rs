@@ -6,7 +6,6 @@ use std::path::PathBuf;
 use gpui::*;
 use gpui_component::Root;
 use gpui_component::StyledExt;
-use gpui_component::Theme;
 use gpui_component::init;
 use gpui_component::resizable::ResizableState;
 use gpui_component::resizable::h_resizable;
@@ -21,6 +20,8 @@ use crate::comps::SidebarGroup;
 use crate::comps::SidebarHeader;
 use crate::comps::SidebarMenu;
 use crate::comps::SidebarMenuItem;
+use crate::comps::ThemeMode;
+use crate::comps::init_theme;
 
 use crate::pages::convert::base64::Base64Page;
 use crate::pages::convert::timestamp::TimestampPage;
@@ -42,7 +43,6 @@ mod comps;
 mod pages;
 mod plugins;
 
-pub const SIDE_BG: u32 = 0x202020;
 pub const SIDE_MIN: f32 = 120.;
 pub const SIDE_MAX: f32 = 360.;
 pub const SIDE_SIZE: f32 = 240.;
@@ -462,6 +462,7 @@ fn main() {
     let app = Application::new().with_assets(FsAssets);
     app.run(move |cx| {
         init(cx);
+        init_theme(cx, ThemeMode::Dark);
         cx.activate(true);
         cx.on_window_closed(|cx| {
             if cx.windows().is_empty() {
@@ -472,7 +473,6 @@ fn main() {
 
         let window_size = size(px(1280.), px(800.));
         let window_bounds = Bounds::centered(None, window_size, cx);
-        Theme::global_mut(cx).sidebar = rgb(SIDE_BG).into();
 
         cx.spawn(async move |cx| {
             let options = WindowOptions {

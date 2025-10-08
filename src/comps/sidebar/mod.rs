@@ -1,29 +1,11 @@
 use std::rc::Rc;
 
-use gpui::AnyElement;
-use gpui::App;
-use gpui::ClickEvent;
-use gpui::Component;
-use gpui::DefiniteLength;
-use gpui::ElementId;
-use gpui::SharedString;
-use gpui::Window;
-
-use gpui::InteractiveElement;
-use gpui::IntoElement;
-use gpui::ParentElement;
-use gpui::RenderOnce;
-use gpui::StatefulInteractiveElement;
-use gpui::Styled;
-
-use gpui::div;
-use gpui::px;
-
-use gpui_component::ActiveTheme as _;
+use gpui::*;
 
 use crate::comps::Collapsible;
 use crate::comps::Icon;
 use crate::comps::StyledExt;
+use crate::comps::ThemeAccess;
 
 mod group;
 mod header;

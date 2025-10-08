@@ -1,20 +1,7 @@
-use gpui::AnyElement;
-use gpui::App;
-use gpui::Component;
-use gpui::Window;
-
-use gpui::InteractiveElement;
-use gpui::IntoElement;
-use gpui::ParentElement;
-use gpui::RenderOnce;
-use gpui::Styled;
-
-use gpui::div;
-use gpui::px;
-
-use gpui_component::ActiveTheme;
+use gpui::*;
 
 use crate::comps::StyledExt;
+use crate::comps::ThemeAccess;
 
 pub struct SidebarHeader {
     children: Vec<AnyElement>,

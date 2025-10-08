@@ -1,6 +1,6 @@
 use std::fmt::Debug;
 
-use gpui::{DefiniteLength, Edges, FontWeight, Styled};
+use gpui::*;
 
 pub trait StyledExt: Styled + Sized {
     #[inline]

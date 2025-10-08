@@ -1,14 +1,4 @@
-use gpui::App;
-use gpui::Component;
-use gpui::SharedString;
-use gpui::StyleRefinement;
-use gpui::Window;
-
-use gpui::IntoElement;
-use gpui::RenderOnce;
-use gpui::Styled;
-
-use gpui::svg;
+use gpui::*;
 
 use gpui_component::{Sizable, Size as UiSize};
 
