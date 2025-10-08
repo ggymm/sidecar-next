@@ -5,7 +5,6 @@ use std::path::PathBuf;
 
 use gpui::*;
 use gpui_component::Root;
-use gpui_component::StyledExt;
 use gpui_component::init;
 use gpui_component::resizable::ResizableState;
 use gpui_component::resizable::h_resizable;
@@ -20,6 +19,7 @@ use crate::comps::SidebarGroup;
 use crate::comps::SidebarHeader;
 use crate::comps::SidebarMenu;
 use crate::comps::SidebarMenuItem;
+use crate::comps::StyledExt;
 use crate::comps::ThemeMode;
 use crate::comps::init_theme;
 
