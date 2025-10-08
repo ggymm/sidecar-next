@@ -1,9 +1,9 @@
 use gpui::*;
-use gpui_component::FocusableCycle;
 use gpui_component::StyledExt;
 use gpui_component::input::InputEvent;
 use gpui_component::input::InputState;
 use gpui_component::input::TextInput;
+
 
 use crate::CARD_BG;
 use crate::CARD_GAP;
@@ -56,16 +56,6 @@ impl DemoPage {
             InputEvent::Change => println!("[Demo] Change"),
             InputEvent::PressEnter { secondary } => println!("[Demo] Enter secondary={}", secondary),
         }
-    }
-}
-
-impl FocusableCycle for DemoPage {
-    fn cycle_focus_handles(
-        &self,
-        _: &mut Window,
-        cx: &mut App,
-    ) -> Vec<FocusHandle> {
-        vec![self.input1.focus_handle(cx), self.input2.focus_handle(cx)]
     }
 }
 

@@ -4,24 +4,21 @@ use std::fs::read;
 use std::path::PathBuf;
 
 use gpui::*;
+use gpui_component::{Collapsible, Theme};
+use gpui_component::Icon;
 use gpui_component::Root;
+use gpui_component::StyledExt;
 use gpui_component::init;
 use gpui_component::resizable::ResizableState;
 use gpui_component::resizable::h_resizable;
 use gpui_component::resizable::resizable_panel;
+use gpui_component::sidebar::Sidebar;
+use gpui_component::sidebar::SidebarGroup;
+use gpui_component::sidebar::SidebarHeader;
+use gpui_component::sidebar::SidebarMenu;
+use gpui_component::sidebar::SidebarMenuItem;
 use indexmap::IndexMap;
 use once_cell::sync::Lazy;
-
-use crate::comps::Collapsible;
-use crate::comps::Icon;
-use crate::comps::Sidebar;
-use crate::comps::SidebarGroup;
-use crate::comps::SidebarHeader;
-use crate::comps::SidebarMenu;
-use crate::comps::SidebarMenuItem;
-use crate::comps::StyledExt;
-use crate::comps::ThemeMode;
-use crate::comps::init_theme;
 
 use crate::pages::convert::base64::Base64Page;
 use crate::pages::convert::timestamp::TimestampPage;
@@ -39,10 +36,10 @@ use crate::pages::snippet::code::CodePage;
 use crate::pages::snippet::manual::ManualPage;
 use crate::pages::toolkit::share::SharePage;
 
-mod comps;
 mod pages;
 mod plugins;
 
+pub const SIDE_BG: u32 = 0x202020;
 pub const SIDE_MIN: f32 = 120.;
 pub const SIDE_MAX: f32 = 360.;
 pub const SIDE_SIZE: f32 = 240.;
@@ -462,7 +459,6 @@ fn main() {
     let app = Application::new().with_assets(FsAssets);
     app.run(move |cx| {
         init(cx);
-        init_theme(cx, ThemeMode::Dark);
         cx.activate(true);
         cx.on_window_closed(|cx| {
             if cx.windows().is_empty() {
@@ -470,6 +466,7 @@ fn main() {
             }
         })
         .detach();
+        Theme::global_mut(cx).sidebar = rgb(SIDE_BG).into();
 
         let window_size = size(px(1280.), px(800.));
         let window_bounds = Bounds::centered(None, window_size, cx);
