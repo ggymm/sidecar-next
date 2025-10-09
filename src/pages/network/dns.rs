@@ -11,9 +11,8 @@ use crate::INPUT_BG;
 use crate::INPUT_BORDER;
 use crate::INPUT_PADDING;
 use crate::MainView;
-use crate::PAGE_GAP;
-use crate::PAGE_PADDING;
 use crate::comps::Card;
+use crate::comps::Page;
 use crate::plugins::dns::start_dns_query;
 
 pub struct DnsPage {
@@ -102,16 +101,11 @@ impl Render for DnsPage {
     ) -> impl IntoElement {
         let input_bg = rgb(INPUT_BG);
 
-        let page_padding = Edges::all(px(PAGE_PADDING));
         let input_padding = Edges::all(px(INPUT_PADDING));
 
         let running = self.running;
 
-        div()
-            .v_flex()
-            .size_full()
-            .paddings(page_padding)
-            .gap(px(PAGE_GAP))
+        Page::new()
             .child(
                 Card::new().child(
                     div()

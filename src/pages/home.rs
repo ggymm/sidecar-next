@@ -4,12 +4,12 @@ use gpui_component::StyledExt;
 use crate::COMMON_GAP;
 use crate::COMMON_PADDING_M;
 use crate::MainView;
-use crate::PAGE_PADDING;
+use crate::comps::Card;
+use crate::comps::Page;
 use crate::pages::utils::format_bytes;
 use crate::plugins::system::basic_info::BasicInfo;
 use crate::plugins::system::basic_info::collect_basic_info;
 use crate::plugins::system::dynamic_info::DynamicInfo;
-use crate::comps::Card;
 
 pub struct HomePage {
     basic_info: Option<BasicInfo>,
@@ -71,13 +71,7 @@ impl Render for HomePage {
         self.basic_load(cx);
         self.dynamic_load(cx);
 
-        let page_padding = Edges::all(px(PAGE_PADDING));
-
-        div()
-            .v_flex()
-            .size_full()
-            .paddings(page_padding)
-            .gap(px(COMMON_GAP))
+        Page::new()
             .child(if let Some(info) = &self.basic_info {
                 div()
                     .flex()

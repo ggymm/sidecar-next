@@ -2,7 +2,6 @@ use chrono::DateTime;
 use chrono::FixedOffset;
 use chrono::Utc;
 use gpui::*;
-use gpui_component::StyledExt;
 use gpui_component::button::Button;
 use gpui_component::button::ButtonVariants;
 use gpui_component::input::InputState;
@@ -10,11 +9,9 @@ use gpui_component::input::TextInput;
 
 use crate::COMMON_GAP;
 use crate::INPUT_BG;
-use crate::INPUT_BORDER;
 use crate::MainView;
-use crate::PAGE_GAP;
-use crate::PAGE_PADDING;
 use crate::comps::Card;
+use crate::comps::Page;
 
 pub struct TimestampPage {
     tz_input: Entity<InputState>,
@@ -119,12 +116,8 @@ impl Render for TimestampPage {
         }
 
         let input_bg = rgb(INPUT_BG);
-        let page_padding = Edges::all(px(PAGE_PADDING));
 
-        div()
-            .v_flex()
-            .paddings(page_padding)
-            .gap(px(PAGE_GAP))
+        Page::new()
             .child(
                 Card::new().child(
                     div()

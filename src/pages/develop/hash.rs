@@ -11,11 +11,10 @@ use crate::INPUT_BG;
 use crate::INPUT_BORDER;
 use crate::INPUT_PADDING;
 use crate::MainView;
-use crate::PAGE_GAP;
-use crate::PAGE_PADDING;
+use crate::comps::Card;
+use crate::comps::Page;
 use crate::plugins::hash::calc_file_hash;
 use crate::plugins::hash::calc_text_hash;
-use crate::comps::Card;
 
 #[derive(Clone, Debug, PartialEq)]
 enum InputType {
@@ -90,48 +89,37 @@ impl Render for HashPage {
         let input_type = self.input_type.clone();
 
         let input_bg = rgb(INPUT_BG);
-        let page_padding = Edges::all(px(PAGE_PADDING));
         let input_padding = Edges::all(px(INPUT_PADDING));
 
-        div()
-            .v_flex()
-            .size_full()
-            .paddings(page_padding)
-            .gap(px(PAGE_GAP))
+        Page::new()
             .child(
-                Card::new()
-                    .child(
-                        div()
-                            .flex()
-                            .items_center()
-                            .justify_between()
-                            .child(div().text_sm().text_color(white()).child("输入类型"))
-                            .child(
-                                div()
-                                    .flex()
-                                    .flex_col()
-                                    .justify_end()
-                                    .paddings(input_padding)
-                                    .child(
-                                        RadioGroup::horizontal("input-type")
-                                            .selected_index(match input_type {
-                                                InputType::Text => Some(0),
-                                                InputType::File => Some(1),
-                                            })
-                                            .child("文本类型")
-                                            .child("文件类型")
-                                            .on_change(cx.listener(|this, index, _window, cx| {
-                                                let input_type = match *index {
-                                                    0 => InputType::Text,
-                                                    1 => InputType::File,
-                                                    _ => InputType::Text,
-                                                };
-                                                this.input_type = input_type;
-                                                cx.notify();
-                                            })),
-                                    ),
+                Card::new().child(
+                    div()
+                        .flex()
+                        .items_center()
+                        .justify_between()
+                        .child(div().text_sm().text_color(white()).child("输入类型"))
+                        .child(
+                            div().flex().flex_col().justify_end().paddings(input_padding).child(
+                                RadioGroup::horizontal("input-type")
+                                    .selected_index(match input_type {
+                                        InputType::Text => Some(0),
+                                        InputType::File => Some(1),
+                                    })
+                                    .child("文本类型")
+                                    .child("文件类型")
+                                    .on_change(cx.listener(|this, index, _window, cx| {
+                                        let input_type = match *index {
+                                            0 => InputType::Text,
+                                            1 => InputType::File,
+                                            _ => InputType::Text,
+                                        };
+                                        this.input_type = input_type;
+                                        cx.notify();
+                                    })),
                             ),
-                    ),
+                        ),
+                ),
             )
             .child(
                 Card::new()

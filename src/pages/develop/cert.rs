@@ -8,9 +8,8 @@ use crate::INPUT_BG;
 use crate::INPUT_BORDER;
 use crate::INPUT_PADDING;
 use crate::MainView;
-use crate::PAGE_GAP;
-use crate::PAGE_PADDING;
 use crate::comps::Card;
+use crate::comps::Page;
 
 pub struct CertPage {
     input: Entity<InputState>,
@@ -80,14 +79,9 @@ impl Render for CertPage {
 
         let input_bg = rgb(INPUT_BG);
 
-        let page_padding = Edges::all(px(PAGE_PADDING));
         let input_padding = Edges::all(px(INPUT_PADDING));
 
-        div()
-            .v_flex()
-            .size_full()
-            .paddings(page_padding)
-            .gap(px(PAGE_GAP))
+        Page::new()
             .child(
                 Card::new()
                     .height(px(240.))

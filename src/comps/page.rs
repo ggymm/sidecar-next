@@ -31,11 +31,20 @@ impl RenderOnce for Page {
     ) -> impl IntoElement {
         let container = div()
             .v_flex()
-            .size_full()
+            .w_full()
+            .h_full()
             .bg(rgb(PAGE_BG))
             .paddings(Edges::all(px(PAGE_PADDING)))
             .gap(px(PAGE_GAP));
 
         container.children(self.children)
+    }
+}
+
+impl IntoElement for Page {
+    type Element = Component<Self>;
+
+    fn into_element(self) -> Self::Element {
+        Component::new(self)
     }
 }

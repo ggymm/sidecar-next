@@ -3,7 +3,6 @@ use std::time::UNIX_EPOCH;
 
 use gpui::*;
 use gpui_component::ContextModal;
-use gpui_component::StyledExt;
 use gpui_component::button::Button;
 use gpui_component::button::ButtonVariants;
 use gpui_component::input::InputState;
@@ -12,9 +11,8 @@ use gpui_component::input::TextInput;
 use crate::COMMON_GAP;
 use crate::INPUT_BG;
 use crate::MainView;
-use crate::PAGE_GAP;
-use crate::PAGE_PADDING;
 use crate::comps::Card;
+use crate::comps::Page;
 
 fn gen_mac() -> String {
     let mut x = SystemTime::now()
@@ -149,13 +147,7 @@ impl Render for RandomPage {
         _window: &mut Window,
         cx: &mut Context<Self>,
     ) -> impl IntoElement {
-        let page_padding = Edges::all(px(PAGE_PADDING));
-
-        div()
-            .v_flex()
-            .size_full()
-            .paddings(page_padding)
-            .gap(px(PAGE_GAP))
+        Page::new()
             .child(self.build_item(cx, "MAC地址", self.mac_output.clone(), gen_mac))
             .child(self.build_item(cx, "UUID.v4", self.uuid_output.clone(), gen_uuid))
             .child(self.build_item(cx, "手机号码", self.phone_output.clone(), gen_phone))

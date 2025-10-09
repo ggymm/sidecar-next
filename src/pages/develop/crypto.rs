@@ -1,8 +1,7 @@
 use gpui::*;
-use gpui_component::StyledExt;
 
 use crate::MainView;
-use crate::PAGE_PADDING;
+use crate::comps::Page;
 
 pub struct CryptoPage;
 
@@ -21,9 +20,7 @@ impl Render for CryptoPage {
         _window: &mut Window,
         _cx: &mut Context<Self>,
     ) -> impl IntoElement {
-        let page_padding = Edges::all(px(PAGE_PADDING));
-
-        div().w_full().paddings(page_padding).v_flex().child(
+        Page::new().child(
             div()
                 .flex_1()
                 .flex()

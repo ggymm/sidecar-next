@@ -103,15 +103,27 @@ struct PingMetrics {
 
 impl PingMetrics {
     fn new(ip: IpAddr) -> Self {
-        Self { ip, avg: 0, min: 0, max: 0, loss: 0 }
+        Self {
+            ip,
+            avg: 0,
+            min: 0,
+            max: 0,
+            loss: 0,
+        }
     }
 }
 
-fn log_line(tx: &Sender<String>, line: impl Into<String>) {
+fn log_line(
+    tx: &Sender<String>,
+    line: impl Into<String>,
+) {
     let _ = tx.send(line.into());
 }
 
-fn log_text(tx: &Sender<String>, text: &str) {
+fn log_text(
+    tx: &Sender<String>,
+    text: &str,
+) {
     // Preserve multi-line chunks but still stream in UI
     if text.is_empty() {
         let _ = tx.send(String::new());
@@ -145,7 +157,11 @@ async fn ping_task(ip: IpAddr) -> io::Result<String> {
     Ok(String::from_utf8_lossy(&output.stdout).trim().to_string())
 }
 
-async fn query_task(domain: &str, config: NameServerConfig, tx: &Sender<String>) -> io::Result<Vec<IpAddr>> {
+async fn query_task(
+    domain: &str,
+    config: NameServerConfig,
+    tx: &Sender<String>,
+) -> io::Result<Vec<IpAddr>> {
     let mut opts = ResolverOpts::default();
     opts.timeout = TIMEOUT;
     opts.attempts = 1;
@@ -171,7 +187,11 @@ async fn query_task(domain: &str, config: NameServerConfig, tx: &Sender<String>)
     }
 }
 
-async fn query_domain(domain: &str, nameservers: &[IpAddr], tx: &Sender<String>) -> io::Result<Vec<IpAddr>> {
+async fn query_domain(
+    domain: &str,
+    nameservers: &[IpAddr],
+    tx: &Sender<String>,
+) -> io::Result<Vec<IpAddr>> {
     let mut rets = Vec::new();
     let mut tasks = JoinSet::new();
     for &nameserver in nameservers {
@@ -179,7 +199,10 @@ async fn query_domain(domain: &str, nameservers: &[IpAddr], tx: &Sender<String>)
         let tx_udp = tx.clone();
         let tx_tcp = tx.clone();
         tasks.spawn(async move {
-            log_line(&tx_udp, format!("Query domain '{}' using nameserver {} (UDP)", domain, nameserver));
+            log_line(
+                &tx_udp,
+                format!("Query domain '{}' using nameserver {} (UDP)", domain, nameserver),
+            );
             let config = NameServerConfig {
                 socket_addr: (nameserver, 53).into(),
                 protocol: Protocol::Udp,
@@ -191,7 +214,10 @@ async fn query_domain(domain: &str, nameservers: &[IpAddr], tx: &Sender<String>)
             match udp_result {
                 Ok(ips) if !ips.is_empty() => Ok(ips),
                 _ => {
-                    log_line(&tx_tcp, format!("Query domain '{}' using nameserver {} (TCP)", domain, nameserver));
+                    log_line(
+                        &tx_tcp,
+                        format!("Query domain '{}' using nameserver {} (TCP)", domain, nameserver),
+                    );
                     let config = NameServerConfig {
                         socket_addr: (nameserver, 53).into(),
                         protocol: Protocol::Tcp,
@@ -208,8 +234,12 @@ async fn query_domain(domain: &str, nameservers: &[IpAddr], tx: &Sender<String>)
     while let Some(result) = tasks.join_next().await {
         if let Ok(Ok(ips)) = result {
             for ip in ips {
-                if ip == IpAddr::V4(Ipv4Addr::new(0, 0, 0, 0)) { continue; }
-                if !rets.contains(&ip) { rets.push(ip); }
+                if ip == IpAddr::V4(Ipv4Addr::new(0, 0, 0, 0)) {
+                    continue;
+                }
+                if !rets.contains(&ip) {
+                    rets.push(ip);
+                }
             }
         }
     }
@@ -217,7 +247,10 @@ async fn query_domain(domain: &str, nameservers: &[IpAddr], tx: &Sender<String>)
     Ok(rets)
 }
 
-async fn run_query(domain: String, tx: Sender<String>) {
+async fn run_query(
+    domain: String,
+    tx: Sender<String>,
+) {
     // validate domain format
     let is_valid = Url::parse(&format!("https://{}", domain))
         .map(|url| url.host_str().is_some())
@@ -262,9 +295,9 @@ async fn run_query(domain: String, tx: Sender<String>) {
                     // parse metrics
                     let mut metrics = PingMetrics::new(ip);
                     let language = LANG_LOCAL.clone();
-                    let patterns = PING_PATTERNS.get(&language).unwrap_or_else(|| {
-                        panic!("Error: Unsupported language: {}", language)
-                    });
+                    let patterns = PING_PATTERNS
+                        .get(&language)
+                        .unwrap_or_else(|| panic!("Error: Unsupported language: {}", language));
 
                     if let Some(caps) = patterns.0.captures(&output) {
                         metrics.loss = if language == LANG_ZH {
@@ -318,10 +351,7 @@ pub fn start_dns_query(domain: String) -> Receiver<String> {
     let (tx, rx) = mpsc::channel::<String>();
 
     std::thread::spawn(move || {
-        let runtime = match tokio::runtime::Builder::new_multi_thread()
-            .enable_all()
-            .build()
-        {
+        let runtime = match tokio::runtime::Builder::new_multi_thread().enable_all().build() {
             Ok(rt) => rt,
             Err(e) => {
                 log_line(&tx, format!("Failed to create runtime: {}", e));

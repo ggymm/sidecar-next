@@ -4,14 +4,12 @@ use gpui_component::input::InputEvent;
 use gpui_component::input::InputState;
 use gpui_component::input::TextInput;
 
-
 use crate::INPUT_BG;
 use crate::INPUT_BORDER;
 use crate::INPUT_PADDING;
 use crate::MainView;
-use crate::PAGE_GAP;
-use crate::PAGE_PADDING;
 use crate::comps::Card;
+use crate::comps::Page;
 
 pub struct DemoPage {
     input1: Entity<InputState>,
@@ -57,32 +55,16 @@ impl DemoPage {
     }
 }
 
-impl Focusable for DemoPage {
-    fn focus_handle(
-        &self,
-        cx: &App,
-    ) -> FocusHandle {
-        self.input1.focus_handle(cx)
-    }
-}
-
 impl Render for DemoPage {
     fn render(
         &mut self,
         _window: &mut Window,
-        cx: &mut Context<Self>,
+        _cx: &mut Context<Self>,
     ) -> impl IntoElement {
         let input_bg = rgb(INPUT_BG);
-        let page_padding = Edges::all(px(PAGE_PADDING));
         let input_padding = Edges::all(px(INPUT_PADDING));
 
-        div()
-            .id("demo")
-            .w_full()
-            .paddings(page_padding)
-            .gap(px(PAGE_GAP))
-            .v_flex()
-            .track_focus(&self.focus_handle(cx))
+        Page::new()
             .child(
                 div()
                     .v_flex()
@@ -132,5 +114,6 @@ impl Render for DemoPage {
                             ),
                     ),
             )
+            .into_element()
     }
 }

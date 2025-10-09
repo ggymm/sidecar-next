@@ -42,15 +42,6 @@ mod comps;
 mod pages;
 mod plugins;
 
-pub const SIDE_MIN: f32 = 120.;
-pub const SIDE_MAX: f32 = 360.;
-pub const SIDE_SIZE: f32 = 240.;
-pub const HEAD_BORDER: u32 = 0x404040;
-pub const HEAD_PADDING_X: f32 = 20.0;
-pub const HEAD_PADDING_Y: f32 = 12.0;
-pub const PAGE_BG: u32 = 0x282828;
-pub const PAGE_GAP: f32 = 20.0;
-pub const PAGE_PADDING: f32 = 20.0;
 pub const INPUT_BG: u32 = 0x242424;
 pub const INPUT_COLOR: u32 = 0xffffff;
 pub const INPUT_BORDER: u32 = 0x404040;
@@ -360,19 +351,23 @@ impl Render for MainView {
         window: &mut Window,
         cx: &mut Context<Self>,
     ) -> impl IntoElement {
+        let side_min = 120.;
+        let side_max = 360.;
+        let side_size = 240.0;
+
         let modal_layer = Root::render_modal_layer(window, cx);
         let drawer_layer = Root::render_drawer_layer(window, cx);
         let notification_layer = Root::render_notification_layer(window, cx);
 
         div()
-            .size_full()
-            .bg(rgb(PAGE_BG))
+            .w_full()
+            .h_full()
             .child(
                 h_resizable("layout", self.resizable_state.clone())
                     .child(
                         resizable_panel()
-                            .size(px(SIDE_SIZE))
-                            .size_range(px(SIDE_MIN)..px(SIDE_MAX))
+                            .size(px(side_size))
+                            .size_range(px(side_min)..px(side_max))
                             .child(self.sidebar(window, cx)),
                     )
                     .child(
@@ -384,13 +379,13 @@ impl Render for MainView {
                             .overflow_hidden()
                             .child(
                                 div()
-                                    .id("head")
+                                    .id("header")
                                     .flex()
                                     .items_center()
                                     .border_b_1()
-                                    .border_color(rgb(HEAD_BORDER))
-                                    .px(px(HEAD_PADDING_X))
-                                    .py(px(HEAD_PADDING_Y))
+                                    .border_color(rgb(0x404040))
+                                    .px(px(20.))
+                                    .py(px(12.))
                                     .child(
                                         div()
                                             .text_lg()
@@ -403,6 +398,7 @@ impl Render for MainView {
                                 div()
                                     .id("content")
                                     .flex_1()
+                                    .min_w_0()
                                     .min_h_0()
                                     .overflow_y_scroll()
                                     .child(self.content(window, cx)),
@@ -424,7 +420,7 @@ impl Render for EmptyView {
         _window: &mut Window,
         _cx: &mut Context<Self>,
     ) -> impl IntoElement {
-        div().size_full().bg(rgb(PAGE_BG))
+        div().size_full()
     }
 }
 
@@ -471,7 +467,7 @@ fn main() {
         let theme = Theme::global_mut(cx);
         theme.mode = ThemeMode::Dark;
         theme.sidebar = rgb(0x202020).into();
-        theme.background = rgb(0x202020).into();
+        theme.background = rgb(0x282828).into();
 
         let window_size = size(px(1280.), px(800.));
         let window_bounds = Bounds::centered(None, window_size, cx);
