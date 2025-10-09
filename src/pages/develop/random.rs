@@ -9,13 +9,12 @@ use gpui_component::button::ButtonVariants;
 use gpui_component::input::InputState;
 use gpui_component::input::TextInput;
 
-use crate::CARD_BG;
-use crate::CARD_PADDING;
 use crate::COMMON_GAP;
 use crate::INPUT_BG;
 use crate::MainView;
 use crate::PAGE_GAP;
 use crate::PAGE_PADDING;
+use crate::comps::Card;
 
 fn gen_mac() -> String {
     let mut x = SystemTime::now()
@@ -92,58 +91,55 @@ impl RandomPage {
         output: Entity<InputState>,
         generate: fn() -> String,
     ) -> impl IntoElement {
-        let card_bg = rgb(CARD_BG);
         let input_bg = rgb(INPUT_BG);
-        let card_padding = Edges::all(px(CARD_PADDING));
 
         let output_for_gen = output.clone();
         let output_for_copy = output.clone();
 
-        div()
-            .flex()
-            .flex_row()
-            .items_center()
-            .justify_between()
-            .bg(card_bg)
-            .rounded_lg()
-            .paddings(card_padding)
-            .child(div().text_sm().text_color(white()).child(label.to_string()))
-            .child(
-                div()
-                    .flex()
-                    .items_center()
-                    .gap(px(COMMON_GAP))
-                    .child(
-                        TextInput::new(&output)
-                            .w(px(480.))
-                            .bg(input_bg)
-                            .focus_bordered(false)
-                            .text_color(white()),
-                    )
-                    .child(
-                        Button::new(("gen", output.entity_id()))
-                            .info()
-                            .label("生成")
-                            .on_click(cx.listener(move |_this, _ev, window, cx| {
-                                let val = generate();
-                                output_for_gen.update(cx, |state, cx2| {
-                                    state.set_value(val, window, cx2);
-                                });
-                            })),
-                    )
-                    .child(
-                        Button::new(("copy", output.entity_id()))
-                            .info()
-                            .label("复制")
-                            .on_click(cx.listener(move |_this, _ev, window, cx| {
-                                let value = output_for_copy.read(cx).value();
-                                if !value.is_empty() {
-                                    window.push_notification("已复制到剪切板", cx);
-                                    cx.write_to_clipboard(ClipboardItem::new_string(value.to_string()));
-                                }
-                            })),
-                    ),
-            )
+        Card::new().child(
+            div()
+                .flex()
+                .flex_row()
+                .items_center()
+                .justify_between()
+                .child(div().text_sm().text_color(white()).child(label.to_string()))
+                .child(
+                    div()
+                        .flex()
+                        .items_center()
+                        .gap(px(COMMON_GAP))
+                        .child(
+                            TextInput::new(&output)
+                                .w(px(480.))
+                                .bg(input_bg)
+                                .focus_bordered(false)
+                                .text_color(white()),
+                        )
+                        .child(
+                            Button::new(("gen", output.entity_id()))
+                                .info()
+                                .label("生成")
+                                .on_click(cx.listener(move |_this, _ev, window, cx| {
+                                    let val = generate();
+                                    output_for_gen.update(cx, |state, cx2| {
+                                        state.set_value(val, window, cx2);
+                                    });
+                                })),
+                        )
+                        .child(
+                            Button::new(("copy", output.entity_id()))
+                                .info()
+                                .label("复制")
+                                .on_click(cx.listener(move |_this, _ev, window, cx| {
+                                    let value = output_for_copy.read(cx).value();
+                                    if !value.is_empty() {
+                                        window.push_notification("已复制到剪切板", cx);
+                                        cx.write_to_clipboard(ClipboardItem::new_string(value.to_string()));
+                                    }
+                                })),
+                        ),
+                ),
+        )
     }
 }
 

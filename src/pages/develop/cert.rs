@@ -4,15 +4,13 @@ use gpui_component::input::InputState;
 use gpui_component::input::TextInput;
 use openssl::x509::X509;
 
-use crate::CARD_BG;
-use crate::CARD_GAP;
-use crate::CARD_PADDING;
 use crate::INPUT_BG;
 use crate::INPUT_BORDER;
 use crate::INPUT_PADDING;
 use crate::MainView;
 use crate::PAGE_GAP;
 use crate::PAGE_PADDING;
+use crate::comps::Card;
 
 pub struct CertPage {
     input: Entity<InputState>,
@@ -27,8 +25,8 @@ impl CertPage {
         cx: &mut Context<MainView>,
     ) -> AnyView {
         AnyView::from(cx.new(|cx| {
-            let input = cx.new(|cx| InputState::new(window, cx).multi_line().placeholder("输入证书内容"));
-            let output = cx.new(|cx| InputState::new(window, cx).multi_line().placeholder("解析结果"));
+            let input = cx.new(|cx| InputState::new(window, cx).multi_line());
+            let output = cx.new(|cx| InputState::new(window, cx).multi_line());
 
             Self {
                 input,
@@ -53,7 +51,6 @@ impl Render for CertPage {
 
                 let pem = in_val.to_string();
                 cx.spawn_in(window, async move |this, cx| {
-                    // 后台解析，避免阻塞 UI
                     let out_text = cx
                         .background_executor()
                         .spawn(async move {
@@ -81,11 +78,9 @@ impl Render for CertPage {
             }
         }
 
-        let card_bg = rgb(CARD_BG);
         let input_bg = rgb(INPUT_BG);
 
         let page_padding = Edges::all(px(PAGE_PADDING));
-        let card_padding = Edges::all(px(CARD_PADDING));
         let input_padding = Edges::all(px(INPUT_PADDING));
 
         div()
@@ -94,14 +89,8 @@ impl Render for CertPage {
             .paddings(page_padding)
             .gap(px(PAGE_GAP))
             .child(
-                div()
-                    .h(px(240.))
-                    .flex()
-                    .flex_col()
-                    .bg(card_bg)
-                    .rounded_lg()
-                    .paddings(card_padding)
-                    .gap(px(CARD_GAP))
+                Card::new()
+                    .height(px(240.))
                     .child(div().text_sm().text_color(white()).child("证书"))
                     .child(
                         div()
@@ -121,14 +110,7 @@ impl Render for CertPage {
                     ),
             )
             .child(
-                div()
-                    .flex_1()
-                    .flex()
-                    .flex_col()
-                    .bg(card_bg)
-                    .rounded_lg()
-                    .paddings(card_padding)
-                    .gap(px(CARD_GAP))
+                Card::new()
                     .child(div().text_sm().text_color(white()).child("解析结果"))
                     .child(
                         div()

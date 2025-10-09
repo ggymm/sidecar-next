@@ -7,9 +7,6 @@ use gpui_component::button::ButtonVariants;
 use gpui_component::input::InputState;
 use gpui_component::input::TextInput;
 
-use crate::CARD_BG;
-use crate::CARD_GAP;
-use crate::CARD_PADDING;
 use crate::INPUT_BG;
 use crate::INPUT_BORDER;
 use crate::INPUT_PADDING;
@@ -17,6 +14,7 @@ use crate::MainView;
 use crate::PAGE_GAP;
 use crate::PAGE_PADDING;
 use crate::plugins::qrcode::parse_qrcode;
+use crate::comps::Card;
 
 pub struct QrcodePage {
     path: Option<PathBuf>,
@@ -99,11 +97,9 @@ impl Render for QrcodePage {
         _window: &mut Window,
         cx: &mut Context<Self>,
     ) -> impl IntoElement {
-        let card_bg = rgb(CARD_BG);
         let input_bg = rgb(INPUT_BG);
 
         let page_padding = Edges::all(px(PAGE_PADDING));
-        let card_padding = Edges::all(px(CARD_PADDING));
         let input_padding = Edges::all(px(INPUT_PADDING));
 
         div()
@@ -112,16 +108,7 @@ impl Render for QrcodePage {
             .paddings(page_padding)
             .gap(px(PAGE_GAP))
             .child(
-                div()
-                    .flex_1()
-                    .flex()
-                    .flex_col()
-                    .min_w_0()
-                    .min_h_0()
-                    .bg(card_bg)
-                    .rounded_lg()
-                    .paddings(card_padding)
-                    .gap(px(CARD_GAP))
+                Card::new()
                     .child(
                         div()
                             .flex()
@@ -156,14 +143,8 @@ impl Render for QrcodePage {
                     ),
             )
             .child(
-                div()
-                    .h(px(240.))
-                    .flex()
-                    .flex_col()
-                    .bg(card_bg)
-                    .rounded_lg()
-                    .paddings(card_padding)
-                    .gap(px(CARD_GAP))
+                Card::new()
+                    .height(px(240.))
                     .child(div().text_sm().text_color(white()).child("解析结果"))
                     .child(
                         div()

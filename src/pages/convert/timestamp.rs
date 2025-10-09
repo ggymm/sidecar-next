@@ -8,14 +8,13 @@ use gpui_component::button::ButtonVariants;
 use gpui_component::input::InputState;
 use gpui_component::input::TextInput;
 
-use crate::CARD_BG;
-use crate::CARD_PADDING;
 use crate::COMMON_GAP;
 use crate::INPUT_BG;
 use crate::INPUT_BORDER;
 use crate::MainView;
 use crate::PAGE_GAP;
 use crate::PAGE_PADDING;
+use crate::comps::Card;
 
 pub struct TimestampPage {
     tz_input: Entity<InputState>,
@@ -111,7 +110,6 @@ impl Render for TimestampPage {
         _window: &mut Window,
         cx: &mut Context<Self>,
     ) -> impl IntoElement {
-        // 检查输入变化
         if !self.updating {
             let in_val = self.ts_input.read(cx).value();
             if in_val != self.last_input {
@@ -120,121 +118,104 @@ impl Render for TimestampPage {
             }
         }
 
-        let card_bg = rgb(CARD_BG);
         let input_bg = rgb(INPUT_BG);
         let page_padding = Edges::all(px(PAGE_PADDING));
-        let card_padding = Edges::all(px(CARD_PADDING));
 
         div()
             .v_flex()
             .paddings(page_padding)
             .gap(px(PAGE_GAP))
             .child(
-                div()
-                    .flex()
-                    .items_center()
-                    .justify_between()
-                    .bg(card_bg)
-                    .border_1()
-                    .border_color(rgb(INPUT_BORDER))
-                    .rounded_lg()
-                    .paddings(card_padding)
-                    .child(div().text_sm().text_color(white()).child("时间戳"))
-                    .child(
-                        div()
-                            .flex()
-                            .items_center()
-                            .gap(px(COMMON_GAP))
-                            .child(
-                                TextInput::new(&self.ts_input)
-                                    .w(px(240.))
-                                    .bg(input_bg)
-                                    .focus_bordered(false)
-                                    .text_color(white()),
-                            )
-                            .child(
-                                Button::new("update_timestamp")
-                                    .info()
-                                    .label("当前时间")
-                                    .h_full()
-                                    .on_click(cx.listener(|this, _ev, window, cx| {
-                                        this.update_timestamp(window, cx);
-                                    })),
-                            ),
-                    ),
+                Card::new().child(
+                    div()
+                        .flex()
+                        .items_center()
+                        .justify_between()
+                        .child(div().text_sm().text_color(white()).child("时间戳"))
+                        .child(
+                            div()
+                                .flex()
+                                .items_center()
+                                .gap(px(COMMON_GAP))
+                                .child(
+                                    TextInput::new(&self.ts_input)
+                                        .w(px(240.))
+                                        .bg(input_bg)
+                                        .focus_bordered(false)
+                                        .text_color(white()),
+                                )
+                                .child(
+                                    Button::new("update_timestamp")
+                                        .info()
+                                        .label("当前时间")
+                                        .h_full()
+                                        .on_click(cx.listener(|this, _ev, window, cx| {
+                                            this.update_timestamp(window, cx);
+                                        })),
+                                ),
+                        ),
+                ),
             )
             .child(
-                div()
-                    .flex()
-                    .items_center()
-                    .justify_between()
-                    .bg(card_bg)
-                    .border_1()
-                    .border_color(rgb(INPUT_BORDER))
-                    .rounded_lg()
-                    .paddings(card_padding)
-                    .child(div().text_sm().text_color(white()).child("时区"))
-                    .child(
-                        TextInput::new(&self.tz_input)
-                            .w(px(360.))
-                            .bg(input_bg)
-                            .focus_bordered(false)
-                            .text_color(white()),
-                    ),
+                Card::new().child(
+                    div()
+                        .flex()
+                        .items_center()
+                        .justify_between()
+                        .child(div().text_sm().text_color(white()).child("时区"))
+                        .child(
+                            TextInput::new(&self.tz_input)
+                                .w(px(360.))
+                                .bg(input_bg)
+                                .focus_bordered(false)
+                                .text_color(white()),
+                        ),
+                ),
             )
             .child(
-                div()
-                    .flex()
-                    .items_center()
-                    .justify_between()
-                    .bg(card_bg)
-                    .border_1()
-                    .border_color(rgb(INPUT_BORDER))
-                    .rounded_lg()
-                    .paddings(card_padding)
-                    .child(div().text_sm().text_color(white()).child("Common"))
-                    .child(
-                        div()
-                            .text_sm()
-                            .text_color(rgb(0xA0A0A0))
-                            .child(self.common_output.clone()),
-                    ),
+                Card::new().child(
+                    div()
+                        .flex()
+                        .items_center()
+                        .justify_between()
+                        .child(div().text_sm().text_color(white()).child("Common"))
+                        .child(
+                            div()
+                                .text_sm()
+                                .text_color(rgb(0xA0A0A0))
+                                .child(self.common_output.clone()),
+                        ),
+                ),
             )
             .child(
-                div()
-                    .flex()
-                    .items_center()
-                    .justify_between()
-                    .bg(card_bg)
-                    .border_1()
-                    .border_color(rgb(INPUT_BORDER))
-                    .rounded_lg()
-                    .paddings(card_padding)
-                    .child(div().text_sm().text_color(white()).child("ISO 8601"))
-                    .child(
-                        div()
-                            .text_sm()
-                            .text_color(rgb(0xA0A0A0))
-                            .child(self.iso8601_output.clone()),
-                    ),
+                Card::new().child(
+                    div()
+                        .flex()
+                        .items_center()
+                        .justify_between()
+                        .child(div().text_sm().text_color(white()).child("ISO 8601"))
+                        .child(
+                            div()
+                                .text_sm()
+                                .text_color(rgb(0xA0A0A0))
+                                .child(self.iso8601_output.clone()),
+                        ),
+                ),
             )
             .child(
-                div()
-                    .flex()
-                    .items_center()
-                    .justify_between()
-                    .bg(card_bg)
-                    .border_1()
-                    .border_color(rgb(INPUT_BORDER))
-                    .rounded_lg()
-                    .paddings(card_padding)
-                    .child(div().text_sm().text_color(white()).child("RFC 7231"))
-                    .child(
-                        div()
-                            .text_sm()
-                            .text_color(rgb(0xA0A0A0))
-                            .child(self.rfc7231_output.clone()),
-                    ),
+                Card::new().child(
+                    div()
+                        .flex()
+                        .items_center()
+                        .justify_between()
+                        .child(div().text_sm().text_color(white()).child("RFC 7231"))
+                        .child(
+                            div()
+                                .text_sm()
+                                .text_color(rgb(0xA0A0A0))
+                                .child(self.rfc7231_output.clone()),
+                        ),
+                ),
             )
     }
 }

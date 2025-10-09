@@ -6,9 +6,6 @@ use gpui_component::input::TextInput;
 use gpui_component::radio::RadioGroup;
 use gpui_component::{Disableable, StyledExt};
 
-use crate::CARD_BG;
-use crate::CARD_GAP;
-use crate::CARD_PADDING;
 use crate::COMMON_GAP;
 use crate::INPUT_BG;
 use crate::INPUT_BORDER;
@@ -18,6 +15,7 @@ use crate::PAGE_GAP;
 use crate::PAGE_PADDING;
 use crate::plugins::hash::calc_file_hash;
 use crate::plugins::hash::calc_text_hash;
+use crate::comps::Card;
 
 #[derive(Clone, Debug, PartialEq)]
 enum InputType {
@@ -91,10 +89,8 @@ impl Render for HashPage {
     ) -> impl IntoElement {
         let input_type = self.input_type.clone();
 
-        let card_bg = rgb(CARD_BG);
         let input_bg = rgb(INPUT_BG);
         let page_padding = Edges::all(px(PAGE_PADDING));
-        let card_padding = Edges::all(px(CARD_PADDING));
         let input_padding = Edges::all(px(INPUT_PADDING));
 
         div()
@@ -103,44 +99,42 @@ impl Render for HashPage {
             .paddings(page_padding)
             .gap(px(PAGE_GAP))
             .child(
-                div()
-                    .flex()
-                    .items_center()
-                    .justify_between()
-                    .bg(card_bg)
-                    .rounded_lg()
-                    .paddings(card_padding)
-                    .child(div().text_sm().text_color(white()).child("输入类型"))
+                Card::new()
                     .child(
-                        div().flex().flex_col().justify_end().paddings(input_padding).child(
-                            RadioGroup::horizontal("input-type")
-                                .selected_index(match input_type {
-                                    InputType::Text => Some(0),
-                                    InputType::File => Some(1),
-                                })
-                                .child("文本类型")
-                                .child("文件类型")
-                                .on_change(cx.listener(|this, index, _window, cx| {
-                                    let input_type = match *index {
-                                        0 => InputType::Text,
-                                        1 => InputType::File,
-                                        _ => InputType::Text,
-                                    };
-                                    this.input_type = input_type;
-                                    cx.notify();
-                                })),
-                        ),
+                        div()
+                            .flex()
+                            .items_center()
+                            .justify_between()
+                            .child(div().text_sm().text_color(white()).child("输入类型"))
+                            .child(
+                                div()
+                                    .flex()
+                                    .flex_col()
+                                    .justify_end()
+                                    .paddings(input_padding)
+                                    .child(
+                                        RadioGroup::horizontal("input-type")
+                                            .selected_index(match input_type {
+                                                InputType::Text => Some(0),
+                                                InputType::File => Some(1),
+                                            })
+                                            .child("文本类型")
+                                            .child("文件类型")
+                                            .on_change(cx.listener(|this, index, _window, cx| {
+                                                let input_type = match *index {
+                                                    0 => InputType::Text,
+                                                    1 => InputType::File,
+                                                    _ => InputType::Text,
+                                                };
+                                                this.input_type = input_type;
+                                                cx.notify();
+                                            })),
+                                    ),
+                            ),
                     ),
             )
             .child(
-                div()
-                    .flex_1()
-                    .flex()
-                    .flex_col()
-                    .bg(card_bg)
-                    .rounded_lg()
-                    .paddings(card_padding)
-                    .gap(px(CARD_GAP))
+                Card::new()
                     .child(
                         div()
                             .flex()
@@ -187,14 +181,7 @@ impl Render for HashPage {
                     ),
             )
             .child(
-                div()
-                    .flex_1()
-                    .flex()
-                    .flex_col()
-                    .bg(card_bg)
-                    .rounded_lg()
-                    .paddings(card_padding)
-                    .gap(px(CARD_GAP))
+                Card::new()
                     .child(div().text_sm().text_color(white()).child("输出结果"))
                     .child(
                         div()

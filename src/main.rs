@@ -9,6 +9,7 @@ use gpui_component::Icon;
 use gpui_component::Root;
 use gpui_component::StyledExt;
 use gpui_component::Theme;
+use gpui_component::ThemeMode;
 use gpui_component::init;
 use gpui_component::resizable::ResizableState;
 use gpui_component::resizable::h_resizable;
@@ -37,10 +38,10 @@ use crate::pages::snippet::code::CodePage;
 use crate::pages::snippet::manual::ManualPage;
 use crate::pages::toolkit::share::SharePage;
 
+mod comps;
 mod pages;
 mod plugins;
 
-pub const SIDE_BG: u32 = 0x202020;
 pub const SIDE_MIN: f32 = 120.;
 pub const SIDE_MAX: f32 = 360.;
 pub const SIDE_SIZE: f32 = 240.;
@@ -50,12 +51,11 @@ pub const HEAD_PADDING_Y: f32 = 12.0;
 pub const PAGE_BG: u32 = 0x282828;
 pub const PAGE_GAP: f32 = 20.0;
 pub const PAGE_PADDING: f32 = 20.0;
-pub const CARD_BG: u32 = 0x333333;
-pub const CARD_GAP: f32 = 12.0;
-pub const CARD_PADDING: f32 = 20.0;
 pub const INPUT_BG: u32 = 0x242424;
+pub const INPUT_COLOR: u32 = 0xffffff;
 pub const INPUT_BORDER: u32 = 0x404040;
 pub const INPUT_PADDING: f32 = 4.0;
+pub const LABEL_COLOR: u32 = 0xffffff;
 pub const COMMON_GAP: f32 = 20.0;
 pub const COMMON_PADDING: f32 = 20.0;
 pub const COMMON_PADDING_M: f32 = 12.0;
@@ -467,7 +467,11 @@ fn main() {
             }
         })
         .detach();
-        Theme::global_mut(cx).sidebar = rgb(SIDE_BG).into();
+
+        let theme = Theme::global_mut(cx);
+        theme.mode = ThemeMode::Dark;
+        theme.sidebar = rgb(0x202020).into();
+        theme.background = rgb(0x202020).into();
 
         let window_size = size(px(1280.), px(800.));
         let window_bounds = Bounds::centered(None, window_size, cx);

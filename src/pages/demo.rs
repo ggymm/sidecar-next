@@ -5,15 +5,13 @@ use gpui_component::input::InputState;
 use gpui_component::input::TextInput;
 
 
-use crate::CARD_BG;
-use crate::CARD_GAP;
-use crate::CARD_PADDING;
 use crate::INPUT_BG;
 use crate::INPUT_BORDER;
 use crate::INPUT_PADDING;
 use crate::MainView;
 use crate::PAGE_GAP;
 use crate::PAGE_PADDING;
+use crate::comps::Card;
 
 pub struct DemoPage {
     input1: Entity<InputState>,
@@ -74,10 +72,8 @@ impl Render for DemoPage {
         _window: &mut Window,
         cx: &mut Context<Self>,
     ) -> impl IntoElement {
-        let card_bg = rgb(CARD_BG);
         let input_bg = rgb(INPUT_BG);
         let page_padding = Edges::all(px(PAGE_PADDING));
-        let card_padding = Edges::all(px(CARD_PADDING));
         let input_padding = Edges::all(px(INPUT_PADDING));
 
         div()
@@ -93,14 +89,8 @@ impl Render for DemoPage {
                     .gap_4()
                     .flex_1()
                     .child(
-                        div()
-                            .h(px(240.))
-                            .flex()
-                            .flex_col()
-                            .bg(card_bg)
-                            .rounded_lg()
-                            .paddings(card_padding)
-                            .gap(px(CARD_GAP))
+                        Card::new()
+                            .height(px(240.))
                             .child(div().text_sm().text_color(white()).child("输入框测试 1"))
                             .child(
                                 div()
@@ -121,14 +111,8 @@ impl Render for DemoPage {
                             ),
                     )
                     .child(
-                        div()
-                            .h(px(240.))
-                            .flex()
-                            .flex_col()
-                            .bg(card_bg)
-                            .rounded_lg()
-                            .paddings(card_padding)
-                            .gap(px(CARD_GAP))
+                        Card::new()
+                            .height(px(240.))
                             .child(div().text_sm().text_color(white()).child("输入框测试 2"))
                             .child(
                                 div()

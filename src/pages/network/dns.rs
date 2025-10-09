@@ -6,15 +6,14 @@ use gpui_component::button::ButtonVariants;
 use gpui_component::input::InputState;
 use gpui_component::input::TextInput;
 
-use crate::CARD_BG;
-use crate::CARD_GAP;
-use crate::CARD_PADDING;
+use crate::COMMON_GAP;
 use crate::INPUT_BG;
 use crate::INPUT_BORDER;
 use crate::INPUT_PADDING;
 use crate::MainView;
 use crate::PAGE_GAP;
 use crate::PAGE_PADDING;
+use crate::comps::Card;
 use crate::plugins::dns::start_dns_query;
 
 pub struct DnsPage {
@@ -101,11 +100,9 @@ impl Render for DnsPage {
         _window: &mut Window,
         cx: &mut Context<Self>,
     ) -> impl IntoElement {
-        let card_bg = rgb(CARD_BG);
         let input_bg = rgb(INPUT_BG);
 
         let page_padding = Edges::all(px(PAGE_PADDING));
-        let card_padding = Edges::all(px(CARD_PADDING));
         let input_padding = Edges::all(px(INPUT_PADDING));
 
         let running = self.running;
@@ -116,53 +113,39 @@ impl Render for DnsPage {
             .paddings(page_padding)
             .gap(px(PAGE_GAP))
             .child(
-                div()
-                    .flex()
-                    .flex_col()
-                    .bg(card_bg)
-                    .rounded_lg()
-                    .paddings(card_padding)
-                    .gap(px(CARD_GAP))
-                    .child(
-                        div()
-                            .flex()
-                            .items_center()
-                            .gap(px(CARD_GAP))
-                            .child(
-                                div()
-                                    .flex_1()
-                                    .bg(input_bg)
-                                    .border_1()
-                                    .border_color(rgb(INPUT_BORDER))
-                                    .rounded_lg()
-                                    .paddings(input_padding)
-                                    .child(
-                                        TextInput::new(&self.input)
-                                            .appearance(false)
-                                            .focus_bordered(false)
-                                            .text_color(white()),
-                                    ),
-                            )
-                            .child(
-                                Button::new("dns-query")
-                                    .primary()
-                                    .disabled(running)
-                                    .label(if running { "查询中..." } else { "查询" })
-                                    .on_click(cx.listener(|this, _ev, window, cx| {
-                                        this.start_query(window, cx);
-                                    })),
-                            ),
-                    ),
+                Card::new().child(
+                    div()
+                        .flex()
+                        .items_center()
+                        .gap(px(COMMON_GAP))
+                        .child(
+                            div()
+                                .flex_1()
+                                .bg(input_bg)
+                                .border_1()
+                                .border_color(rgb(INPUT_BORDER))
+                                .rounded_lg()
+                                .paddings(input_padding)
+                                .child(
+                                    TextInput::new(&self.input)
+                                        .appearance(false)
+                                        .focus_bordered(false)
+                                        .text_color(white()),
+                                ),
+                        )
+                        .child(
+                            Button::new("dns-query")
+                                .primary()
+                                .disabled(running)
+                                .label(if running { "查询中..." } else { "查询" })
+                                .on_click(cx.listener(|this, _ev, window, cx| {
+                                    this.start_query(window, cx);
+                                })),
+                        ),
+                ),
             )
             .child(
-                div()
-                    .flex_1()
-                    .flex()
-                    .flex_col()
-                    .bg(card_bg)
-                    .rounded_lg()
-                    .paddings(card_padding)
-                    .gap(px(CARD_GAP))
+                Card::new()
                     .child(div().text_sm().text_color(white()).child("输出"))
                     .child(
                         div()

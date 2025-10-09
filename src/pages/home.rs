@@ -1,8 +1,6 @@
 use gpui::*;
 use gpui_component::StyledExt;
 
-use crate::CARD_BG;
-use crate::CARD_PADDING;
 use crate::COMMON_GAP;
 use crate::COMMON_PADDING_M;
 use crate::MainView;
@@ -11,6 +9,7 @@ use crate::pages::utils::format_bytes;
 use crate::plugins::system::basic_info::BasicInfo;
 use crate::plugins::system::basic_info::collect_basic_info;
 use crate::plugins::system::dynamic_info::DynamicInfo;
+use crate::comps::Card;
 
 pub struct HomePage {
     basic_info: Option<BasicInfo>,
@@ -72,10 +71,7 @@ impl Render for HomePage {
         self.basic_load(cx);
         self.dynamic_load(cx);
 
-        let card_bg = rgb(CARD_BG);
-
         let page_padding = Edges::all(px(PAGE_PADDING));
-        let card_padding = Edges::all(px(CARD_PADDING));
 
         div()
             .v_flex()
@@ -87,11 +83,7 @@ impl Render for HomePage {
                     .flex()
                     .gap(px(COMMON_GAP))
                     .child(
-                        div()
-                            .flex_1()
-                            .bg(card_bg)
-                            .rounded_lg()
-                            .paddings(card_padding)
+                        Card::new()
                             .child(
                                 div()
                                     .text_lg()
@@ -110,11 +102,7 @@ impl Render for HomePage {
                             ),
                     )
                     .child(
-                        div()
-                            .flex_1()
-                            .bg(card_bg)
-                            .rounded_lg()
-                            .paddings(card_padding)
+                        Card::new()
                             .child(
                                 div()
                                     .text_lg()
@@ -140,11 +128,7 @@ impl Render for HomePage {
                     .flex()
                     .gap(px(COMMON_GAP))
                     .child(
-                        div()
-                            .flex_1()
-                            .bg(card_bg)
-                            .rounded_lg()
-                            .paddings(card_padding)
+                        Card::new()
                             .child(
                                 div()
                                     .text_lg()
@@ -159,11 +143,7 @@ impl Render for HomePage {
                             .child(self.build_info("频率".to_string(), format!("{} MHz", info.cpu.frequency))),
                     )
                     .child(
-                        div()
-                            .flex_1()
-                            .bg(card_bg)
-                            .rounded_lg()
-                            .paddings(card_padding)
+                        Card::new()
                             .child(
                                 div()
                                     .text_lg()
