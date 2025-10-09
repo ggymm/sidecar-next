@@ -84,7 +84,7 @@ impl Render for HashPage {
         cx: &mut Context<Self>,
     ) -> impl IntoElement {
         let input_type = self.input_type.clone();
-        
+
         page()
             .size_full()
             .child(
@@ -95,7 +95,7 @@ impl Render for HashPage {
                         .justify_between()
                         .child(name("输入类型"))
                         .child(
-                            div().flex().flex_col().justify_end().p_5().child(
+                            div().flex().flex_col().justify_end().p_2().child(
                                 RadioGroup::horizontal("input-type")
                                     .selected_index(match input_type {
                                         InputType::Text => Some(0),

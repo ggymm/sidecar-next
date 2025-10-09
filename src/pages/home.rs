@@ -36,7 +36,7 @@ impl HomePage {
     ) -> impl IntoElement {
         div()
             .flex()
-            .py_4()
+            .py_2()
             .child(div().w_48().text_sm().text_color(white()).child(label))
             .child(div().ml_5().flex_1().text_sm().text_color(white()).child(value))
     }

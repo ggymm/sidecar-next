@@ -78,7 +78,7 @@ impl Render for CertPage {
             .size_full()
             .child(
                 card()
-                    .h(px(240.))
+                    .h_64()
                     .child(name("证书"))
                     .child(text(&self.input, |input| input.h_full())),
             )

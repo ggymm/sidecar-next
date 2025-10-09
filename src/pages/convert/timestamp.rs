@@ -126,7 +126,7 @@ impl Render for TimestampPage {
                                 .flex()
                                 .items_center()
                                 .gap_5()
-                                .child(text(&self.ts_input, |input| input.w(px(240.))))
+                                .child(text(&self.ts_input, |input| input.w_64()))
                                 .child(
                                     Button::new("update_timestamp")
                                         .info()
@@ -146,7 +146,7 @@ impl Render for TimestampPage {
                         .items_center()
                         .justify_between()
                         .child(name("时区"))
-                        .child(div().flex().w(px(360.0)).child(text(&self.tz_input, |input| input))),
+                        .child(div().flex().w_96().child(text(&self.tz_input, |input| input))),
                 ),
             )
             .child(
@@ -159,7 +159,7 @@ impl Render for TimestampPage {
                         .child(
                             div()
                                 .text_sm()
-                                .text_color(rgb(0xA0A0A0))
+                                .text_color(white())
                                 .child(self.common_output.clone()),
                         ),
                 ),
@@ -174,7 +174,7 @@ impl Render for TimestampPage {
                         .child(
                             div()
                                 .text_sm()
-                                .text_color(rgb(0xA0A0A0))
+                                .text_color(white())
                                 .child(self.iso8601_output.clone()),
                         ),
                 ),
@@ -189,7 +189,7 @@ impl Render for TimestampPage {
                         .child(
                             div()
                                 .text_sm()
-                                .text_color(rgb(0xA0A0A0))
+                                .text_color(white())
                                 .child(self.rfc7231_output.clone()),
                         ),
                 ),

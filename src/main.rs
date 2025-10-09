@@ -375,8 +375,8 @@ impl Render for MainView {
                                     .items_center()
                                     .border_b_1()
                                     .border_color(rgb(0x404040))
-                                    .px(px(20.))
-                                    .py(px(12.))
+                                    .px_5()
+                                    .py_3()
                                     .child(
                                         div()
                                             .text_lg()

@@ -133,7 +133,7 @@ impl Render for QrcodePage {
             )
             .child(
                 card()
-                    .h(px(240.))
+                    .h_64()
                     .child(name("解析结果"))
                     .child(text(&self.output, |input| input.h_full())),
             )
