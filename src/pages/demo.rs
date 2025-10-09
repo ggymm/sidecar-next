@@ -2,13 +2,9 @@ use gpui::*;
 use gpui_component::StyledExt;
 use gpui_component::input::InputEvent;
 use gpui_component::input::InputState;
-use gpui_component::input::TextInput;
 
-use crate::INPUT_BG;
-use crate::INPUT_BORDER;
-use crate::INPUT_PADDING;
 use crate::MainView;
-use crate::comps::{card, page};
+use crate::comps::{card, page, text};
 
 pub struct DemoPage {
     input1: Entity<InputState>,
@@ -60,9 +56,6 @@ impl Render for DemoPage {
         _window: &mut Window,
         _cx: &mut Context<Self>,
     ) -> impl IntoElement {
-        let input_bg = rgb(INPUT_BG);
-        let input_padding = Edges::all(px(INPUT_PADDING));
-
         page().child(
             div()
                 .v_flex()
@@ -72,44 +65,13 @@ impl Render for DemoPage {
                     card()
                         .h(px(240.))
                         .child(div().text_sm().text_color(white()).child("输入框测试 1"))
-                        .child(
-                            div()
-                                .flex_1()
-                                .bg(input_bg)
-                                .border_1()
-                                .border_color(rgb(INPUT_BORDER))
-                                .rounded_lg()
-                                .overflow_hidden()
-                                .paddings(input_padding)
-                                .child(
-                                    TextInput::new(&self.input1)
-                                        .appearance(false)
-                                        .focus_bordered(false)
-                                        .text_color(white())
-                                        .cleanable(),
-                                ),
-                        ),
+                        .child(text(&self.input1, |input| input.cleanable()).overflow_hidden()),
                 )
                 .child(
                     card()
                         .h(px(240.))
                         .child(div().text_sm().text_color(white()).child("输入框测试 2"))
-                        .child(
-                            div()
-                                .flex_1()
-                                .bg(input_bg)
-                                .border_1()
-                                .border_color(rgb(INPUT_BORDER))
-                                .rounded_lg()
-                                .paddings(input_padding)
-                                .child(
-                                    TextInput::new(&self.input2)
-                                        .appearance(false)
-                                        .focus_bordered(false)
-                                        .text_color(white())
-                                        .h_full(),
-                                ),
-                        ),
+                        .child(text(&self.input2, |input| input)),
                 ),
         )
     }

@@ -2,19 +2,14 @@ use gpui::*;
 use gpui_component::button::Button;
 use gpui_component::button::ButtonVariants;
 use gpui_component::input::InputState;
-use gpui_component::input::TextInput;
 use gpui_component::radio::RadioGroup;
 use gpui_component::{Disableable, StyledExt};
 
-use crate::COMMON_GAP;
-use crate::INPUT_BG;
-use crate::INPUT_BORDER;
-use crate::INPUT_PADDING;
 use crate::MainView;
-use crate::comps::card;
-use crate::comps::page;
+use crate::comps::{card, page, text};
 use crate::plugins::hash::calc_file_hash;
 use crate::plugins::hash::calc_text_hash;
+use crate::{COMMON_GAP, COMMON_PADDING};
 
 #[derive(Clone, Debug, PartialEq)]
 enum InputType {
@@ -88,20 +83,19 @@ impl Render for HashPage {
     ) -> impl IntoElement {
         let input_type = self.input_type.clone();
 
-        let input_bg = rgb(INPUT_BG);
-        let input_padding = Edges::all(px(INPUT_PADDING));
+        let common_padding = Edges::all(px(COMMON_PADDING));
 
         page()
             .size_full()
             .child(
-                card().flex_1().child(
+                card().child(
                     div()
                         .flex()
                         .items_center()
                         .justify_between()
                         .child(div().text_sm().text_color(white()).child("输入类型"))
                         .child(
-                            div().flex().flex_col().justify_end().paddings(input_padding).child(
+                            div().flex().flex_col().justify_end().paddings(common_padding).child(
                                 RadioGroup::horizontal("input-type")
                                     .selected_index(match input_type {
                                         InputType::Text => Some(0),
@@ -153,45 +147,15 @@ impl Render for HashPage {
                                     ),
                             ),
                     )
-                    .child(
-                        div()
-                            .flex_1()
-                            .bg(input_bg)
-                            .border_1()
-                            .border_color(rgb(INPUT_BORDER))
-                            .rounded_lg()
-                            .paddings(input_padding)
-                            .child(
-                                TextInput::new(&self.input)
-                                    .appearance(false)
-                                    .focus_bordered(false)
-                                    .text_color(white())
-                                    .h_full(),
-                            ),
-                    ),
+                    .child(text(&self.input, |input| input.h_full())),
             )
             .child(
                 card()
                     .flex_1()
                     .child(div().text_sm().text_color(white()).child("输出结果"))
-                    .child(
-                        div()
-                            .flex_1()
-                            .bg(input_bg)
-                            .border_1()
-                            .border_color(rgb(INPUT_BORDER))
-                            .rounded_lg()
-                            .paddings(input_padding)
-                            .child(
-                                TextInput::new(&self.output)
-                                    .appearance(false)
-                                    .focus_bordered(false)
-                                    .text_color(white())
-                                    .font_family("monospace")
-                                    .disabled(true)
-                                    .h_full(),
-                            ),
-                    ),
+                    .child(text(&self.output, |input| {
+                        input.h_full().font_family("monospace").disabled(true)
+                    })),
             )
     }
 }

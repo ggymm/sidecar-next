@@ -3,11 +3,22 @@ use gpui_component::StyledExt;
 use gpui_component::input::InputState;
 use gpui_component::input::TextInput;
 
-use crate::INPUT_BG;
-use crate::INPUT_BORDER;
-use crate::INPUT_PADDING;
+pub const INPUT_BG: u32 = 0x242424;
+pub const INPUT_BORDER: u32 = 0x404040;
+pub const INPUT_PADDING: f32 = 4.0;
 
-pub fn text_area(state: &Entity<InputState>) -> Div {
+fn input(state: &Entity<InputState>) -> TextInput {
+    TextInput::new(state)
+        .appearance(false)
+        .focus_bordered(false)
+        .text_color(white())
+}
+
+pub fn text(
+    state: &Entity<InputState>,
+    config: impl FnOnce(TextInput) -> TextInput,
+) -> Div {
+    let input = config(input(state));
     div()
         .flex_1()
         .bg(rgb(INPUT_BG))
@@ -15,11 +26,5 @@ pub fn text_area(state: &Entity<InputState>) -> Div {
         .border_color(rgb(INPUT_BORDER))
         .rounded_lg()
         .paddings(Edges::all(px(INPUT_PADDING)))
-        .child(
-            TextInput::new(state)
-                .appearance(false)
-                .focus_bordered(false)
-                .text_color(white())
-                .h_full(),
-        )
+        .child(input)
 }

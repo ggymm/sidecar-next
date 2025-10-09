@@ -6,12 +6,10 @@ use gpui_component::ContextModal;
 use gpui_component::button::Button;
 use gpui_component::button::ButtonVariants;
 use gpui_component::input::InputState;
-use gpui_component::input::TextInput;
 
 use crate::COMMON_GAP;
-use crate::INPUT_BG;
 use crate::MainView;
-use crate::comps::{card, page};
+use crate::comps::{card, page, text};
 
 fn gen_mac() -> String {
     let mut x = SystemTime::now()
@@ -88,8 +86,6 @@ impl RandomPage {
         output: Entity<InputState>,
         generate: fn() -> String,
     ) -> impl IntoElement {
-        let input_bg = rgb(INPUT_BG);
-
         let output_for_gen = output.clone();
         let output_for_copy = output.clone();
 
@@ -105,13 +101,7 @@ impl RandomPage {
                         .flex()
                         .items_center()
                         .gap(px(COMMON_GAP))
-                        .child(
-                            TextInput::new(&output)
-                                .w(px(480.))
-                                .bg(input_bg)
-                                .focus_bordered(false)
-                                .text_color(white()),
-                        )
+                        .child(text(&output, |input| input.w(px(480.))))
                         .child(
                             Button::new(("gen", output.entity_id()))
                                 .info()
@@ -147,7 +137,6 @@ impl Render for RandomPage {
         cx: &mut Context<Self>,
     ) -> impl IntoElement {
         page()
-            .size_full()
             .child(self.build_item(cx, "MAC地址", self.mac_output.clone(), gen_mac))
             .child(self.build_item(cx, "UUID.v4", self.uuid_output.clone(), gen_uuid))
             .child(self.build_item(cx, "手机号码", self.phone_output.clone(), gen_phone))

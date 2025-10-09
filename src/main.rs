@@ -42,10 +42,6 @@ mod comps;
 mod pages;
 mod plugins;
 
-pub const INPUT_BG: u32 = 0x242424;
-pub const INPUT_COLOR: u32 = 0xffffff;
-pub const INPUT_BORDER: u32 = 0x404040;
-pub const INPUT_PADDING: f32 = 4.0;
 pub const LABEL_COLOR: u32 = 0xffffff;
 pub const COMMON_GAP: f32 = 20.0;
 pub const COMMON_PADDING: f32 = 20.0;

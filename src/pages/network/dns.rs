@@ -1,17 +1,12 @@
 use gpui::*;
 use gpui_component::Disableable;
-use gpui_component::StyledExt;
 use gpui_component::button::Button;
 use gpui_component::button::ButtonVariants;
 use gpui_component::input::InputState;
-use gpui_component::input::TextInput;
 
 use crate::COMMON_GAP;
-use crate::INPUT_BG;
-use crate::INPUT_BORDER;
-use crate::INPUT_PADDING;
 use crate::MainView;
-use crate::comps::{card, page};
+use crate::comps::{card, page, text};
 use crate::plugins::dns::start_dns_query;
 
 pub struct DnsPage {
@@ -98,35 +93,17 @@ impl Render for DnsPage {
         _window: &mut Window,
         cx: &mut Context<Self>,
     ) -> impl IntoElement {
-        let input_bg = rgb(INPUT_BG);
-
-        let input_padding = Edges::all(px(INPUT_PADDING));
-
         let running = self.running;
 
         page()
             .size_full()
             .child(
-                card().flex_1().child(
+                card().child(
                     div()
                         .flex()
                         .items_center()
                         .gap(px(COMMON_GAP))
-                        .child(
-                            div()
-                                .flex_1()
-                                .bg(input_bg)
-                                .border_1()
-                                .border_color(rgb(INPUT_BORDER))
-                                .rounded_lg()
-                                .paddings(input_padding)
-                                .child(
-                                    TextInput::new(&self.input)
-                                        .appearance(false)
-                                        .focus_bordered(false)
-                                        .text_color(white()),
-                                ),
-                        )
+                        .child(text(&self.input, |input| input))
                         .child(
                             Button::new("dns-query")
                                 .primary()
@@ -142,24 +119,9 @@ impl Render for DnsPage {
                 card()
                     .flex_1()
                     .child(div().text_sm().text_color(white()).child("输出"))
-                    .child(
-                        div()
-                            .flex_1()
-                            .bg(input_bg)
-                            .border_1()
-                            .border_color(rgb(INPUT_BORDER))
-                            .rounded_lg()
-                            .paddings(input_padding)
-                            .child(
-                                TextInput::new(&self.output)
-                                    .appearance(false)
-                                    .focus_bordered(false)
-                                    .text_color(white())
-                                    .font_family("monospace")
-                                    .disabled(true)
-                                    .h_full(),
-                            ),
-                    ),
+                    .child(text(&self.output, |input| {
+                        input.font_family("monospace").disabled(true)
+                    })),
             )
     }
 }

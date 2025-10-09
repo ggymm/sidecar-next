@@ -5,13 +5,11 @@ use gpui::*;
 use gpui_component::button::Button;
 use gpui_component::button::ButtonVariants;
 use gpui_component::input::InputState;
-use gpui_component::input::TextInput;
 
 use crate::COMMON_GAP;
-use crate::INPUT_BG;
 use crate::MainView;
-use crate::comps::card;
 use crate::comps::page;
+use crate::comps::{card, text};
 
 pub struct TimestampPage {
     tz_input: Entity<InputState>,
@@ -114,9 +112,6 @@ impl Render for TimestampPage {
                 self.last_input = in_val;
             }
         }
-
-        let input_bg = rgb(INPUT_BG);
-
         page()
             .child(
                 card().flex_1().child(
@@ -130,13 +125,7 @@ impl Render for TimestampPage {
                                 .flex()
                                 .items_center()
                                 .gap(px(COMMON_GAP))
-                                .child(
-                                    TextInput::new(&self.ts_input)
-                                        .w(px(240.))
-                                        .bg(input_bg)
-                                        .focus_bordered(false)
-                                        .text_color(white()),
-                                )
+                                .child(text(&self.ts_input, |input| input.w(px(240.))))
                                 .child(
                                     Button::new("update_timestamp")
                                         .info()
@@ -156,13 +145,7 @@ impl Render for TimestampPage {
                         .items_center()
                         .justify_between()
                         .child(div().text_sm().text_color(white()).child("时区"))
-                        .child(
-                            TextInput::new(&self.tz_input)
-                                .w(px(360.))
-                                .bg(input_bg)
-                                .focus_bordered(false)
-                                .text_color(white()),
-                        ),
+                        .child(text(&self.tz_input, |input| input.w(px(360.)))),
                 ),
             )
             .child(

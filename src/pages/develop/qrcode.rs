@@ -1,17 +1,12 @@
 use std::path::PathBuf;
 
 use gpui::*;
-use gpui_component::StyledExt;
 use gpui_component::button::Button;
 use gpui_component::button::ButtonVariants;
 use gpui_component::input::InputState;
-use gpui_component::input::TextInput;
 
-use crate::INPUT_BG;
-use crate::INPUT_BORDER;
-use crate::INPUT_PADDING;
 use crate::MainView;
-use crate::comps::{card, page};
+use crate::comps::{card, page, text};
 use crate::plugins::qrcode::parse_qrcode;
 
 pub struct QrcodePage {
@@ -95,10 +90,6 @@ impl Render for QrcodePage {
         _window: &mut Window,
         cx: &mut Context<Self>,
     ) -> impl IntoElement {
-        let input_bg = rgb(INPUT_BG);
-
-        let input_padding = Edges::all(px(INPUT_PADDING));
-
         page()
             .size_full()
             .child(
@@ -141,22 +132,7 @@ impl Render for QrcodePage {
                 card()
                     .h(px(240.))
                     .child(div().text_sm().text_color(white()).child("解析结果"))
-                    .child(
-                        div()
-                            .flex_1()
-                            .bg(input_bg)
-                            .border_1()
-                            .border_color(rgb(INPUT_BORDER))
-                            .rounded_lg()
-                            .paddings(input_padding)
-                            .child(
-                                TextInput::new(&self.output)
-                                    .appearance(false)
-                                    .focus_bordered(false)
-                                    .text_color(white())
-                                    .h_full(),
-                            ),
-                    ),
+                    .child(text(&self.output, |input| input.h_full())),
             )
     }
 }

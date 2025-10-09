@@ -1,15 +1,9 @@
 use gpui::*;
-use gpui_component::StyledExt;
 use gpui_component::input::InputState;
-use gpui_component::input::TextInput;
 use openssl::x509::X509;
 
-use crate::INPUT_BG;
-use crate::INPUT_BORDER;
-use crate::INPUT_PADDING;
 use crate::MainView;
-use crate::comps::card;
-use crate::comps::page;
+use crate::comps::{card, page, text};
 
 pub struct CertPage {
     input: Entity<InputState>,
@@ -77,53 +71,19 @@ impl Render for CertPage {
             }
         }
 
-        let input_bg = rgb(INPUT_BG);
-
-        let input_padding = Edges::all(px(INPUT_PADDING));
-
         page()
             .size_full()
             .child(
                 card()
                     .h(px(240.))
                     .child(div().text_sm().text_color(white()).child("证书"))
-                    .child(
-                        div()
-                            .flex_1()
-                            .bg(input_bg)
-                            .border_1()
-                            .border_color(rgb(INPUT_BORDER))
-                            .rounded_lg()
-                            .paddings(input_padding)
-                            .child(
-                                TextInput::new(&self.input)
-                                    .appearance(false)
-                                    .focus_bordered(false)
-                                    .text_color(white())
-                                    .h_full(),
-                            ),
-                    ),
+                    .child(text(&self.input, |input| input.h_full())),
             )
             .child(
                 card()
                     .flex_1()
                     .child(div().text_sm().text_color(white()).child("解析结果"))
-                    .child(
-                        div()
-                            .flex_1()
-                            .bg(input_bg)
-                            .border_1()
-                            .border_color(rgb(INPUT_BORDER))
-                            .rounded_lg()
-                            .paddings(input_padding)
-                            .child(
-                                TextInput::new(&self.output)
-                                    .appearance(false)
-                                    .focus_bordered(false)
-                                    .text_color(white())
-                                    .h_full(),
-                            ),
-                    ),
+                    .child(text(&self.output, |input| input.h_full())),
             )
     }
 }
