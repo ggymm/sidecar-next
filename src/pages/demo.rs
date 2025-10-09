@@ -5,6 +5,7 @@ use gpui_component::input::InputState;
 
 use crate::MainView;
 use crate::comps::card;
+use crate::comps::name;
 use crate::comps::page;
 use crate::comps::text;
 
@@ -66,13 +67,13 @@ impl Render for DemoPage {
                 .child(
                     card()
                         .h(px(240.))
-                        .child(div().text_sm().text_color(white()).child("输入框测试 1"))
+                        .child(name("输入框测试 1"))
                         .child(text(&self.input1, |input| input.cleanable()).overflow_hidden()),
                 )
                 .child(
                     card()
                         .h(px(240.))
-                        .child(div().text_sm().text_color(white()).child("输入框测试 2"))
+                        .child(name("输入框测试 2"))
                         .child(text(&self.input2, |input| input)),
                 ),
         )

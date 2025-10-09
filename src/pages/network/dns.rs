@@ -7,6 +7,7 @@ use gpui_component::input::InputState;
 use crate::COMMON_GAP;
 use crate::MainView;
 use crate::comps::card;
+use crate::comps::name;
 use crate::comps::page;
 use crate::comps::text;
 use crate::plugins::dns::start_dns_query;
@@ -117,13 +118,8 @@ impl Render for DnsPage {
                         ),
                 ),
             )
-            .child(
-                card()
-                    .flex_1()
-                    .child(div().text_sm().text_color(white()).child("输出"))
-                    .child(text(&self.output, |input| {
-                        input.font_family("monospace").disabled(true)
-                    })),
-            )
+            .child(card().flex_1().child(name("输出")).child(text(&self.output, |input| {
+                input.font_family("monospace").disabled(true)
+            })))
     }
 }

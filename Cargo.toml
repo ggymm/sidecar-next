@@ -9,6 +9,8 @@ anyhow = "1"
 base64 = "0.22"
 chrono = "0.4"
 digest = "0.10"
+gpui = "0.2.0"
+gpui-component = "0.2.0"
 hex = "0.4"
 image = "0.25"
 indexmap = "2"
@@ -26,11 +28,6 @@ sys-locale = "0.3"
 encoding_rs = "0.8"
 trust-dns-resolver = { version = "0.23", default-features = false, features = ["tokio-runtime"] }
 
-[dependencies.gpui]
-git = "https://github.com/zed-industries/zed.git"
-
-[dependencies.gpui-component]
-git = "https://github.com/longbridge/gpui-component.git"
 
 #[dependencies.qrcode]
 #version = "0.14"

@@ -18,7 +18,6 @@ pub fn text(
     state: &Entity<InputState>,
     config: impl FnOnce(TextInput) -> TextInput,
 ) -> Div {
-    let input = config(input(state));
     div()
         .flex_1()
         .bg(rgb(INPUT_BG))
@@ -26,5 +25,5 @@ pub fn text(
         .border_color(rgb(INPUT_BORDER))
         .rounded_lg()
         .paddings(Edges::all(px(INPUT_PADDING)))
-        .child(input)
+        .child(config(input(state)))
 }

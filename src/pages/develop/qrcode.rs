@@ -7,6 +7,7 @@ use gpui_component::input::InputState;
 
 use crate::MainView;
 use crate::comps::card;
+use crate::comps::name;
 use crate::comps::page;
 use crate::comps::text;
 use crate::plugins::qrcode::parse_qrcode;
@@ -102,7 +103,7 @@ impl Render for QrcodePage {
                             .flex()
                             .items_center()
                             .justify_between()
-                            .child(div().text_sm().text_color(white()).child("二维码"))
+                            .child(name("二维码"))
                             .child(
                                 Button::new("choose_file")
                                     .info()
@@ -133,7 +134,7 @@ impl Render for QrcodePage {
             .child(
                 card()
                     .h(px(240.))
-                    .child(div().text_sm().text_color(white()).child("解析结果"))
+                    .child(name("解析结果"))
                     .child(text(&self.output, |input| input.h_full())),
             )
     }

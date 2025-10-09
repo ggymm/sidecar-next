@@ -16,3 +16,16 @@ pub fn card() -> Div {
         .paddings(Edges::all(px(CARD_PADDING)))
         .gap(px(CARD_GAP))
 }
+
+pub fn card_named(title: impl IntoElement) -> Div {
+    div()
+        .flex()
+        .flex_col()
+        .min_w_0()
+        .min_h_0()
+        .bg(rgb(CARD_BG))
+        .rounded_lg()
+        .paddings(Edges::all(px(CARD_PADDING)))
+        .gap(px(CARD_GAP))
+        .child(div().text_sm().text_color(white()).child(title))
+}

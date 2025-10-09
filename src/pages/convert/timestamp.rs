@@ -9,6 +9,7 @@ use gpui_component::input::InputState;
 use crate::COMMON_GAP;
 use crate::MainView;
 use crate::comps::card;
+use crate::comps::name;
 use crate::comps::page;
 use crate::comps::text;
 
@@ -120,7 +121,7 @@ impl Render for TimestampPage {
                         .flex()
                         .items_center()
                         .justify_between()
-                        .child(div().text_sm().text_color(white()).child("时间戳"))
+                        .child(name("时间戳"))
                         .child(
                             div()
                                 .flex()
@@ -145,7 +146,7 @@ impl Render for TimestampPage {
                         .flex()
                         .items_center()
                         .justify_between()
-                        .child(div().text_sm().text_color(white()).child("时区"))
+                        .child(name("时区"))
                         .child(div().flex().w(px(360.0)).child(text(&self.tz_input, |input| input))),
                 ),
             )
@@ -155,7 +156,7 @@ impl Render for TimestampPage {
                         .flex()
                         .items_center()
                         .justify_between()
-                        .child(div().text_sm().text_color(white()).child("Common"))
+                        .child(name("Common"))
                         .child(
                             div()
                                 .text_sm()
@@ -170,7 +171,7 @@ impl Render for TimestampPage {
                         .flex()
                         .items_center()
                         .justify_between()
-                        .child(div().text_sm().text_color(white()).child("ISO 8601"))
+                        .child(name("ISO 8601"))
                         .child(
                             div()
                                 .text_sm()
@@ -185,7 +186,7 @@ impl Render for TimestampPage {
                         .flex()
                         .items_center()
                         .justify_between()
-                        .child(div().text_sm().text_color(white()).child("RFC 7231"))
+                        .child(name("RFC 7231"))
                         .child(
                             div()
                                 .text_sm()

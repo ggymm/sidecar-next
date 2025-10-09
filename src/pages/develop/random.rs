@@ -10,6 +10,7 @@ use gpui_component::input::InputState;
 use crate::COMMON_GAP;
 use crate::MainView;
 use crate::comps::card;
+use crate::comps::name;
 use crate::comps::page;
 use crate::comps::text;
 
@@ -97,7 +98,7 @@ impl RandomPage {
                 .flex_row()
                 .items_center()
                 .justify_between()
-                .child(div().text_sm().text_color(white()).child(label.to_string()))
+                .child(name(label.to_string()))
                 .child(
                     div()
                         .flex()
