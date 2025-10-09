@@ -148,6 +148,7 @@ impl Render for RandomPage {
         cx: &mut Context<Self>,
     ) -> impl IntoElement {
         Page::new()
+            .size_full()
             .child(self.build_item(cx, "MAC地址", self.mac_output.clone(), gen_mac))
             .child(self.build_item(cx, "UUID.v4", self.uuid_output.clone(), gen_uuid))
             .child(self.build_item(cx, "手机号码", self.phone_output.clone(), gen_phone))

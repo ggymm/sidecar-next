@@ -82,6 +82,8 @@ impl Render for CertPage {
         let input_padding = Edges::all(px(INPUT_PADDING));
 
         Page::new()
+            .w_full()
+            .h_full()
             .child(
                 Card::new()
                     .height(px(240.))

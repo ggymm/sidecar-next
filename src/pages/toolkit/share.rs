@@ -20,6 +20,6 @@ impl Render for SharePage {
         _window: &mut Window,
         _cx: &mut Context<Self>,
     ) -> impl IntoElement {
-        Page::new()
+        Page::new().size_full()
     }
 }

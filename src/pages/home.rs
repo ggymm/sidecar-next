@@ -72,6 +72,8 @@ impl Render for HomePage {
         self.dynamic_load(cx);
 
         Page::new()
+            .w_full()
+            .h_full()
             .child(if let Some(info) = &self.basic_info {
                 div()
                     .flex()

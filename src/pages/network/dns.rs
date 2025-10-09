@@ -106,6 +106,8 @@ impl Render for DnsPage {
         let running = self.running;
 
         Page::new()
+            .w_full()
+            .h_full()
             .child(
                 Card::new().child(
                     div()

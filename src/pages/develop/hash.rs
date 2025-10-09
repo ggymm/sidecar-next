@@ -92,6 +92,8 @@ impl Render for HashPage {
         let input_padding = Edges::all(px(INPUT_PADDING));
 
         Page::new()
+            .w_full()
+            .h_full()
             .child(
                 Card::new().child(
                     div()
