@@ -4,8 +4,7 @@ use gpui_component::StyledExt;
 use crate::COMMON_GAP;
 use crate::COMMON_PADDING_M;
 use crate::MainView;
-use crate::comps::Card;
-use crate::comps::Page;
+use crate::comps::{card, page};
 use crate::pages::utils::format_bytes;
 use crate::plugins::system::basic_info::BasicInfo;
 use crate::plugins::system::basic_info::collect_basic_info;
@@ -71,15 +70,15 @@ impl Render for HomePage {
         self.basic_load(cx);
         self.dynamic_load(cx);
 
-        Page::new()
-            .w_full()
-            .h_full()
+        page()
+            .size_full()
             .child(if let Some(info) = &self.basic_info {
                 div()
                     .flex()
                     .gap(px(COMMON_GAP))
                     .child(
-                        Card::new()
+                        card()
+                            .flex_1()
                             .child(
                                 div()
                                     .text_lg()
@@ -98,7 +97,8 @@ impl Render for HomePage {
                             ),
                     )
                     .child(
-                        Card::new()
+                        card()
+                            .flex_1()
                             .child(
                                 div()
                                     .text_lg()
@@ -124,7 +124,8 @@ impl Render for HomePage {
                     .flex()
                     .gap(px(COMMON_GAP))
                     .child(
-                        Card::new()
+                        card()
+                            .flex_1()
                             .child(
                                 div()
                                     .text_lg()
@@ -139,7 +140,8 @@ impl Render for HomePage {
                             .child(self.build_info("频率".to_string(), format!("{} MHz", info.cpu.frequency))),
                     )
                     .child(
-                        Card::new()
+                        card()
+                            .flex_1()
                             .child(
                                 div()
                                     .text_lg()

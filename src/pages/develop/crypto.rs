@@ -1,7 +1,7 @@
 use gpui::*;
 
 use crate::MainView;
-use crate::comps::Page;
+use crate::comps::page;
 
 pub struct CryptoPage;
 
@@ -20,7 +20,7 @@ impl Render for CryptoPage {
         _window: &mut Window,
         _cx: &mut Context<Self>,
     ) -> impl IntoElement {
-        Page::new().child(
+        page().child(
             div()
                 .flex_1()
                 .flex()

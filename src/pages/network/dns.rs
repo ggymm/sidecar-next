@@ -11,8 +11,7 @@ use crate::INPUT_BG;
 use crate::INPUT_BORDER;
 use crate::INPUT_PADDING;
 use crate::MainView;
-use crate::comps::Card;
-use crate::comps::Page;
+use crate::comps::{card, page};
 use crate::plugins::dns::start_dns_query;
 
 pub struct DnsPage {
@@ -105,11 +104,10 @@ impl Render for DnsPage {
 
         let running = self.running;
 
-        Page::new()
-            .w_full()
-            .h_full()
+        page()
+            .size_full()
             .child(
-                Card::new().child(
+                card().flex_1().child(
                     div()
                         .flex()
                         .items_center()
@@ -141,7 +139,8 @@ impl Render for DnsPage {
                 ),
             )
             .child(
-                Card::new()
+                card()
+                    .flex_1()
                     .child(div().text_sm().text_color(white()).child("输出"))
                     .child(
                         div()

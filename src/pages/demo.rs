@@ -8,8 +8,7 @@ use crate::INPUT_BG;
 use crate::INPUT_BORDER;
 use crate::INPUT_PADDING;
 use crate::MainView;
-use crate::comps::Card;
-use crate::comps::Page;
+use crate::comps::{card, page};
 
 pub struct DemoPage {
     input1: Entity<InputState>,
@@ -64,56 +63,54 @@ impl Render for DemoPage {
         let input_bg = rgb(INPUT_BG);
         let input_padding = Edges::all(px(INPUT_PADDING));
 
-        Page::new()
-            .child(
-                div()
-                    .v_flex()
-                    .gap_4()
-                    .flex_1()
-                    .child(
-                        Card::new()
-                            .height(px(240.))
-                            .child(div().text_sm().text_color(white()).child("输入框测试 1"))
-                            .child(
-                                div()
-                                    .flex_1()
-                                    .bg(input_bg)
-                                    .border_1()
-                                    .border_color(rgb(INPUT_BORDER))
-                                    .rounded_lg()
-                                    .overflow_hidden()
-                                    .paddings(input_padding)
-                                    .child(
-                                        TextInput::new(&self.input1)
-                                            .appearance(false)
-                                            .focus_bordered(false)
-                                            .text_color(white())
-                                            .cleanable(),
-                                    ),
-                            ),
-                    )
-                    .child(
-                        Card::new()
-                            .height(px(240.))
-                            .child(div().text_sm().text_color(white()).child("输入框测试 2"))
-                            .child(
-                                div()
-                                    .flex_1()
-                                    .bg(input_bg)
-                                    .border_1()
-                                    .border_color(rgb(INPUT_BORDER))
-                                    .rounded_lg()
-                                    .paddings(input_padding)
-                                    .child(
-                                        TextInput::new(&self.input2)
-                                            .appearance(false)
-                                            .focus_bordered(false)
-                                            .text_color(white())
-                                            .h_full(),
-                                    ),
-                            ),
-                    ),
-            )
-            .into_element()
+        page().child(
+            div()
+                .v_flex()
+                .gap_4()
+                .flex_1()
+                .child(
+                    card()
+                        .h(px(240.))
+                        .child(div().text_sm().text_color(white()).child("输入框测试 1"))
+                        .child(
+                            div()
+                                .flex_1()
+                                .bg(input_bg)
+                                .border_1()
+                                .border_color(rgb(INPUT_BORDER))
+                                .rounded_lg()
+                                .overflow_hidden()
+                                .paddings(input_padding)
+                                .child(
+                                    TextInput::new(&self.input1)
+                                        .appearance(false)
+                                        .focus_bordered(false)
+                                        .text_color(white())
+                                        .cleanable(),
+                                ),
+                        ),
+                )
+                .child(
+                    card()
+                        .h(px(240.))
+                        .child(div().text_sm().text_color(white()).child("输入框测试 2"))
+                        .child(
+                            div()
+                                .flex_1()
+                                .bg(input_bg)
+                                .border_1()
+                                .border_color(rgb(INPUT_BORDER))
+                                .rounded_lg()
+                                .paddings(input_padding)
+                                .child(
+                                    TextInput::new(&self.input2)
+                                        .appearance(false)
+                                        .focus_bordered(false)
+                                        .text_color(white())
+                                        .h_full(),
+                                ),
+                        ),
+                ),
+        )
     }
 }

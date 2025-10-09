@@ -1,7 +1,7 @@
 use gpui::*;
 
 use crate::MainView;
-use crate::comps::Page;
+use crate::comps::page;
 
 pub struct ManualPage;
 
@@ -20,6 +20,6 @@ impl Render for ManualPage {
         _window: &mut Window,
         _cx: &mut Context<Self>,
     ) -> impl IntoElement {
-        Page::new().size_full()
+        page().size_full()
     }
 }

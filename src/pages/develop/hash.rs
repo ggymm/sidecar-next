@@ -11,8 +11,8 @@ use crate::INPUT_BG;
 use crate::INPUT_BORDER;
 use crate::INPUT_PADDING;
 use crate::MainView;
-use crate::comps::Card;
-use crate::comps::Page;
+use crate::comps::card;
+use crate::comps::page;
 use crate::plugins::hash::calc_file_hash;
 use crate::plugins::hash::calc_text_hash;
 
@@ -91,11 +91,10 @@ impl Render for HashPage {
         let input_bg = rgb(INPUT_BG);
         let input_padding = Edges::all(px(INPUT_PADDING));
 
-        Page::new()
-            .w_full()
-            .h_full()
+        page()
+            .size_full()
             .child(
-                Card::new().child(
+                card().flex_1().child(
                     div()
                         .flex()
                         .items_center()
@@ -124,7 +123,8 @@ impl Render for HashPage {
                 ),
             )
             .child(
-                Card::new()
+                card()
+                    .flex_1()
                     .child(
                         div()
                             .flex()
@@ -171,7 +171,8 @@ impl Render for HashPage {
                     ),
             )
             .child(
-                Card::new()
+                card()
+                    .flex_1()
                     .child(div().text_sm().text_color(white()).child("输出结果"))
                     .child(
                         div()

@@ -11,8 +11,7 @@ use gpui_component::input::TextInput;
 use crate::COMMON_GAP;
 use crate::INPUT_BG;
 use crate::MainView;
-use crate::comps::Card;
-use crate::comps::Page;
+use crate::comps::{card, page};
 
 fn gen_mac() -> String {
     let mut x = SystemTime::now()
@@ -94,7 +93,7 @@ impl RandomPage {
         let output_for_gen = output.clone();
         let output_for_copy = output.clone();
 
-        Card::new().child(
+        card().flex_1().child(
             div()
                 .flex()
                 .flex_row()
@@ -147,7 +146,7 @@ impl Render for RandomPage {
         _window: &mut Window,
         cx: &mut Context<Self>,
     ) -> impl IntoElement {
-        Page::new()
+        page()
             .size_full()
             .child(self.build_item(cx, "MAC地址", self.mac_output.clone(), gen_mac))
             .child(self.build_item(cx, "UUID.v4", self.uuid_output.clone(), gen_uuid))

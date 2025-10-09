@@ -10,8 +10,8 @@ use gpui_component::input::TextInput;
 use crate::COMMON_GAP;
 use crate::INPUT_BG;
 use crate::MainView;
-use crate::comps::Card;
-use crate::comps::Page;
+use crate::comps::card;
+use crate::comps::page;
 
 pub struct TimestampPage {
     tz_input: Entity<InputState>,
@@ -117,9 +117,9 @@ impl Render for TimestampPage {
 
         let input_bg = rgb(INPUT_BG);
 
-        Page::new()
+        page()
             .child(
-                Card::new().child(
+                card().flex_1().child(
                     div()
                         .flex()
                         .items_center()
@@ -150,7 +150,7 @@ impl Render for TimestampPage {
                 ),
             )
             .child(
-                Card::new().child(
+                card().flex_1().child(
                     div()
                         .flex()
                         .items_center()
@@ -166,7 +166,7 @@ impl Render for TimestampPage {
                 ),
             )
             .child(
-                Card::new().child(
+                card().flex_1().child(
                     div()
                         .flex()
                         .items_center()
@@ -181,7 +181,7 @@ impl Render for TimestampPage {
                 ),
             )
             .child(
-                Card::new().child(
+                card().flex_1().child(
                     div()
                         .flex()
                         .items_center()
@@ -196,7 +196,7 @@ impl Render for TimestampPage {
                 ),
             )
             .child(
-                Card::new().child(
+                card().flex_1().child(
                     div()
                         .flex()
                         .items_center()

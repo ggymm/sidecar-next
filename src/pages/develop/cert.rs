@@ -8,8 +8,8 @@ use crate::INPUT_BG;
 use crate::INPUT_BORDER;
 use crate::INPUT_PADDING;
 use crate::MainView;
-use crate::comps::Card;
-use crate::comps::Page;
+use crate::comps::card;
+use crate::comps::page;
 
 pub struct CertPage {
     input: Entity<InputState>,
@@ -81,12 +81,11 @@ impl Render for CertPage {
 
         let input_padding = Edges::all(px(INPUT_PADDING));
 
-        Page::new()
-            .w_full()
-            .h_full()
+        page()
+            .size_full()
             .child(
-                Card::new()
-                    .height(px(240.))
+                card()
+                    .h(px(240.))
                     .child(div().text_sm().text_color(white()).child("证书"))
                     .child(
                         div()
@@ -106,7 +105,8 @@ impl Render for CertPage {
                     ),
             )
             .child(
-                Card::new()
+                card()
+                    .flex_1()
                     .child(div().text_sm().text_color(white()).child("解析结果"))
                     .child(
                         div()

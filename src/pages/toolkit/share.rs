@@ -1,7 +1,7 @@
 use gpui::*;
 
 use crate::MainView;
-use crate::comps::Page;
+use crate::comps::page;
 
 pub struct SharePage;
 
@@ -20,6 +20,6 @@ impl Render for SharePage {
         _window: &mut Window,
         _cx: &mut Context<Self>,
     ) -> impl IntoElement {
-        Page::new().size_full()
+        page().size_full()
     }
 }
