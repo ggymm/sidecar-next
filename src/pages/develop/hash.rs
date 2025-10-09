@@ -3,16 +3,15 @@ use gpui_component::button::Button;
 use gpui_component::button::ButtonVariants;
 use gpui_component::input::InputState;
 use gpui_component::radio::RadioGroup;
-use gpui_component::{Disableable, StyledExt};
+use gpui_component::Disableable;
 
-use crate::MainView;
 use crate::comps::card;
 use crate::comps::name;
 use crate::comps::page;
 use crate::comps::text;
 use crate::plugins::hash::calc_file_hash;
 use crate::plugins::hash::calc_text_hash;
-use crate::{COMMON_GAP, COMMON_PADDING};
+use crate::MainView;
 
 #[derive(Clone, Debug, PartialEq)]
 enum InputType {
@@ -85,9 +84,7 @@ impl Render for HashPage {
         cx: &mut Context<Self>,
     ) -> impl IntoElement {
         let input_type = self.input_type.clone();
-
-        let common_padding = Edges::all(px(COMMON_PADDING));
-
+        
         page()
             .size_full()
             .child(
@@ -98,7 +95,7 @@ impl Render for HashPage {
                         .justify_between()
                         .child(name("输入类型"))
                         .child(
-                            div().flex().flex_col().justify_end().paddings(common_padding).child(
+                            div().flex().flex_col().justify_end().p_5().child(
                                 RadioGroup::horizontal("input-type")
                                     .selected_index(match input_type {
                                         InputType::Text => Some(0),
@@ -131,7 +128,7 @@ impl Render for HashPage {
                             .child(
                                 div()
                                     .flex()
-                                    .gap(px(COMMON_GAP))
+                                    .gap_5()
                                     .child(
                                         Button::new("browse-file")
                                             .label("选择文件")

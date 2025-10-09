@@ -6,7 +6,6 @@ use gpui_component::button::Button;
 use gpui_component::button::ButtonVariants;
 use gpui_component::input::InputState;
 
-use crate::COMMON_GAP;
 use crate::MainView;
 use crate::comps::card;
 use crate::comps::name;
@@ -126,7 +125,7 @@ impl Render for TimestampPage {
                             div()
                                 .flex()
                                 .items_center()
-                                .gap(px(COMMON_GAP))
+                                .gap_5()
                                 .child(text(&self.ts_input, |input| input.w(px(240.))))
                                 .child(
                                     Button::new("update_timestamp")

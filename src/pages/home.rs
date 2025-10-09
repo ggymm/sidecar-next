@@ -1,8 +1,6 @@
 use gpui::*;
 use gpui_component::StyledExt;
 
-use crate::COMMON_GAP;
-use crate::COMMON_PADDING_M;
 use crate::MainView;
 use crate::comps::card;
 use crate::comps::page;
@@ -38,8 +36,8 @@ impl HomePage {
     ) -> impl IntoElement {
         div()
             .flex()
-            .py(px(COMMON_PADDING_M))
-            .child(div().w(px(180.)).text_sm().text_color(white()).child(label))
+            .py_4()
+            .child(div().w_48().text_sm().text_color(white()).child(label))
             .child(div().ml_5().flex_1().text_sm().text_color(white()).child(value))
     }
 
@@ -76,7 +74,7 @@ impl Render for HomePage {
             .child(if let Some(info) = &self.basic_info {
                 div()
                     .flex()
-                    .gap(px(COMMON_GAP))
+                    .gap_5()
                     .child(
                         card()
                             .flex_1()
@@ -123,7 +121,7 @@ impl Render for HomePage {
             .child(if let Some(info) = &self.basic_info {
                 div()
                     .flex()
-                    .gap(px(COMMON_GAP))
+                    .gap_5()
                     .child(
                         card()
                             .flex_1()

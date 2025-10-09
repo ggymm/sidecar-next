@@ -42,10 +42,6 @@ mod comps;
 mod pages;
 mod plugins;
 
-pub const COMMON_GAP: f32 = 20.0;
-pub const COMMON_PADDING: f32 = 20.0;
-pub const COMMON_PADDING_M: f32 = 12.0;
-
 struct View {
     key: &'static str,
     icon: &'static str,

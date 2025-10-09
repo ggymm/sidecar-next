@@ -7,7 +7,6 @@ use gpui_component::button::Button;
 use gpui_component::button::ButtonVariants;
 use gpui_component::input::InputState;
 
-use crate::COMMON_GAP;
 use crate::MainView;
 use crate::comps::card;
 use crate::comps::name;
@@ -103,7 +102,7 @@ impl RandomPage {
                     div()
                         .flex()
                         .items_center()
-                        .gap(px(COMMON_GAP))
+                        .gap_5()
                         .child(text(&output, |input| input.w(px(480.))))
                         .child(
                             Button::new(("gen", output.entity_id()))
