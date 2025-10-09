@@ -103,7 +103,7 @@ impl RandomPage {
                         .flex()
                         .items_center()
                         .gap_5()
-                        .child(text(&output, |input| input.w(px(480.))))
+                        .child(text(&output, |input| input.w_96()))
                         .child(
                             Button::new(("gen", output.entity_id()))
                                 .info()

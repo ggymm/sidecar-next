@@ -66,13 +66,13 @@ impl Render for DemoPage {
                 .flex_1()
                 .child(
                     card()
-                        .h(px(240.))
+                        .h_64()
                         .child(name("输入框测试 1"))
                         .child(text(&self.input1, |input| input.cleanable()).overflow_hidden()),
                 )
                 .child(
                     card()
-                        .h(px(240.))
+                        .h_64()
                         .child(name("输入框测试 2"))
                         .child(text(&self.input2, |input| input)),
                 ),
