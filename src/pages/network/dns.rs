@@ -6,7 +6,9 @@ use gpui_component::input::InputState;
 
 use crate::COMMON_GAP;
 use crate::MainView;
-use crate::comps::{card, page, text};
+use crate::comps::card;
+use crate::comps::page;
+use crate::comps::text;
 use crate::plugins::dns::start_dns_query;
 
 pub struct DnsPage {

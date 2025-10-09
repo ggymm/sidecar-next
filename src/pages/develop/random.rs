@@ -9,7 +9,9 @@ use gpui_component::input::InputState;
 
 use crate::COMMON_GAP;
 use crate::MainView;
-use crate::comps::{card, page, text};
+use crate::comps::card;
+use crate::comps::page;
+use crate::comps::text;
 
 fn gen_mac() -> String {
     let mut x = SystemTime::now()

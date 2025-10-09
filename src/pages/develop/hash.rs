@@ -6,7 +6,9 @@ use gpui_component::radio::RadioGroup;
 use gpui_component::{Disableable, StyledExt};
 
 use crate::MainView;
-use crate::comps::{card, page, text};
+use crate::comps::card;
+use crate::comps::page;
+use crate::comps::text;
 use crate::plugins::hash::calc_file_hash;
 use crate::plugins::hash::calc_text_hash;
 use crate::{COMMON_GAP, COMMON_PADDING};

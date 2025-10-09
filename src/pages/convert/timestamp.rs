@@ -8,8 +8,9 @@ use gpui_component::input::InputState;
 
 use crate::COMMON_GAP;
 use crate::MainView;
+use crate::comps::card;
 use crate::comps::page;
-use crate::comps::{card, text};
+use crate::comps::text;
 
 pub struct TimestampPage {
     tz_input: Entity<InputState>,
@@ -145,7 +146,7 @@ impl Render for TimestampPage {
                         .items_center()
                         .justify_between()
                         .child(div().text_sm().text_color(white()).child("时区"))
-                        .child(text(&self.tz_input, |input| input.w(px(360.)))),
+                        .child(div().flex().w(px(360.0)).child(text(&self.tz_input, |input| input))),
                 ),
             )
             .child(

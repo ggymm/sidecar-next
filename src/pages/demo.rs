@@ -4,7 +4,9 @@ use gpui_component::input::InputEvent;
 use gpui_component::input::InputState;
 
 use crate::MainView;
-use crate::comps::{card, page, text};
+use crate::comps::card;
+use crate::comps::page;
+use crate::comps::text;
 
 pub struct DemoPage {
     input1: Entity<InputState>,

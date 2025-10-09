@@ -6,7 +6,9 @@ use gpui_component::button::ButtonVariants;
 use gpui_component::input::InputState;
 
 use crate::MainView;
-use crate::comps::{card, page, text};
+use crate::comps::card;
+use crate::comps::page;
+use crate::comps::text;
 use crate::plugins::qrcode::parse_qrcode;
 
 pub struct QrcodePage {
