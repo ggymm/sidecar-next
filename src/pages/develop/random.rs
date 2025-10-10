@@ -3,11 +3,10 @@ use std::time::UNIX_EPOCH;
 
 use gpui::*;
 use gpui_component::ContextModal;
-use gpui_component::button::Button;
-use gpui_component::button::ButtonVariants;
 use gpui_component::input::InputState;
 
 use crate::MainView;
+use crate::comps::button;
 use crate::comps::card;
 use crate::comps::label;
 use crate::comps::page;
@@ -105,8 +104,7 @@ impl RandomPage {
                         .gap_5()
                         .child(textarea(&output, |input| input.w_96()))
                         .child(
-                            Button::new(("gen", output.entity_id()))
-                                .info()
+                            button(cx, ("gen", output.entity_id()))
                                 .label("生成")
                                 .on_click(cx.listener(move |_this, _ev, window, cx| {
                                     let val = generate();
@@ -116,8 +114,7 @@ impl RandomPage {
                                 })),
                         )
                         .child(
-                            Button::new(("copy", output.entity_id()))
-                                .info()
+                            button(cx, ("copy", output.entity_id()))
                                 .label("复制")
                                 .on_click(cx.listener(move |_this, _ev, window, cx| {
                                     let value = output_for_copy.read(cx).value();

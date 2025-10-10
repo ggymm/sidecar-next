@@ -2,11 +2,10 @@ use chrono::DateTime;
 use chrono::FixedOffset;
 use chrono::Utc;
 use gpui::*;
-use gpui_component::button::Button;
-use gpui_component::button::ButtonVariants;
 use gpui_component::input::InputState;
 
 use crate::MainView;
+use crate::comps::button;
 use crate::comps::card;
 use crate::comps::label;
 use crate::comps::page;
@@ -127,15 +126,11 @@ impl Render for TimestampPage {
                                 .items_center()
                                 .gap_5()
                                 .child(textarea(&self.ts_input, |input| input.w_64()))
-                                .child(
-                                    Button::new("update_timestamp")
-                                        .info()
-                                        .label("当前时间")
-                                        .h_full()
-                                        .on_click(cx.listener(|this, _ev, window, cx| {
-                                            this.update_timestamp(window, cx);
-                                        })),
-                                ),
+                                .child(button(cx, "update_timestamp").label("当前时间").on_click(
+                                    cx.listener(|this, _ev, window, cx| {
+                                        this.update_timestamp(window, cx);
+                                    }),
+                                )),
                         ),
                 ),
             )
@@ -156,12 +151,7 @@ impl Render for TimestampPage {
                         .items_center()
                         .justify_between()
                         .child(label("Common"))
-                        .child(
-                            div()
-                                .text_sm()
-                                .text_color(white())
-                                .child(self.common_output.clone()),
-                        ),
+                        .child(div().text_sm().text_color(white()).child(self.common_output.clone())),
                 ),
             )
             .child(
@@ -171,12 +161,7 @@ impl Render for TimestampPage {
                         .items_center()
                         .justify_between()
                         .child(label("ISO 8601"))
-                        .child(
-                            div()
-                                .text_sm()
-                                .text_color(white())
-                                .child(self.iso8601_output.clone()),
-                        ),
+                        .child(div().text_sm().text_color(white()).child(self.iso8601_output.clone())),
                 ),
             )
             .child(
@@ -186,12 +171,7 @@ impl Render for TimestampPage {
                         .items_center()
                         .justify_between()
                         .child(label("RFC 7231"))
-                        .child(
-                            div()
-                                .text_sm()
-                                .text_color(white())
-                                .child(self.rfc7231_output.clone()),
-                        ),
+                        .child(div().text_sm().text_color(white()).child(self.rfc7231_output.clone())),
                 ),
             )
     }

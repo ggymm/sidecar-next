@@ -1,17 +1,16 @@
 use gpui::*;
-use gpui_component::button::Button;
-use gpui_component::button::ButtonVariants;
+use gpui_component::Disableable;
 use gpui_component::input::InputState;
 use gpui_component::radio::RadioGroup;
-use gpui_component::Disableable;
 
+use crate::MainView;
+use crate::comps::button;
 use crate::comps::card;
 use crate::comps::label;
 use crate::comps::page;
 use crate::comps::textarea;
 use crate::plugins::hash::calc_file_hash;
 use crate::plugins::hash::calc_text_hash;
-use crate::MainView;
 
 #[derive(Clone, Debug, PartialEq)]
 enum InputType {
@@ -130,21 +129,18 @@ impl Render for HashPage {
                                     .flex()
                                     .gap_5()
                                     .child(
-                                        Button::new("browse-file")
+                                        button(cx, "browse-file")
                                             .label("选择文件")
                                             .disabled(input_type != InputType::File)
                                             .on_click(cx.listener(|this, _ev, window, cx| {
                                                 this.browse_file(window, cx);
                                             })),
                                     )
-                                    .child(
-                                        Button::new("calc-hash")
-                                            .primary()
-                                            .label("计算Hash")
-                                            .on_click(cx.listener(|this, _ev, window, cx| {
-                                                this.calc_hash(window, cx);
-                                            })),
-                                    ),
+                                    .child(button(cx, "calc-hash").label("计算Hash").on_click(cx.listener(
+                                        |this, _ev, window, cx| {
+                                            this.calc_hash(window, cx);
+                                        },
+                                    ))),
                             ),
                     )
                     .child(textarea(&self.input, |input| input)),

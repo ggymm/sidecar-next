@@ -342,10 +342,6 @@ impl Render for MainView {
         window: &mut Window,
         cx: &mut Context<Self>,
     ) -> impl IntoElement {
-        let side_min = 120.;
-        let side_max = 360.;
-        let side_size = 240.0;
-
         let modal_layer = Root::render_modal_layer(window, cx);
         let drawer_layer = Root::render_drawer_layer(window, cx);
         let notification_layer = Root::render_notification_layer(window, cx);
@@ -357,8 +353,8 @@ impl Render for MainView {
                 h_resizable("layout", self.resizable_state.clone())
                     .child(
                         resizable_panel()
-                            .size(px(side_size))
-                            .size_range(px(side_min)..px(side_max))
+                            .size(px(240.0))
+                            .size_range(px(120.)..px(360.))
                             .child(self.sidebar(window, cx)),
                     )
                     .child(

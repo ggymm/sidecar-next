@@ -1,11 +1,10 @@
 use std::path::PathBuf;
 
 use gpui::*;
-use gpui_component::button::Button;
-use gpui_component::button::ButtonVariants;
 use gpui_component::input::InputState;
 
 use crate::MainView;
+use crate::comps::button;
 use crate::comps::card;
 use crate::comps::label;
 use crate::comps::page;
@@ -104,14 +103,11 @@ impl Render for QrcodePage {
                             .items_center()
                             .justify_between()
                             .child(label("二维码"))
-                            .child(
-                                Button::new("choose_file")
-                                    .info()
-                                    .label("选择文件")
-                                    .on_click(cx.listener(|this, _ev, window, cx| {
-                                        this.choose_file(window, cx);
-                                    })),
-                            ),
+                            .child(button(cx, "choose-file").label("选择文件").on_click(cx.listener(
+                                |this, _ev, window, cx| {
+                                    this.choose_file(window, cx);
+                                },
+                            ))),
                     )
                     .child(
                         div()

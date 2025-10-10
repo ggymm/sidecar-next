@@ -1,10 +1,9 @@
 use gpui::*;
 use gpui_component::Disableable;
-use gpui_component::button::Button;
-use gpui_component::button::ButtonVariants;
 use gpui_component::input::InputState;
 
 use crate::MainView;
+use crate::comps::button;
 use crate::comps::card;
 use crate::comps::label;
 use crate::comps::page;
@@ -107,8 +106,7 @@ impl Render for DnsPage {
                         .gap_5()
                         .child(textarea(&self.input, |input| input))
                         .child(
-                            Button::new("dns-query")
-                                .primary()
+                            button(cx, "dns-query")
                                 .disabled(running)
                                 .label(if running { "查询中..." } else { "查询" })
                                 .on_click(cx.listener(|this, _ev, window, cx| {
@@ -117,8 +115,13 @@ impl Render for DnsPage {
                         ),
                 ),
             )
-            .child(card().flex_1().child(label("输出")).child(textarea(&self.output, |input| {
-                input.font_family("monospace").disabled(true)
-            })))
+            .child(
+                card()
+                    .flex_1()
+                    .child(label("输出"))
+                    .child(textarea(&self.output, |input| {
+                        input.font_family("monospace").disabled(true)
+                    })),
+            )
     }
 }
