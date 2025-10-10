@@ -9,9 +9,9 @@ use gpui_component::input::InputState;
 
 use crate::MainView;
 use crate::comps::card;
-use crate::comps::name;
+use crate::comps::label;
 use crate::comps::page;
-use crate::comps::text;
+use crate::comps::textarea;
 
 fn gen_mac() -> String {
     let mut x = SystemTime::now()
@@ -84,7 +84,7 @@ impl RandomPage {
     fn build_item(
         &self,
         cx: &mut Context<Self>,
-        label: &str,
+        title: &str,
         output: Entity<InputState>,
         generate: fn() -> String,
     ) -> impl IntoElement {
@@ -97,13 +97,13 @@ impl RandomPage {
                 .flex_row()
                 .items_center()
                 .justify_between()
-                .child(name(label.to_string()))
+                .child(label(title.to_string()))
                 .child(
                     div()
                         .flex()
                         .items_center()
                         .gap_5()
-                        .child(text(&output, |input| input.w_96()))
+                        .child(textarea(&output, |input| input.w_96()))
                         .child(
                             Button::new(("gen", output.entity_id()))
                                 .info()

@@ -4,9 +4,9 @@ use openssl::x509::X509;
 
 use crate::MainView;
 use crate::comps::card;
-use crate::comps::name;
+use crate::comps::label;
 use crate::comps::page;
-use crate::comps::text;
+use crate::comps::textarea;
 
 pub struct CertPage {
     input: Entity<InputState>,
@@ -79,14 +79,14 @@ impl Render for CertPage {
             .child(
                 card()
                     .h_64()
-                    .child(name("证书"))
-                    .child(text(&self.input, |input| input.h_full())),
+                    .child(label("证书"))
+                    .child(textarea(&self.input, |input| input)),
             )
             .child(
                 card()
                     .flex_1()
-                    .child(name("解析结果"))
-                    .child(text(&self.output, |input| input.h_full())),
+                    .child(label("解析结果"))
+                    .child(textarea(&self.output, |input| input)),
             )
     }
 }

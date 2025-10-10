@@ -5,9 +5,9 @@ use gpui_component::input::InputState;
 
 use crate::MainView;
 use crate::comps::card;
-use crate::comps::name;
+use crate::comps::label;
 use crate::comps::page;
-use crate::comps::text;
+use crate::comps::textarea;
 
 pub struct DemoPage {
     input1: Entity<InputState>,
@@ -67,14 +67,14 @@ impl Render for DemoPage {
                 .child(
                     card()
                         .h_64()
-                        .child(name("输入框测试 1"))
-                        .child(text(&self.input1, |input| input.cleanable()).overflow_hidden()),
+                        .child(label("输入框测试 1"))
+                        .child(textarea(&self.input1, |input| input.cleanable()).overflow_hidden()),
                 )
                 .child(
                     card()
                         .h_64()
-                        .child(name("输入框测试 2"))
-                        .child(text(&self.input2, |input| input)),
+                        .child(label("输入框测试 2"))
+                        .child(textarea(&self.input2, |input| input)),
                 ),
         )
     }

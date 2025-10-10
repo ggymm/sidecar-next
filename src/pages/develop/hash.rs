@@ -6,9 +6,9 @@ use gpui_component::radio::RadioGroup;
 use gpui_component::Disableable;
 
 use crate::comps::card;
-use crate::comps::name;
+use crate::comps::label;
 use crate::comps::page;
-use crate::comps::text;
+use crate::comps::textarea;
 use crate::plugins::hash::calc_file_hash;
 use crate::plugins::hash::calc_text_hash;
 use crate::MainView;
@@ -93,7 +93,7 @@ impl Render for HashPage {
                         .flex()
                         .items_center()
                         .justify_between()
-                        .child(name("输入类型"))
+                        .child(label("输入类型"))
                         .child(
                             div().flex().flex_col().justify_end().p_2().child(
                                 RadioGroup::horizontal("input-type")
@@ -124,7 +124,7 @@ impl Render for HashPage {
                             .flex()
                             .items_center()
                             .justify_between()
-                            .child(name("输入内容"))
+                            .child(label("输入内容"))
                             .child(
                                 div()
                                     .flex()
@@ -147,14 +147,14 @@ impl Render for HashPage {
                                     ),
                             ),
                     )
-                    .child(text(&self.input, |input| input.h_full())),
+                    .child(textarea(&self.input, |input| input)),
             )
             .child(
                 card()
                     .flex_1()
-                    .child(name("输出结果"))
-                    .child(text(&self.output, |input| {
-                        input.h_full().font_family("monospace").disabled(true)
+                    .child(label("输出结果"))
+                    .child(textarea(&self.output, |input| {
+                        input.font_family("monospace").disabled(true)
                     })),
             )
     }

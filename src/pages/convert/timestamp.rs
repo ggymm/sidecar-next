@@ -8,9 +8,9 @@ use gpui_component::input::InputState;
 
 use crate::MainView;
 use crate::comps::card;
-use crate::comps::name;
+use crate::comps::label;
 use crate::comps::page;
-use crate::comps::text;
+use crate::comps::textarea;
 
 pub struct TimestampPage {
     tz_input: Entity<InputState>,
@@ -120,13 +120,13 @@ impl Render for TimestampPage {
                         .flex()
                         .items_center()
                         .justify_between()
-                        .child(name("时间戳"))
+                        .child(label("时间戳"))
                         .child(
                             div()
                                 .flex()
                                 .items_center()
                                 .gap_5()
-                                .child(text(&self.ts_input, |input| input.w_64()))
+                                .child(textarea(&self.ts_input, |input| input.w_64()))
                                 .child(
                                     Button::new("update_timestamp")
                                         .info()
@@ -145,8 +145,8 @@ impl Render for TimestampPage {
                         .flex()
                         .items_center()
                         .justify_between()
-                        .child(name("时区"))
-                        .child(div().flex().w_96().child(text(&self.tz_input, |input| input))),
+                        .child(label("时区"))
+                        .child(div().flex().w_96().child(textarea(&self.tz_input, |input| input))),
                 ),
             )
             .child(
@@ -155,7 +155,7 @@ impl Render for TimestampPage {
                         .flex()
                         .items_center()
                         .justify_between()
-                        .child(name("Common"))
+                        .child(label("Common"))
                         .child(
                             div()
                                 .text_sm()
@@ -170,7 +170,7 @@ impl Render for TimestampPage {
                         .flex()
                         .items_center()
                         .justify_between()
-                        .child(name("ISO 8601"))
+                        .child(label("ISO 8601"))
                         .child(
                             div()
                                 .text_sm()
@@ -185,7 +185,7 @@ impl Render for TimestampPage {
                         .flex()
                         .items_center()
                         .justify_between()
-                        .child(name("RFC 7231"))
+                        .child(label("RFC 7231"))
                         .child(
                             div()
                                 .text_sm()

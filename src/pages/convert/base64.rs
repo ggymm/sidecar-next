@@ -5,9 +5,9 @@ use gpui_component::input::InputState;
 
 use crate::MainView;
 use crate::comps::card;
-use crate::comps::name;
+use crate::comps::label;
 use crate::comps::page;
-use crate::comps::text;
+use crate::comps::textarea;
 use crate::pages::utils::strip_str;
 
 pub struct Base64Page {
@@ -94,14 +94,14 @@ impl Render for Base64Page {
             .child(
                 card()
                     .flex_1()
-                    .child(name("原始内容"))
-                    .child(text(&self.input, |input| input)),
+                    .child(label("原始内容"))
+                    .child(textarea(&self.input, |input| input)),
             )
             .child(
                 card()
                     .flex_1()
-                    .child(name("编码内容"))
-                    .child(text(&self.output, |input| input)),
+                    .child(label("编码内容"))
+                    .child(textarea(&self.output, |input| input)),
             )
     }
 }

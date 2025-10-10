@@ -6,9 +6,9 @@ use gpui_component::input::InputState;
 
 use crate::MainView;
 use crate::comps::card;
-use crate::comps::name;
+use crate::comps::label;
 use crate::comps::page;
-use crate::comps::text;
+use crate::comps::textarea;
 use crate::plugins::dns::start_dns_query;
 
 pub struct DnsPage {
@@ -105,7 +105,7 @@ impl Render for DnsPage {
                         .flex()
                         .items_center()
                         .gap_5()
-                        .child(text(&self.input, |input| input))
+                        .child(textarea(&self.input, |input| input))
                         .child(
                             Button::new("dns-query")
                                 .primary()
@@ -117,7 +117,7 @@ impl Render for DnsPage {
                         ),
                 ),
             )
-            .child(card().flex_1().child(name("输出")).child(text(&self.output, |input| {
+            .child(card().flex_1().child(label("输出")).child(textarea(&self.output, |input| {
                 input.font_family("monospace").disabled(true)
             })))
     }
