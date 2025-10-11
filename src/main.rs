@@ -455,6 +455,7 @@ fn main() {
         theme.mode = ThemeMode::Dark;
         theme.sidebar = rgb(0x202020).into();
         theme.background = rgb(0x282828).into();
+        theme.font_size = px(16.);
 
         let window_size = size(px(1280.), px(800.));
         let window_bounds = Bounds::centered(None, window_size, cx);
