@@ -5301,6 +5301,7 @@ dependencies = [
  "regex",
  "rqrr",
  "serde",
+ "serde_json",
  "sha1",
  "sha2",
  "sys-locale",

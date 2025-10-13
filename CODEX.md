@@ -8,7 +8,7 @@
 ## 页面体系（`src/pages`）
 - `mod.rs`：按业务域划分子模块（convert/develop/network/snippet/toolkit 等），每个子模块下的文件实现具体 Page。
 - 各 Page 遵循 `pub struct XxxPage` + `impl XxxPage { pub fn build(...) }` + `impl Render for XxxPage` 模式。`build` 负责创建状态实体（如 `InputState`），`render` 构建 UI。
-- `src/pages/develop/`：开发者工具集，目前实现了证书解析、哈希、加解密、二维码、随机数据等；`json.rs` 仍是占位页面，需要实现 JSON 查看器。
+- `src/pages/develop/`：开发者工具集，覆盖证书解析、哈希、加解密、二维码、随机数据等；`json.rs` 提供 JSON 查看器（格式化、搜索、高亮、折叠、行号）。
 - `src/pages/utils.rs`：通用工具函数（字符串清洗、字节格式化）。
 
 ## 插件层（`src/plugins`）
@@ -24,5 +24,4 @@
 3. 用户选择菜单项时更新 `selected`，内容区通过缓存的 `AnyView` 切换页面。
 
 ## 当前待办
-- `src/pages/develop/json.rs`：实现 JSON 格式化/查看组件（含搜索、高亮、行号、折叠）。
-- `VIEWS` 中 `/develop/json` 目前误指向 `CryptoPage::build`，随实现需一并纠正为 `JsonPage::build`。
+- 暂无明确待办；如有新需求可在此处补充。
