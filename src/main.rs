@@ -133,6 +133,16 @@ static VIEWS: Lazy<IndexMap<&'static str, View>> = Lazy::new(|| {
         },
     );
     m.insert(
+        "/develop/json",
+        View {
+            key: "/develop/json",
+            icon: "icons/json.svg",
+            title: "Json格式化",
+            group: Some("开发工具"),
+            build: CryptoPage::build,
+        },
+    );
+    m.insert(
         "/develop/random",
         View {
             key: "/develop/random",

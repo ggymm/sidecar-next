@@ -9,6 +9,7 @@ pub mod develop {
     pub mod cert;
     pub mod crypto;
     pub mod hash;
+    pub mod json;
     pub mod qrcode;
     pub mod random;
 }
