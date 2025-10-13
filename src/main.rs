@@ -28,6 +28,7 @@ use crate::pages::demo::DemoPage;
 use crate::pages::develop::cert::CertPage;
 use crate::pages::develop::crypto::CryptoPage;
 use crate::pages::develop::hash::HashPage;
+use crate::pages::develop::json::JsonPage;
 use crate::pages::develop::qrcode::QrcodePage;
 use crate::pages::develop::random::RandomPage;
 use crate::pages::home::HomePage;
@@ -139,7 +140,7 @@ static VIEWS: Lazy<IndexMap<&'static str, View>> = Lazy::new(|| {
             icon: "icons/json.svg",
             title: "Json格式化",
             group: Some("开发工具"),
-            build: CryptoPage::build,
+            build: JsonPage::build,
         },
     );
     m.insert(
