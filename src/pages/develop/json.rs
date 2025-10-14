@@ -1,12 +1,15 @@
 use gpui::prelude::*;
 use gpui::*;
+use gpui_component::ActiveTheme;
+use gpui_component::Disableable;
 use gpui_component::input::InputState;
-use gpui_component::{ActiveTheme, Disableable};
 use serde_json::Value;
-use std::iter::repeat_with;
 
 use crate::MainView;
-use crate::comps::{button, card, page, textarea};
+use crate::comps::button;
+use crate::comps::card;
+use crate::comps::page;
+use crate::comps::textarea;
 
 pub struct JsonPage {
     error: Option<String>,
