@@ -1,7 +1,6 @@
 use gpui::*;
 use gpui_component::StyledExt;
-use gpui_component::input::InputEvent;
-use gpui_component::input::InputState;
+use gpui_component::input::{InputEvent, InputState, TabSize};
 
 use crate::MainView;
 use crate::comps::card;
@@ -10,9 +9,9 @@ use crate::comps::page;
 use crate::comps::textarea;
 
 pub struct DemoPage {
-    input1: Entity<InputState>,
-    input2: Entity<InputState>,
-    _subs: Vec<Subscription>,
+    subs: Vec<Subscription>,
+    test_focus: Entity<InputState>,
+    code_editor: Entity<InputState>,
 }
 
 impl DemoPage {
@@ -21,18 +20,24 @@ impl DemoPage {
         cx: &mut Context<MainView>,
     ) -> AnyView {
         AnyView::from(cx.new(|cx| {
-            let input1 = cx.new(|cx| InputState::new(window, cx).default_value("测试文本"));
-            let input2 = cx.new(|cx| InputState::new(window, cx).placeholder("Another input"));
+            let test_focus = cx.new(|cx| InputState::new(window, cx).default_value("测试文本"));
+            let code_editor = cx.new(|cx| {
+                InputState::new(window, cx)
+                    .code_editor("text")
+                    .tab_size(TabSize {
+                        tab_size: 2,
+                        hard_tabs: false,
+                    })
+                    .line_number(true)
+                    .soft_wrap(false)
+            });
 
-            let subs = vec![
-                cx.subscribe_in(&input1, window, Self::on_input_event),
-                cx.subscribe_in(&input2, window, Self::on_input_event),
-            ];
+            let subs = vec![cx.subscribe_in(&test_focus, window, Self::on_input_event)];
 
             Self {
-                input1,
-                input2,
-                _subs: subs,
+                subs,
+                test_focus,
+                code_editor,
             }
         }))
     }
@@ -45,8 +50,8 @@ impl DemoPage {
         _cx: &mut Context<Self>,
     ) {
         match ev {
-            InputEvent::Focus => println!("[Demo] Focus"),
             InputEvent::Blur => println!("[Demo] Blur"),
+            InputEvent::Focus => println!("[Demo] Focus"),
             InputEvent::Change => println!("[Demo] Change"),
             InputEvent::PressEnter { secondary } => println!("[Demo] Enter secondary={}", secondary),
         }
@@ -68,13 +73,14 @@ impl Render for DemoPage {
                     card()
                         .h_64()
                         .child(label("输入框测试 1"))
-                        .child(textarea(&self.input1, |input| input.cleanable()).overflow_hidden()),
+                        .child(textarea(&self.test_focus, |input| input)),
                 )
                 .child(
                     card()
                         .h_64()
-                        .child(label("输入框测试 2"))
-                        .child(textarea(&self.input2, |input| input)),
+                        .w_full()
+                        .child(label("gpui code_editor 最小示例（无高亮，仅测试粘贴性能）"))
+                        .child(textarea(&self.code_editor, |input| input)),
                 ),
         )
     }

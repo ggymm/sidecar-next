@@ -126,11 +126,11 @@ impl Render for TimestampPage {
                                 .items_center()
                                 .gap_5()
                                 .child(textarea(&self.ts_input, |input| input.w_64()))
-                                .child(button(cx, "update_timestamp").label("当前时间").on_click(
-                                    cx.listener(|this, _ev, window, cx| {
+                                .child(button(cx, "update_timestamp").label("当前时间").on_click(cx.listener(
+                                    |this, _ev, window, cx| {
                                         this.update_timestamp(window, cx);
-                                    }),
-                                )),
+                                    },
+                                ))),
                         ),
                 ),
             )
