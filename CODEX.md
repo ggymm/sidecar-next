@@ -10,6 +10,7 @@
 - 各 Page 遵循 `pub struct XxxPage` + `impl XxxPage { pub fn build(...) }` + `impl Render for XxxPage` 模式。`build` 负责创建状态实体（如 `InputState`），`render` 构建 UI。
 - `src/pages/develop/`：开发者工具集，覆盖证书解析、哈希、加解密、二维码、随机数据等；`json.rs` 提供精简 JSON 工具（原文编辑器使用纯文本输入，格式化结果通过只读代码视图展示，仅保留“格式化 / 查看原文”按钮方便对比），演示页 `demo.rs` 保留 gpui code_editor 最小示例用于性能验证。
 - `src/pages/utils.rs`：通用工具函数（字符串清洗、字节格式化）。
+- `src/pages/manual/custom.rs`：自定义文档手册页，启动时读取 `assets/manual/custom/index.json`，支持关键字搜索并通过 Drawer 侧栏渲染 markdown 正文。
 
 ## 插件层（`src/plugins`）
 - 对应页面的业务计算/系统调用封装，例如：

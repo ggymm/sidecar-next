@@ -22,21 +22,22 @@ use gpui_component::sidebar::SidebarMenuItem;
 use indexmap::IndexMap;
 use once_cell::sync::Lazy;
 
-use crate::pages::Base64Page;
-use crate::pages::CertPage;
-use crate::pages::CodePage;
-use crate::pages::CryptoPage;
-use crate::pages::DemoPage;
-use crate::pages::DnsPage;
-use crate::pages::HashPage;
-use crate::pages::HomePage;
-use crate::pages::JsonPage;
-use crate::pages::PortPage;
-use crate::pages::QrcodePage;
-use crate::pages::RandomPage;
-use crate::pages::SettingPage;
-use crate::pages::SharePage;
-use crate::pages::TimestampPage;
+use crate::pages::conv::base64::Base64Page;
+use crate::pages::conv::timestamp::TimestampPage;
+use crate::pages::demo::DemoPage;
+use crate::pages::devel::cert::CertPage;
+use crate::pages::devel::crypto::CryptoPage;
+use crate::pages::devel::hash::HashPage;
+use crate::pages::devel::json::JsonPage;
+use crate::pages::devel::qrcode::QrcodePage;
+use crate::pages::devel::random::RandomPage;
+use crate::pages::home::HomePage;
+use crate::pages::manual::code::CodePage;
+use crate::pages::manual::custom::CustomManualPage;
+use crate::pages::setting::SettingPage;
+use crate::pages::tool::dns::DnsPage;
+use crate::pages::tool::port::PortPage;
+use crate::pages::tool::share::SharePage;
 
 mod comps;
 mod pages;
@@ -190,6 +191,16 @@ static VIEWS: Lazy<IndexMap<&'static str, View>> = Lazy::new(|| {
             title: "代码库",
             group: Some("技术手册"),
             build: CodePage::build,
+        },
+    );
+    m.insert(
+        "/manual/custom",
+        View {
+            key: "/manual/custom",
+            icon: "icons/manual.svg",
+            title: "自定义手册",
+            group: Some("技术手册"),
+            build: CustomManualPage::build,
         },
     );
     m.insert(

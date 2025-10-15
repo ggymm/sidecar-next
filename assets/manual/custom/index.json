@@ -1,0 +1,18 @@
+[
+  {
+    "name": "设置代理",
+    "path": "setting-proxy.md",
+    "keywords": [
+      "设置代理",
+      "配置代理"
+    ]
+  },
+  {
+    "name": "创建交换分区",
+    "path": "make-swap.md",
+    "keywords": [
+      "创建交换分区",
+      "交换分区"
+    ]
+  }
+]
