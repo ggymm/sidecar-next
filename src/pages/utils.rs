@@ -1,5 +1,12 @@
-pub fn strip_str(input: &str) -> String {
-    input.chars().filter(|c| !c.is_whitespace()).collect()
+use serde_json::Value;
+
+pub fn strip_str(str: &str) -> String {
+    str.chars().filter(|c| !c.is_whitespace()).collect()
+}
+
+pub fn format_json(str: &str) -> anyhow::Result<String, String> {
+    let val: Value = serde_json::from_str(str).map_err(|e| e.to_string())?;
+    serde_json::to_string_pretty(&val).map_err(|e| e.to_string())
 }
 
 pub fn format_bytes(bytes: u64) -> String {

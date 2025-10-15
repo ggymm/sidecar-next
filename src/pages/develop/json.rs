@@ -3,13 +3,13 @@ use gpui::*;
 use gpui_component::ActiveTheme;
 use gpui_component::Disableable;
 use gpui_component::input::InputState;
-use serde_json::Value;
 
 use crate::MainView;
 use crate::comps::button;
 use crate::comps::card;
 use crate::comps::page;
 use crate::comps::textarea;
+use crate::pages::utils::format_json;
 
 pub struct JsonPage {
     error: Option<String>,
@@ -62,7 +62,7 @@ impl JsonPage {
         cx.notify();
 
         // 格式化 JSON 字符串
-        match prettify(&raw) {
+        match format_json(&raw) {
             Ok(formatted) => {
                 self.input_formatted.update(cx, |state, cx2| {
                     state.set_value(formatted.clone(), window, cx2);
@@ -88,7 +88,8 @@ impl Render for JsonPage {
         _window: &mut Window,
         cx: &mut Context<Self>,
     ) -> impl IntoElement {
-        let mut actions = div().flex().gap_3().items_center();
+        let theme = cx.theme();
+        let mut actions = div().flex().gap_5().items_center();
 
         let format_button = if self.running {
             button(cx, "format").label("格式化中…").disabled(true)
@@ -111,16 +112,15 @@ impl Render for JsonPage {
         }
 
         let mut panel = card().flex_1().child(actions);
-
         if let Some(err) = self.error.as_ref() {
             panel = panel.child(
                 div()
                     .px_3()
                     .py_2()
-                    .rounded_md()
-                    .bg(cx.theme().danger)
-                    .text_color(cx.theme().danger_foreground)
+                    .rounded_lg()
+                    .bg(theme.danger)
                     .text_sm()
+                    .text_color(theme.danger_foreground)
                     .child(format!("解析失败：{}", err)),
             );
         }
@@ -132,9 +132,4 @@ impl Render for JsonPage {
         };
         page().size_full().child(panel)
     }
-}
-
-fn prettify(raw: &str) -> Result<String, String> {
-    let value: Value = serde_json::from_str(raw).map_err(|e| e.to_string())?;
-    serde_json::to_string_pretty(&value).map_err(|e| e.to_string())
 }
