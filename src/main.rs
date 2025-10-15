@@ -22,22 +22,21 @@ use gpui_component::sidebar::SidebarMenuItem;
 use indexmap::IndexMap;
 use once_cell::sync::Lazy;
 
-use crate::pages::convert::base64::Base64Page;
-use crate::pages::convert::timestamp::TimestampPage;
-use crate::pages::demo::DemoPage;
-use crate::pages::develop::cert::CertPage;
-use crate::pages::develop::crypto::CryptoPage;
-use crate::pages::develop::hash::HashPage;
-use crate::pages::develop::json::JsonPage;
-use crate::pages::develop::qrcode::QrcodePage;
-use crate::pages::develop::random::RandomPage;
-use crate::pages::home::HomePage;
-use crate::pages::network::dns::DnsPage;
-use crate::pages::network::port::PortPage;
-use crate::pages::setting::SettingPage;
-use crate::pages::snippet::code::CodePage;
-use crate::pages::snippet::manual::ManualPage;
-use crate::pages::toolkit::share::SharePage;
+use crate::pages::Base64Page;
+use crate::pages::CertPage;
+use crate::pages::CodePage;
+use crate::pages::CryptoPage;
+use crate::pages::DemoPage;
+use crate::pages::DnsPage;
+use crate::pages::HashPage;
+use crate::pages::HomePage;
+use crate::pages::JsonPage;
+use crate::pages::PortPage;
+use crate::pages::QrcodePage;
+use crate::pages::RandomPage;
+use crate::pages::SettingPage;
+use crate::pages::SharePage;
+use crate::pages::TimestampPage;
 
 mod comps;
 mod pages;
@@ -74,19 +73,9 @@ static VIEWS: Lazy<IndexMap<&'static str, View>> = Lazy::new(|| {
         },
     );
     m.insert(
-        "/toolkit/share",
+        "/conv/base64",
         View {
-            key: "/toolkit/share",
-            icon: "icons/share.svg",
-            title: "文件分享",
-            group: Some("便捷工具"),
-            build: SharePage::build,
-        },
-    );
-    m.insert(
-        "/convert/base64",
-        View {
-            key: "/convert/base64",
+            key: "/conv/base64",
             icon: "icons/base64.svg",
             title: "Base64",
             group: Some("转换工具"),
@@ -94,9 +83,9 @@ static VIEWS: Lazy<IndexMap<&'static str, View>> = Lazy::new(|| {
         },
     );
     m.insert(
-        "/convert/timestamp",
+        "/conv/timestamp",
         View {
-            key: "/convert/timestamp",
+            key: "/conv/timestamp",
             icon: "icons/timestamp.svg",
             title: "时间戳转换",
             group: Some("转换工具"),
@@ -104,9 +93,9 @@ static VIEWS: Lazy<IndexMap<&'static str, View>> = Lazy::new(|| {
         },
     );
     m.insert(
-        "/develop/cert",
+        "/devel/cert",
         View {
-            key: "/develop/cert",
+            key: "/devel/cert",
             icon: "icons/cert.svg",
             title: "证书解析",
             group: Some("开发工具"),
@@ -114,9 +103,9 @@ static VIEWS: Lazy<IndexMap<&'static str, View>> = Lazy::new(|| {
         },
     );
     m.insert(
-        "/develop/hash",
+        "/devel/hash",
         View {
-            key: "/develop/hash",
+            key: "/devel/hash",
             icon: "icons/hash.svg",
             title: "哈希散列",
             group: Some("开发工具"),
@@ -124,9 +113,9 @@ static VIEWS: Lazy<IndexMap<&'static str, View>> = Lazy::new(|| {
         },
     );
     m.insert(
-        "/develop/crypto",
+        "/devel/crypto",
         View {
-            key: "/develop/crypto",
+            key: "/devel/crypto",
             icon: "icons/crypto.svg",
             title: "加解密工具",
             group: Some("开发工具"),
@@ -134,9 +123,9 @@ static VIEWS: Lazy<IndexMap<&'static str, View>> = Lazy::new(|| {
         },
     );
     m.insert(
-        "/develop/json",
+        "/devel/json",
         View {
-            key: "/develop/json",
+            key: "/devel/json",
             icon: "icons/json.svg",
             title: "Json格式化",
             group: Some("开发工具"),
@@ -144,9 +133,9 @@ static VIEWS: Lazy<IndexMap<&'static str, View>> = Lazy::new(|| {
         },
     );
     m.insert(
-        "/develop/random",
+        "/devel/random",
         View {
-            key: "/develop/random",
+            key: "/devel/random",
             icon: "icons/random.svg",
             title: "随机数据",
             group: Some("开发工具"),
@@ -154,9 +143,9 @@ static VIEWS: Lazy<IndexMap<&'static str, View>> = Lazy::new(|| {
         },
     );
     m.insert(
-        "/develop/qrcode",
+        "/devel/qrcode",
         View {
-            key: "/develop/qrcode",
+            key: "/devel/qrcode",
             icon: "icons/qrcode.svg",
             title: "二维码",
             group: Some("开发工具"),
@@ -164,43 +153,43 @@ static VIEWS: Lazy<IndexMap<&'static str, View>> = Lazy::new(|| {
         },
     );
     m.insert(
-        "/network/dns",
+        "/tool/share",
         View {
-            key: "/network/dns",
+            key: "/tool/share",
+            icon: "icons/share.svg",
+            title: "文件分享",
+            group: Some("便捷工具"),
+            build: SharePage::build,
+        },
+    );
+    m.insert(
+        "/tool/dns",
+        View {
+            key: "/tool/dns",
             icon: "icons/dns.svg",
             title: "域名查询",
-            group: Some("网络工具"),
+            group: Some("便捷工具"),
             build: DnsPage::build,
         },
     );
     m.insert(
-        "/network/port",
+        "/tool/port",
         View {
-            key: "/network/port",
+            key: "/tool/port",
             icon: "icons/port.svg",
             title: "端口占用查询",
-            group: Some("网络工具"),
+            group: Some("便捷工具"),
             build: PortPage::build,
         },
     );
     m.insert(
-        "/snippet/code",
+        "/manual/code",
         View {
-            key: "/snippet/code",
+            key: "/manual/code",
             icon: "icons/code.svg",
             title: "代码库",
-            group: Some("代码片段"),
+            group: Some("技术手册"),
             build: CodePage::build,
-        },
-    );
-    m.insert(
-        "/snippet/manual",
-        View {
-            key: "/snippet/manual",
-            icon: "icons/manual.svg",
-            title: "命令手册",
-            group: Some("代码片段"),
-            build: ManualPage::build,
         },
     );
     m.insert(
