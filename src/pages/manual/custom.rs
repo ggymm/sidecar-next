@@ -4,20 +4,20 @@ use std::path::PathBuf;
 use gpui::MouseButton;
 use gpui::*;
 use gpui_component::ContextModal;
+use gpui_component::Disableable;
 use gpui_component::StyledExt;
 use gpui_component::input::InputState;
 use gpui_component::text::TextView;
-
 use serde::Deserialize;
 
 use crate::MainView;
 use crate::comps::button;
 use crate::comps::card;
-use crate::comps::label;
 use crate::comps::page;
 use crate::comps::textarea;
 
 const MANUAL_INDEX_PATH: &str = "assets/manual/custom/index.json";
+const MANUAL_DIR: &str = "assets/manual/custom";
 
 #[derive(Clone, Debug, Deserialize)]
 struct ManualEntry {
@@ -29,7 +29,9 @@ struct ManualEntry {
 pub struct CustomManualPage {
     search: Entity<InputState>,
     entries: Vec<ManualEntry>,
-    load_error: Option<String>,
+    filter_query: String,
+    display_entries: Vec<ManualEntry>,
+    searching: bool,
 }
 
 impl CustomManualPage {
@@ -38,60 +40,84 @@ impl CustomManualPage {
         cx: &mut Context<MainView>,
     ) -> AnyView {
         AnyView::from(cx.new(|cx| {
-            let search = cx.new(|cx| InputState::new(window, cx).placeholder("搜索文档关键词"));
-            {
-                let search_clone = search.clone();
-                let _ = cx.observe(&search_clone, |_this, _input, cx| {
-                    cx.notify();
-                });
-            }
+            let search = cx.new(|cx| InputState::new(window, cx));
 
-            let (entries, load_error) = match Self::load_entries() {
-                Ok(entries) => (entries, None),
-                Err(err) => (Vec::new(), Some(err)),
+            let index_path = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join(MANUAL_INDEX_PATH);
+            let (entries, display_entries, _) = match fs::read_to_string(&index_path) {
+                Ok(data) => match serde_json::from_str::<Vec<ManualEntry>>(&data) {
+                    Ok(entries) => {
+                        let display = entries.clone();
+                        (entries, display, None)
+                    }
+                    Err(err) => (
+                        Vec::new(),
+                        Vec::new(),
+                        Some(format!("解析索引失败：{}\n路径：{}", err, index_path.display())),
+                    ),
+                },
+                Err(err) => (
+                    Vec::new(),
+                    Vec::new(),
+                    Some(format!("读取索引失败：{}\n路径：{}", err, index_path.display())),
+                ),
             };
 
             Self {
                 search,
                 entries,
-                load_error,
+                filter_query: String::new(),
+                display_entries,
+                searching: false,
             }
         }))
     }
 
-    fn load_entries() -> Result<Vec<ManualEntry>, String> {
-        let manifest_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-        let index_path = manifest_dir.join(MANUAL_INDEX_PATH);
-
-        let data = fs::read_to_string(&index_path)
-            .map_err(|err| format!("读取索引失败：{}\n路径：{}", err, index_path.display()))?;
-
-        serde_json::from_str::<Vec<ManualEntry>>(&data)
-            .map_err(|err| format!("解析索引失败：{}\n路径：{}", err, index_path.display()))
-    }
-
-    fn manual_root() -> PathBuf {
-        PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("assets/manual/custom")
-    }
-
-    fn filtered_entries(
-        &self,
-        query: &str,
-    ) -> Vec<&ManualEntry> {
-        if query.trim().is_empty() {
-            return self.entries.iter().collect();
+    fn start_search(
+        &mut self,
+        window: &mut Window,
+        cx: &mut Context<Self>,
+    ) {
+        if self.searching {
+            return;
         }
 
-        let query = query.to_lowercase();
-        self.entries
-            .iter()
-            .filter(|entry| {
-                if entry.name.to_lowercase().contains(&query) {
-                    return true;
-                }
-                entry.keywords.iter().any(|kw| kw.to_lowercase().contains(&query))
-            })
-            .collect()
+        let filter_query = self.search.read(cx).value().trim().to_string();
+        let entries = self.entries.clone();
+
+        self.searching = true;
+        cx.notify();
+
+        cx.spawn_in(window, async move |page, cx| {
+            let filtered = cx
+                .background_executor()
+                .spawn({
+                    let query = filter_query.clone();
+                    async move {
+                        if query.is_empty() {
+                            return entries;
+                        }
+                        let query = query.to_lowercase();
+                        entries
+                            .into_iter()
+                            .filter(|entry| {
+                                entry.name.to_lowercase().contains(&query)
+                                    || entry.keywords.iter().any(|kw| kw.to_lowercase().contains(&query))
+                            })
+                            .collect()
+                    }
+                })
+                .await;
+
+            let _ = cx.update(|_window, cx| {
+                let _ = page.update(cx, |page, cx| {
+                    page.filter_query = filter_query.clone();
+                    page.display_entries = filtered;
+                    page.searching = false;
+                    cx.notify();
+                });
+            });
+        })
+        .detach();
     }
 
     fn open_entry(
@@ -101,7 +127,9 @@ impl CustomManualPage {
         cx: &mut Context<Self>,
     ) {
         let title = entry.name.clone();
-        let file_path = Self::manual_root().join(format!("{}.md", entry.name));
+        let file_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join(MANUAL_DIR)
+            .join(format!("{}.md", entry.name));
 
         let markdown = match fs::read_to_string(&file_path) {
             Ok(content) => content,
@@ -144,70 +172,8 @@ impl Render for CustomManualPage {
         _window: &mut Window,
         cx: &mut Context<Self>,
     ) -> impl IntoElement {
-        if let Some(err) = &self.load_error {
-            return page()
-                .child(
-                    card()
-                        .child(label("手册加载失败"))
-                        .child(div().text_sm().text_color(rgb(0xff7777)).child(err.clone())),
-                )
-                .into_any_element();
-        }
-
-        let query = self.search.read(cx).value().to_string();
-        let results = self.filtered_entries(&query);
-        let has_query = !query.trim().is_empty();
-        let is_empty = results.is_empty();
-
-        let mut list = div().flex().flex_col().gap_3();
-        for entry in results.into_iter() {
-            let entry_clone = entry.clone();
-            let entry_for_click = entry_clone.clone();
-
-            list = list.child(
-                card()
-                    .hover(|style| style.bg(rgb(0x383838)))
-                    .cursor_pointer()
-                    .on_mouse_down(
-                        MouseButton::Left,
-                        cx.listener(move |this, _ev, window, cx| {
-                            this.open_entry(entry_for_click.clone(), window, cx);
-                        }),
-                    )
-                    .child(
-                        div()
-                            .flex()
-                            .items_center()
-                            .justify_between()
-                            .gap_4()
-                            .child(
-                                div()
-                                    .text_base()
-                                    .font_semibold()
-                                    .text_color(white())
-                                    .child(entry_clone.name.clone()),
-                            )
-                            .child(div().text_sm().text_color(rgb(0x8f8f8f)).child("打开")),
-                    ),
-            );
-        }
-
-        if is_empty {
-            list = list.child(
-                div()
-                    .py_6()
-                    .text_center()
-                    .text_sm()
-                    .text_color(rgb(0x909090))
-                    .child(if has_query {
-                        "没有匹配的文档"
-                    } else {
-                        "暂未收录文档"
-                    }),
-            );
-        }
-
         page()
+            .size_full()
             .child(
                 card().child(
                     div()
@@ -215,18 +181,48 @@ impl Render for CustomManualPage {
                         .items_center()
                         .gap_5()
                         .child(textarea(&self.search, |input| input))
-                        .child(button(cx, "manual-refresh").label("查询").on_click(cx.listener(
-                            |_this, _ev, _window, cx| {
-                                cx.notify();
-                            },
-                        ))),
+                        .child(
+                            button(cx, "manual-refresh")
+                                .label(if self.searching { "查询中..." } else { "查询" })
+                                .disabled(self.searching)
+                                .on_click(cx.listener(|this, _ev, window, cx| {
+                                    this.start_search(window, cx);
+                                })),
+                        ),
                 ),
             )
             .child(
                 card()
                     .flex_1()
                     .min_h_0()
-                    .child(div().flex().flex_col().gap_3().child(list)),
+                    .child(
+                        self.display_entries
+                            .iter()
+                            .cloned()
+                            .fold(div().flex().flex_col().gap_3(), |acc, entry| {
+                                let entry_for_click = entry.clone();
+                                acc.child(
+                                    card()
+                                        .hover(|style| style.bg(rgb(0x383838)))
+                                        .cursor_pointer()
+                                        .on_mouse_down(
+                                            MouseButton::Left,
+                                            cx.listener(move |this, _ev, window, cx| {
+                                                this.open_entry(entry_for_click.clone(), window, cx);
+                                            }),
+                                        )
+                                        .child(
+                                            div().flex().items_center().justify_between().gap_4().child(
+                                                div()
+                                                    .text_base()
+                                                    .font_normal()
+                                                    .text_color(white())
+                                                    .child(entry.name.clone()),
+                                            ),
+                                        ),
+                                )
+                            }),
+                    ),
             )
             .into_any_element()
     }
