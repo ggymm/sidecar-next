@@ -29,8 +29,8 @@ struct ManualEntry {
 pub struct CustomManualPage {
     search: Entity<InputState>,
     entries: Vec<ManualEntry>,
-    filter_query: String,
     display_entries: Vec<ManualEntry>,
+    filter_query: String,
     searching: bool,
 }
 
