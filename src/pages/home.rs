@@ -3,23 +3,19 @@ use gpui_component::StyledExt;
 
 use crate::MainView;
 use crate::comps::card;
+use crate::comps::label;
 use crate::comps::page;
 use crate::pages::utils::format_bytes;
 use crate::plugins::system::basic_info::BasicInfo;
 use crate::plugins::system::basic_info::collect_basic_info;
-use crate::plugins::system::dynamic_info::DynamicInfo;
 
 pub struct HomePage {
     basic_info: Option<BasicInfo>,
-    dynamic_info: Option<DynamicInfo>,
 }
 
 impl HomePage {
     pub fn new() -> Self {
-        Self {
-            basic_info: None,
-            dynamic_info: None,
-        }
+        Self { basic_info: None }
     }
 
     pub fn build(
@@ -29,34 +25,40 @@ impl HomePage {
         AnyView::from(cx.new(|_| HomePage::new()))
     }
 
-    fn build_info(
-        &self,
-        label: String,
-        value: String,
-    ) -> impl IntoElement {
-        div()
-            .flex()
-            .py_2()
-            .child(div().w_48().text_sm().text_color(white()).child(label))
-            .child(div().ml_5().flex_1().text_sm().text_color(white()).child(value))
-    }
-
-    fn basic_load(
+    fn basic_info_ref(
         &mut self,
         cx: &mut Context<Self>,
-    ) {
+    ) -> &BasicInfo {
         if self.basic_info.is_none() {
             self.basic_info = Some(collect_basic_info());
             cx.notify();
         }
+        self.basic_info.as_ref().unwrap()
     }
+}
 
-    fn dynamic_load(
-        &mut self,
-        _cx: &mut Context<Self>,
-    ) {
-        if self.dynamic_info.is_none() {}
-    }
+fn card_name(title: &str) -> impl IntoElement {
+    div()
+        .text_lg()
+        .font_semibold()
+        .text_color(white())
+        .mb_4()
+        .child(title.to_string())
+}
+
+fn card_item(
+    title: &str,
+    value: impl AsRef<str>,
+) -> impl IntoElement {
+    let value = value.as_ref();
+    div().flex().py_2().child(label(title.to_string()).w_48()).child(
+        div()
+            .ml_5()
+            .flex_1()
+            .text_sm()
+            .text_color(white())
+            .child(value.to_string()),
+    )
 }
 
 impl Render for HomePage {
@@ -65,100 +67,56 @@ impl Render for HomePage {
         _window: &mut Window,
         cx: &mut Context<Self>,
     ) -> impl IntoElement {
-        // 加载系统信息
-        self.basic_load(cx);
-        self.dynamic_load(cx);
+        let info = self.basic_info_ref(cx);
+        let network = info.network.as_ref();
 
         page()
             .size_full()
-            .child(if let Some(info) = &self.basic_info {
+            .child(
                 div()
                     .flex()
                     .gap_5()
                     .child(
                         card()
                             .flex_1()
-                            .child(
-                                div()
-                                    .text_lg()
-                                    .font_semibold()
-                                    .text_color(white())
-                                    .mb_4()
-                                    .child("系统信息"),
-                            )
-                            .child(self.build_info("用户".to_string(), info.env.current_user.clone()))
-                            .child(self.build_info("序列号".to_string(), info.os.serial_number.clone()))
-                            .child(
-                                self.build_info(
-                                    "操作系统".to_string(),
-                                    format!("{} {}", info.os.name, info.os.version),
-                                ),
-                            ),
-                    )
-                    .child(
-                        card()
-                            .flex_1()
-                            .child(
-                                div()
-                                    .text_lg()
-                                    .font_semibold()
-                                    .text_color(white())
-                                    .mb_4()
-                                    .child("网络信息"),
-                            )
-                            .child(if let Some(network) = &info.network {
-                                div()
-                                    .child(self.build_info("网卡名称".to_string(), network.name.clone()))
-                                    .child(self.build_info("IP 地址".to_string(), network.ip_address.clone()))
-                                    .child(self.build_info("MAC 地址".to_string(), network.mac_address.clone()))
-                            } else {
-                                div().child(self.build_info("状态".to_string(), "网络信息获取失败".to_string()))
-                            }),
-                    )
-            } else {
-                div()
-            })
-            .child(if let Some(info) = &self.basic_info {
-                div()
-                    .flex()
-                    .gap_5()
-                    .child(
-                        card()
-                            .flex_1()
-                            .child(
-                                div()
-                                    .text_lg()
-                                    .font_semibold()
-                                    .text_color(white())
-                                    .mb_4()
-                                    .child("CPU 信息"),
-                            )
-                            .child(self.build_info("架构".to_string(), info.cpu.arch.clone()))
-                            .child(self.build_info("处理器".to_string(), info.cpu.brand.clone()))
-                            .child(self.build_info("物理核心".to_string(), format!("{} 个", info.cpu.physical_cores)))
-                            .child(self.build_info("频率".to_string(), format!("{} MHz", info.cpu.frequency))),
-                    )
-                    .child(
-                        card()
-                            .flex_1()
-                            .child(
-                                div()
-                                    .text_lg()
-                                    .font_semibold()
-                                    .text_color(white())
-                                    .mb_4()
-                                    .child("内存信息"),
-                            )
-                            .child(self.build_info("已使用".to_string(), format_bytes(info.memory.used)))
-                            .child(self.build_info("总内存".to_string(), format_bytes(info.memory.total)))
-                            .child(self.build_info("交换分区".to_string(), format_bytes(info.memory.total_swap)))
-                            .child(self.build_info(
-                                "使用率".to_string(),
-                                format!("{:.1}%", (info.memory.used as f64 / info.memory.total as f64) * 100.0),
+                            .child(card_name("系统信息"))
+                            .child(card_item("用户", &info.env.current_user.trim()))
+                            .child(card_item("序列号", &info.os.serial_number.trim()))
+                            .child(card_item(
+                                "操作系统",
+                                format!("{} {}", &info.os.name.trim(), &info.os.version.trim()),
                             )),
                     )
-            } else {
+                    .child(match network {
+                        Some(net) => card()
+                            .flex_1()
+                            .child(card_name("网络信息"))
+                            .child(card_item("网卡名称", net.name.trim()))
+                            .child(card_item("IP 地址", net.ip_address.trim()))
+                            .child(card_item("MAC 地址", net.mac_address.trim())),
+                        None => card(),
+                    }),
+            )
+            .child(
                 div()
-            })
+                    .flex()
+                    .gap_5()
+                    .child(
+                        card()
+                            .flex_1()
+                            .child(card_name("CPU 信息"))
+                            .child(card_item("架构", &info.cpu.arch.trim()))
+                            .child(card_item("处理器", &info.cpu.brand.trim()))
+                            .child(card_item("物理核心", &info.cpu.physical_cores.to_string())),
+                    )
+                    .child(
+                        card()
+                            .flex_1()
+                            .child(card_name("内存信息"))
+                            .child(card_item("已使用", format_bytes(info.memory.used)))
+                            .child(card_item("总内存", format_bytes(info.memory.total)))
+                            .child(card_item("交换分区", format_bytes(info.memory.total_swap))),
+                    ),
+            )
     }
 }
