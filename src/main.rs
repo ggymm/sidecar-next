@@ -33,7 +33,7 @@ use crate::pages::devel::qrcode::QrcodePage;
 use crate::pages::devel::random::RandomPage;
 use crate::pages::home::HomePage;
 use crate::pages::manual::code::CodePage;
-use crate::pages::manual::custom::CustomManualPage;
+use crate::pages::manual::custom::CustomPage;
 use crate::pages::setting::SettingPage;
 use crate::pages::tool::dns::DnsPage;
 use crate::pages::tool::port::PortPage;
@@ -200,7 +200,7 @@ static VIEWS: Lazy<IndexMap<&'static str, View>> = Lazy::new(|| {
             icon: "icons/manual.svg",
             title: "自定义手册",
             group: Some("技术手册"),
-            build: CustomManualPage::build,
+            build: CustomPage::build,
         },
     );
     m.insert(

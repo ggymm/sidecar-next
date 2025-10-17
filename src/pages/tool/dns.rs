@@ -102,8 +102,8 @@ impl Render for DnsPage {
                 card().child(
                     div()
                         .flex()
-                        .items_center()
                         .gap_5()
+                        .items_center()
                         .child(textarea(&self.input, |input| input))
                         .child(
                             button(cx, "dns-query")

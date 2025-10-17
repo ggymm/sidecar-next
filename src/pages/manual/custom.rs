@@ -25,14 +25,14 @@ struct ManualEntry {
     keywords: Vec<String>,
 }
 
-pub struct CustomManualPage {
+pub struct CustomPage {
     search: Entity<InputState>,
     entries: Vec<ManualEntry>,
     display_entries: Vec<ManualEntry>,
-    searching: bool,
+    loading: bool,
 }
 
-impl CustomManualPage {
+impl CustomPage {
     pub fn build(
         window: &mut Window,
         cx: &mut Context<MainView>,
@@ -51,7 +51,7 @@ impl CustomManualPage {
                 search,
                 entries,
                 display_entries,
-                searching: false,
+                loading: false,
             }
         }))
     }
@@ -61,26 +61,24 @@ impl CustomManualPage {
         window: &mut Window,
         cx: &mut Context<Self>,
     ) {
-        if self.searching {
+        if self.loading {
             return;
         }
-
-        let filter_query = self.search.read(cx).value().trim().to_string();
+        let search = self.search.read(cx).value().trim().to_string();
         let entries = self.entries.clone();
 
-        self.searching = true;
+        self.loading = true;
         cx.notify();
 
         cx.spawn_in(window, async move |page, cx| {
-            let filtered = cx
+            let display_entries = cx
                 .background_executor()
                 .spawn({
-                    let query = filter_query.clone();
+                    let query = search.clone().to_lowercase();
+                    if query.is_empty() {
+                        return;
+                    }
                     async move {
-                        if query.is_empty() {
-                            return entries;
-                        }
-                        let query = query.to_lowercase();
                         entries
                             .into_iter()
                             .filter(|entry| {
@@ -94,8 +92,8 @@ impl CustomManualPage {
 
             let _ = cx.update(|_window, cx| {
                 let _ = page.update(cx, |page, cx| {
-                    page.display_entries = filtered;
-                    page.searching = false;
+                    page.loading = false;
+                    page.display_entries = display_entries;
                     cx.notify();
                 });
             });
@@ -109,12 +107,12 @@ impl CustomManualPage {
         window: &mut Window,
         cx: &mut Context<Self>,
     ) {
-        let title = entry.name.clone();
-        let file_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        let name = entry.name.clone();
+        let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
             .join(ROOT_PATH)
             .join(format!("{}.md", entry.name));
 
-        let markdown = fs::read_to_string(&file_path).unwrap_or_default();
+        let markdown = fs::read_to_string(&path).unwrap_or_default();
         window.open_drawer(cx, move |drawer, window, app| {
             let content = TextView::markdown("custom-manual", markdown.clone(), window, app).selectable();
 
@@ -126,7 +124,7 @@ impl CustomManualPage {
                         .text_lg()
                         .font_semibold()
                         .text_color(white())
-                        .child(title.clone()),
+                        .child(name.clone()),
                 )
                 .size(px(640.0))
                 .child(
@@ -141,7 +139,7 @@ impl CustomManualPage {
     }
 }
 
-impl Render for CustomManualPage {
+impl Render for CustomPage {
     fn render(
         &mut self,
         _window: &mut Window,
@@ -153,13 +151,13 @@ impl Render for CustomManualPage {
                 card().child(
                     div()
                         .flex()
-                        .items_center()
                         .gap_5()
+                        .items_center()
                         .child(textarea(&self.search, |input| input))
                         .child(
                             button(cx, "manual-refresh")
-                                .label(if self.searching { "查询中..." } else { "查询" })
-                                .disabled(self.searching)
+                                .label(if self.loading { "查询中..." } else { "查询" })
+                                .disabled(self.loading)
                                 .on_click(cx.listener(|this, _ev, window, cx| {
                                     this.search(window, cx);
                                 })),
@@ -167,37 +165,26 @@ impl Render for CustomManualPage {
                 ),
             )
             .child(
-                card()
-                    .flex_1()
-                    .min_h_0()
-                    .child(
-                        self.display_entries
-                            .iter()
-                            .cloned()
-                            .fold(div().flex().flex_col().gap_3(), |acc, entry| {
-                                let entry_for_click = entry.clone();
-                                acc.child(
-                                    card()
-                                        .hover(|style| style.bg(rgb(0x383838)))
-                                        .cursor_pointer()
-                                        .on_mouse_down(
-                                            MouseButton::Left,
-                                            cx.listener(move |this, _ev, window, cx| {
-                                                this.display(entry_for_click.clone(), window, cx);
-                                            }),
-                                        )
-                                        .child(
-                                            div().flex().items_center().justify_between().gap_4().child(
-                                                div()
-                                                    .text_base()
-                                                    .font_normal()
-                                                    .text_color(white())
-                                                    .child(entry.name.clone()),
-                                            ),
-                                        ),
+                card().flex_1().child(self.display_entries.iter().cloned().fold(
+                    div().v_flex().gap_2(),
+                    |acc, entry| {
+                        let entry_for_click = entry.clone();
+                        acc.child(
+                            div()
+                                .p_3()
+                                .hover(|style| style.bg(rgb(0x383838)))
+                                .rounded_lg()
+                                .cursor_pointer()
+                                .on_mouse_down(
+                                    MouseButton::Left,
+                                    cx.listener(move |this, _ev, window, cx| {
+                                        this.display(entry_for_click.clone(), window, cx);
+                                    }),
                                 )
-                            }),
-                    ),
+                                .child(div().text_base().text_color(white()).child(entry.name.clone())),
+                        )
+                    },
+                )),
             )
             .into_any_element()
     }
