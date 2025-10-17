@@ -16,8 +16,7 @@ use crate::comps::card;
 use crate::comps::page;
 use crate::comps::textarea;
 
-const MANUAL_INDEX_PATH: &str = "assets/manual/custom/index.json";
-const MANUAL_DIR: &str = "assets/manual/custom";
+const ROOT_PATH: &str = "assets/manual/custom/";
 
 #[derive(Clone, Debug, Deserialize)]
 struct ManualEntry {
@@ -30,7 +29,6 @@ pub struct CustomManualPage {
     search: Entity<InputState>,
     entries: Vec<ManualEntry>,
     display_entries: Vec<ManualEntry>,
-    filter_query: String,
     searching: bool,
 }
 
@@ -40,39 +38,25 @@ impl CustomManualPage {
         cx: &mut Context<MainView>,
     ) -> AnyView {
         AnyView::from(cx.new(|cx| {
+            let index = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+                .join(ROOT_PATH)
+                .join("index.json");
+
             let search = cx.new(|cx| InputState::new(window, cx));
-
-            let index_path = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join(MANUAL_INDEX_PATH);
-            let (entries, display_entries, _) = match fs::read_to_string(&index_path) {
-                Ok(data) => match serde_json::from_str::<Vec<ManualEntry>>(&data) {
-                    Ok(entries) => {
-                        let display = entries.clone();
-                        (entries, display, None)
-                    }
-                    Err(err) => (
-                        Vec::new(),
-                        Vec::new(),
-                        Some(format!("解析索引失败：{}\n路径：{}", err, index_path.display())),
-                    ),
-                },
-                Err(err) => (
-                    Vec::new(),
-                    Vec::new(),
-                    Some(format!("读取索引失败：{}\n路径：{}", err, index_path.display())),
-                ),
-            };
-
+            let entries = fs::read_to_string(&index)
+                .and_then(|data| serde_json::from_str::<Vec<ManualEntry>>(&data).map_err(Into::into))
+                .unwrap_or_default();
+            let display_entries = entries.clone();
             Self {
                 search,
                 entries,
-                filter_query: String::new(),
                 display_entries,
                 searching: false,
             }
         }))
     }
 
-    fn start_search(
+    fn search(
         &mut self,
         window: &mut Window,
         cx: &mut Context<Self>,
@@ -110,7 +94,6 @@ impl CustomManualPage {
 
             let _ = cx.update(|_window, cx| {
                 let _ = page.update(cx, |page, cx| {
-                    page.filter_query = filter_query.clone();
                     page.display_entries = filtered;
                     page.searching = false;
                     cx.notify();
@@ -120,7 +103,7 @@ impl CustomManualPage {
         .detach();
     }
 
-    fn open_entry(
+    fn display(
         &self,
         entry: ManualEntry,
         window: &mut Window,
@@ -128,18 +111,10 @@ impl CustomManualPage {
     ) {
         let title = entry.name.clone();
         let file_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-            .join(MANUAL_DIR)
+            .join(ROOT_PATH)
             .join(format!("{}.md", entry.name));
 
-        let markdown = match fs::read_to_string(&file_path) {
-            Ok(content) => content,
-            Err(err) => format!(
-                "# 文档加载失败\n\n路径：`{}`\n\n错误信息：```\n{}\n```",
-                file_path.display(),
-                err
-            ),
-        };
-
+        let markdown = fs::read_to_string(&file_path).unwrap_or_default();
         window.open_drawer(cx, move |drawer, window, app| {
             let content = TextView::markdown("custom-manual", markdown.clone(), window, app).selectable();
 
@@ -186,7 +161,7 @@ impl Render for CustomManualPage {
                                 .label(if self.searching { "查询中..." } else { "查询" })
                                 .disabled(self.searching)
                                 .on_click(cx.listener(|this, _ev, window, cx| {
-                                    this.start_search(window, cx);
+                                    this.search(window, cx);
                                 })),
                         ),
                 ),
@@ -208,7 +183,7 @@ impl Render for CustomManualPage {
                                         .on_mouse_down(
                                             MouseButton::Left,
                                             cx.listener(move |this, _ev, window, cx| {
-                                                this.open_entry(entry_for_click.clone(), window, cx);
+                                                this.display(entry_for_click.clone(), window, cx);
                                             }),
                                         )
                                         .child(

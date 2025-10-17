@@ -5,8 +5,8 @@
 
 ### 参考代码
 
-1. gpui: ~/.cargo/git/checkouts/zed
-2. gpui-component: ~/.cargo/git/checkouts/gpui-component
+1. gpui：/Volumes/Data/Code/temp/gpui/zed/crates/gpui
+2. gpui-component：/Volumes/Data/Code/temp/gpui/gpui-component
 
 
 ### 功能列表
