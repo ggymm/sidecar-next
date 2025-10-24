@@ -370,8 +370,9 @@ impl Render for MainView {
                     )
                     .child(
                         div()
+                            .flex()
+                            .flex_col()
                             .flex_1()
-                            .v_flex()
                             .h_full()
                             .min_h_0()
                             .overflow_hidden()

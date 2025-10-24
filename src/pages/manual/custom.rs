@@ -164,28 +164,26 @@ impl Render for CustomPage {
                         ),
                 ),
             )
-            .child(
-                card().flex_1().child(self.display_entries.iter().cloned().fold(
-                    div().v_flex().gap_2(),
-                    |acc, entry| {
-                        let entry_for_click = entry.clone();
-                        acc.child(
-                            div()
-                                .p_3()
-                                .hover(|style| style.bg(rgb(0x383838)))
-                                .rounded_lg()
-                                .cursor_pointer()
-                                .on_mouse_down(
-                                    MouseButton::Left,
-                                    cx.listener(move |this, _ev, window, cx| {
-                                        this.display(entry_for_click.clone(), window, cx);
-                                    }),
-                                )
-                                .child(div().text_base().text_color(white()).child(entry.name.clone())),
-                        )
-                    },
-                )),
-            )
+            .child(card().flex_1().child(self.display_entries.iter().cloned().fold(
+                div().flex().flex_col().flex_1().gap_2(),
+                |acc, entry| {
+                    let entry_for_click = entry.clone();
+                    acc.child(
+                        div()
+                            .p_3()
+                            .hover(|style| style.bg(rgb(0x383838)))
+                            .rounded_lg()
+                            .cursor_pointer()
+                            .on_mouse_down(
+                                MouseButton::Left,
+                                cx.listener(move |this, _ev, window, cx| {
+                                    this.display(entry_for_click.clone(), window, cx);
+                                }),
+                            )
+                            .child(div().text_base().text_color(white()).child(entry.name.clone())),
+                    )
+                },
+            )))
             .into_any_element()
     }
 }
