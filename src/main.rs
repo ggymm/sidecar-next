@@ -480,10 +480,10 @@ fn main() {
                     appears_transparent: false,
                     traffic_light_position: None,
                 }),
-                window_min_size: Some(Size {
-                    width: window_size.width,
-                    height: window_size.height,
-                }),
+                // window_min_size: Some(Size {
+                //     width: window_size.width,
+                //     height: window_size.height,
+                // }),
                 kind: WindowKind::Normal,
                 #[cfg(target_os = "linux")]
                 window_decorations: Some(WindowDecorations::Server),

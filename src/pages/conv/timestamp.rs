@@ -114,7 +114,7 @@ impl Render for TimestampPage {
         }
         page()
             .child(
-                card().flex_1().child(
+                card().child(
                     div()
                         .flex()
                         .items_center()
@@ -135,7 +135,7 @@ impl Render for TimestampPage {
                 ),
             )
             .child(
-                card().flex_1().child(
+                card().child(
                     div()
                         .flex()
                         .items_center()
@@ -145,7 +145,7 @@ impl Render for TimestampPage {
                 ),
             )
             .child(
-                card().flex_1().child(
+                card().child(
                     div()
                         .flex()
                         .items_center()
@@ -165,7 +165,7 @@ impl Render for TimestampPage {
                 ),
             )
             .child(
-                card().flex_1().child(
+                card().child(
                     div()
                         .flex()
                         .items_center()
