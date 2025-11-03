@@ -4,41 +4,27 @@ use std::fs::read;
 use std::path::PathBuf;
 
 use gpui::*;
-use gpui_component::init;
-use gpui_component::resizable::h_resizable;
-use gpui_component::resizable::resizable_panel;
-use gpui_component::resizable::ResizableState;
-use gpui_component::scroll::ScrollbarShow;
-use gpui_component::sidebar::Sidebar;
-use gpui_component::sidebar::SidebarGroup;
-use gpui_component::sidebar::SidebarHeader;
-use gpui_component::sidebar::SidebarMenu;
-use gpui_component::sidebar::SidebarMenuItem;
-use gpui_component::Collapsible;
-use gpui_component::Icon;
-use gpui_component::Root;
-use gpui_component::StyledExt;
-use gpui_component::Theme;
-use gpui_component::ThemeMode;
+use gpui_component::{
+    init,
+    resizable::{h_resizable, resizable_panel, ResizableState},
+    scroll::ScrollbarShow,
+    sidebar::{Sidebar, SidebarGroup, SidebarHeader, SidebarMenu, SidebarMenuItem},
+    Collapsible, Icon, Root, StyledExt, Theme, ThemeMode,
+};
 use indexmap::IndexMap;
 use once_cell::sync::Lazy;
 
-use crate::pages::conv::base64::Base64Page;
-use crate::pages::conv::timestamp::TimestampPage;
-use crate::pages::demo::DemoPage;
-use crate::pages::devel::cert::CertPage;
-use crate::pages::devel::crypto::CryptoPage;
-use crate::pages::devel::hash::HashPage;
-use crate::pages::devel::json::JsonPage;
-use crate::pages::devel::qrcode::QrcodePage;
-use crate::pages::devel::random::RandomPage;
-use crate::pages::home::HomePage;
-use crate::pages::manual::code::CodePage;
-use crate::pages::manual::custom::CustomPage;
-use crate::pages::setting::SettingPage;
-use crate::pages::tool::dns::DnsPage;
-use crate::pages::tool::port::PortPage;
-use crate::pages::tool::share::SharePage;
+use crate::pages::{
+    conv::{base64::Base64Page, timestamp::TimestampPage},
+    demo::DemoPage,
+    devel::{
+        cert::CertPage, crypto::CryptoPage, hash::HashPage, json::JsonPage, qrcode::QrcodePage, random::RandomPage,
+    },
+    home::HomePage,
+    manual::{code::CodePage, custom::CustomPage},
+    setting::SettingPage,
+    tool::{dns::DnsPage, port::PortPage, share::SharePage},
+};
 
 mod comps;
 mod pages;

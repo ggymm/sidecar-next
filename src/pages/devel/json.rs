@@ -1,15 +1,11 @@
-use gpui::prelude::*;
-use gpui::*;
-use gpui_component::ActiveTheme;
-use gpui_component::Disableable;
-use gpui_component::input::InputState;
+use gpui::{prelude::*, *};
+use gpui_component::{input::InputState, ActiveTheme, Disableable};
 
-use crate::MainView;
-use crate::comps::button;
-use crate::comps::card;
-use crate::comps::page;
-use crate::comps::textarea;
-use crate::pages::utils::format_json;
+use crate::{
+    comps::{button, card, page, textarea},
+    pages::utils::format_json,
+    MainView,
+};
 
 pub struct JsonPage {
     error: Option<String>,

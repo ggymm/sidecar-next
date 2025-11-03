@@ -1,16 +1,11 @@
 use gpui::*;
-use gpui_component::Disableable;
-use gpui_component::input::InputState;
-use gpui_component::radio::RadioGroup;
+use gpui_component::{input::InputState, radio::RadioGroup, Disableable};
 
-use crate::MainView;
-use crate::comps::button;
-use crate::comps::card;
-use crate::comps::label;
-use crate::comps::page;
-use crate::comps::textarea;
-use crate::plugins::hash::calc_file_hash;
-use crate::plugins::hash::calc_text_hash;
+use crate::{
+    comps::{button, card, label, page, textarea},
+    plugins::hash::{calc_file_hash, calc_text_hash},
+    MainView,
+};
 
 #[derive(Clone, Debug, PartialEq)]
 enum InputType {

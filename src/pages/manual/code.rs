@@ -1,7 +1,7 @@
 use gpui::*;
 
-use crate::MainView;
 use crate::comps::page;
+use crate::MainView;
 
 pub struct CodePage;
 

@@ -1,11 +1,7 @@
-use std::env;
-use std::net::UdpSocket;
-use std::process::Command;
+use std::{env, net::UdpSocket, process::Command};
 
-use serde::Deserialize;
-use serde::Serialize;
-use sysinfo::Disks;
-use sysinfo::System;
+use serde::{Deserialize, Serialize};
+use sysinfo::{Disks, System};
 
 #[derive(Serialize, Deserialize)]
 pub struct BasicInfo {

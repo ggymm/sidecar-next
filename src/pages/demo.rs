@@ -1,12 +1,13 @@
 use gpui::*;
-use gpui_component::StyledExt;
-use gpui_component::input::{InputEvent, InputState, TabSize};
+use gpui_component::{
+    input::{InputEvent, InputState, TabSize},
+    StyledExt,
+};
 
-use crate::MainView;
-use crate::comps::card;
-use crate::comps::label;
-use crate::comps::page;
-use crate::comps::textarea;
+use crate::{
+    comps::{card, label, page, textarea},
+    MainView,
+};
 
 pub struct DemoPage {
     subs: Vec<Subscription>,

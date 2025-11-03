@@ -1,15 +1,11 @@
-use chrono::DateTime;
-use chrono::FixedOffset;
-use chrono::Utc;
+use chrono::{DateTime, FixedOffset, Utc};
 use gpui::*;
 use gpui_component::input::InputState;
 
-use crate::MainView;
-use crate::comps::button;
-use crate::comps::card;
-use crate::comps::label;
-use crate::comps::page;
-use crate::comps::textarea;
+use crate::{
+    comps::{button, card, label, page, textarea},
+    MainView,
+};
 
 pub struct TimestampPage {
     tz_input: Entity<InputState>,

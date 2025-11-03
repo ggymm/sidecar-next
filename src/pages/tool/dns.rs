@@ -1,14 +1,11 @@
 use gpui::*;
-use gpui_component::Disableable;
-use gpui_component::input::InputState;
+use gpui_component::{input::InputState, Disableable};
 
-use crate::MainView;
-use crate::comps::button;
-use crate::comps::card;
-use crate::comps::label;
-use crate::comps::page;
-use crate::comps::textarea;
-use crate::plugins::dns::start_dns_query;
+use crate::{
+    comps::{button, card, label, page, textarea},
+    plugins::dns::start_dns_query,
+    MainView,
+};
 
 pub struct DnsPage {
     input: Entity<InputState>,

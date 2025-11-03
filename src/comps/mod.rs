@@ -1,9 +1,8 @@
 use gpui::*;
-use gpui_component::button::Button;
-use gpui_component::button::ButtonCustomVariant;
-use gpui_component::button::ButtonVariants;
-use gpui_component::input::InputState;
-use gpui_component::input::TextInput;
+use gpui_component::{
+    button::{Button, ButtonCustomVariant, ButtonVariants},
+    input::{InputState, TextInput},
+};
 
 pub fn page() -> Div {
     div()

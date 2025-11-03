@@ -1,16 +1,12 @@
-use std::time::SystemTime;
-use std::time::UNIX_EPOCH;
+use std::time::{SystemTime, UNIX_EPOCH};
 
 use gpui::*;
-use gpui_component::ContextModal;
-use gpui_component::input::InputState;
+use gpui_component::{input::InputState, ContextModal};
 
-use crate::MainView;
-use crate::comps::button;
-use crate::comps::card;
-use crate::comps::label;
-use crate::comps::page;
-use crate::comps::textarea;
+use crate::{
+    comps::{button, card, label, page, textarea},
+    MainView,
+};
 
 fn gen_mac() -> String {
     let mut x = SystemTime::now()

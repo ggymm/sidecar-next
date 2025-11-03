@@ -1,7 +1,5 @@
-use serde::Deserialize;
-use serde::Serialize;
-use sysinfo::Disks;
-use sysinfo::System;
+use serde::{Deserialize, Serialize};
+use sysinfo::{Disks, System};
 
 #[derive(Serialize, Deserialize)]
 pub struct DynamicInfo {

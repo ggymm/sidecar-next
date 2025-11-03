@@ -1,13 +1,12 @@
 use gpui::*;
 use gpui_component::StyledExt;
 
-use crate::MainView;
-use crate::comps::card;
-use crate::comps::label;
-use crate::comps::page;
-use crate::pages::utils::format_bytes;
-use crate::plugins::system::basic_info::BasicInfo;
-use crate::plugins::system::basic_info::collect_basic_info;
+use crate::{
+    comps::{card, label, page},
+    pages::utils::format_bytes,
+    plugins::system::basic_info::{collect_basic_info, BasicInfo},
+    MainView,
+};
 
 pub struct HomePage {
     basic_info: Option<BasicInfo>,

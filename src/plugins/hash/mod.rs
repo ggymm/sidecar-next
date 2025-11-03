@@ -1,13 +1,12 @@
-use std::fs::File;
-use std::io::BufReader;
-use std::io::Read;
-use std::io::Result;
+use std::{
+    fs::File,
+    io::{BufReader, Read, Result},
+};
 
 use digest::Digest;
 use md5::Md5;
 use sha1::Sha1;
-use sha2::Sha256;
-use sha2::Sha512;
+use sha2::{Sha256, Sha512};
 
 const CHUNK_SIZE: usize = 512 * 1024 * 1024;
 

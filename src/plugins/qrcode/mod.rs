@@ -1,7 +1,7 @@
-use std::io::Error;
-use std::io::ErrorKind;
-use std::io::Result;
-use std::path::Path;
+use std::{
+    io::{Error, ErrorKind, Result},
+    path::Path,
+};
 
 use rqrr::PreparedImage;
 

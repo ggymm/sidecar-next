@@ -1,23 +1,20 @@
-use std::collections::HashMap;
-use std::io;
-use std::net::IpAddr;
-use std::net::Ipv4Addr;
-use std::process::Command;
-use std::sync::mpsc;
-use std::sync::mpsc::Receiver;
-use std::sync::mpsc::Sender;
-use std::time::Duration;
+use std::{
+    collections::HashMap,
+    io,
+    net::{IpAddr, Ipv4Addr},
+    process::Command,
+    sync::mpsc::{self, Receiver, Sender},
+    time::Duration,
+};
 
 use once_cell::sync::Lazy;
 use regex::Regex;
 use sys_locale::get_locale;
 use tokio::task::JoinSet;
-use trust_dns_resolver::TokioAsyncResolver;
-use trust_dns_resolver::config::LookupIpStrategy;
-use trust_dns_resolver::config::NameServerConfig;
-use trust_dns_resolver::config::Protocol;
-use trust_dns_resolver::config::ResolverConfig;
-use trust_dns_resolver::config::ResolverOpts;
+use trust_dns_resolver::{
+    config::{LookupIpStrategy, NameServerConfig, Protocol, ResolverConfig, ResolverOpts},
+    TokioAsyncResolver,
+};
 use url::Url;
 
 #[cfg(target_os = "windows")]

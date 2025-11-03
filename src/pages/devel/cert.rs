@@ -2,11 +2,10 @@ use gpui::*;
 use gpui_component::input::InputState;
 use openssl::x509::X509;
 
-use crate::MainView;
-use crate::comps::card;
-use crate::comps::label;
-use crate::comps::page;
-use crate::comps::textarea;
+use crate::{
+    comps::{card, label, page, textarea},
+    MainView,
+};
 
 pub struct CertPage {
     input: Entity<InputState>,

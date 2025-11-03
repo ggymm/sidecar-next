@@ -1,14 +1,12 @@
-use base64::Engine;
-use base64::engine::general_purpose;
+use base64::{engine::general_purpose, Engine};
 use gpui::*;
 use gpui_component::input::InputState;
 
-use crate::MainView;
-use crate::comps::card;
-use crate::comps::label;
-use crate::comps::page;
-use crate::comps::textarea;
-use crate::pages::utils::strip_str;
+use crate::{
+    comps::{card, label, page, textarea},
+    pages::utils::strip_str,
+    MainView,
+};
 
 pub struct Base64Page {
     input: Entity<InputState>,

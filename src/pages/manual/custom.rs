@@ -1,19 +1,13 @@
-use std::fs;
-use std::path::PathBuf;
+use std::{fs, path::PathBuf};
 
 use gpui::*;
-use gpui_component::ContextModal;
-use gpui_component::Disableable;
-use gpui_component::StyledExt;
-use gpui_component::input::InputState;
-use gpui_component::text::TextView;
+use gpui_component::{input::InputState, text::TextView, ContextModal, Disableable, StyledExt};
 use serde::Deserialize;
 
-use crate::MainView;
-use crate::comps::button;
-use crate::comps::card;
-use crate::comps::page;
-use crate::comps::textarea;
+use crate::{
+    comps::{button, card, page, textarea},
+    MainView,
+};
 
 const ROOT_PATH: &str = "assets/manual/custom/";
 
