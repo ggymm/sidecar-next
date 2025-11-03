@@ -1,5 +1,12 @@
 [
   {
+    "name": "跳过Gnome初始化",
+    "keywords": [
+      "Centos",
+      "Gnome"
+    ]
+  },
+  {
     "name": "创建交换分区",
     "keywords": [
       "交换分区"
