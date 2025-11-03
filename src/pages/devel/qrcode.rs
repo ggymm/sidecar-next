@@ -3,13 +3,13 @@ use std::path::PathBuf;
 use gpui::*;
 use gpui_component::input::InputState;
 
-use crate::MainView;
 use crate::comps::button;
 use crate::comps::card;
 use crate::comps::label;
 use crate::comps::page;
 use crate::comps::textarea;
 use crate::plugins::qrcode::parse_qrcode;
+use crate::MainView;
 
 pub struct QrcodePage {
     path: Option<PathBuf>,

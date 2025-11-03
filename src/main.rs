@@ -4,21 +4,22 @@ use std::fs::read;
 use std::path::PathBuf;
 
 use gpui::*;
+use gpui_component::init;
+use gpui_component::resizable::h_resizable;
+use gpui_component::resizable::resizable_panel;
+use gpui_component::resizable::ResizableState;
+use gpui_component::scroll::ScrollbarShow;
+use gpui_component::sidebar::Sidebar;
+use gpui_component::sidebar::SidebarGroup;
+use gpui_component::sidebar::SidebarHeader;
+use gpui_component::sidebar::SidebarMenu;
+use gpui_component::sidebar::SidebarMenuItem;
 use gpui_component::Collapsible;
 use gpui_component::Icon;
 use gpui_component::Root;
 use gpui_component::StyledExt;
 use gpui_component::Theme;
 use gpui_component::ThemeMode;
-use gpui_component::init;
-use gpui_component::resizable::ResizableState;
-use gpui_component::resizable::h_resizable;
-use gpui_component::resizable::resizable_panel;
-use gpui_component::sidebar::Sidebar;
-use gpui_component::sidebar::SidebarGroup;
-use gpui_component::sidebar::SidebarHeader;
-use gpui_component::sidebar::SidebarMenu;
-use gpui_component::sidebar::SidebarMenuItem;
 use indexmap::IndexMap;
 use once_cell::sync::Lazy;
 
@@ -468,6 +469,7 @@ fn main() {
         theme.sidebar = rgb(0x202020).into();
         theme.background = rgb(0x282828).into();
         theme.font_size = px(16.);
+        theme.scrollbar_show = ScrollbarShow::Hover;
 
         let window_size = size(px(1280.), px(800.));
         let window_bounds = Bounds::centered(None, window_size, cx);
@@ -480,10 +482,10 @@ fn main() {
                     appears_transparent: false,
                     traffic_light_position: None,
                 }),
-                // window_min_size: Some(Size {
-                //     width: window_size.width,
-                //     height: window_size.height,
-                // }),
+                window_min_size: Some(Size {
+                    width: window_size.width,
+                    height: window_size.height,
+                }),
                 kind: WindowKind::Normal,
                 #[cfg(target_os = "linux")]
                 window_decorations: Some(WindowDecorations::Server),
