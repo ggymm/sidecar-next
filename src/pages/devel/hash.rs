@@ -97,7 +97,7 @@ impl Render for HashPage {
                                     })
                                     .child("文本类型")
                                     .child("文件类型")
-                                    .on_change(cx.listener(|this, index, _window, cx| {
+                                    .on_click(cx.listener(|this, index, _window, cx| {
                                         let input_type = match *index {
                                             0 => InputType::Text,
                                             1 => InputType::File,

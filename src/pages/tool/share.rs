@@ -1,7 +1,6 @@
 use gpui::*;
 
-use crate::comps::page;
-use crate::MainView;
+use crate::{comps::page, MainView};
 
 pub struct SharePage;
 

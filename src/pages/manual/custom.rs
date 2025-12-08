@@ -1,7 +1,7 @@
 use std::{fs, path::PathBuf};
 
 use gpui::*;
-use gpui_component::{input::InputState, text::TextView, Disableable, StyledExt};
+use gpui_component::{input::InputState, text::TextView, Disableable, Placement, StyledExt, WindowExt as _};
 use serde::Deserialize;
 
 use crate::{
@@ -106,7 +106,7 @@ impl CustomPage {
             .join(format!("{}.md", entry.name));
 
         let markdown = fs::read_to_string(&path).unwrap_or_default();
-        window.open_drawer(cx, move |drawer, window, app| {
+        window.open_sheet_at(Placement::Right, cx, move |drawer, window, app| {
             let content = TextView::markdown("custom-manual", markdown.clone(), window, app).selectable(true);
 
             drawer
@@ -157,35 +157,26 @@ impl Render for CustomPage {
                         ),
                 ),
             )
-            .child(
-                card().flex_1().child(
-                    self.display_entries.iter().cloned().fold(
+            .child(card().flex_1().child(self.display_entries.iter().cloned().fold(
+                div().flex().flex_col().flex_1().pr_4().gap_2(),
+                |acc, entry| {
+                    let entry_for_click = entry.clone();
+                    acc.child(
                         div()
-                            .flex()
-                            .flex_col()
-                            .flex_1()
-                            .pr_4()
-                            .gap_2(),
-                        |acc, entry| {
-                            let entry_for_click = entry.clone();
-                            acc.child(
-                                div()
-                                    .p_2()
-                                    .hover(|style| style.p_5().bg(rgb(0x383838)))
-                                    .rounded_lg()
-                                    .cursor_pointer()
-                                    .on_mouse_down(
-                                        MouseButton::Left,
-                                        cx.listener(move |this, _ev, window, cx| {
-                                            this.display(entry_for_click.clone(), window, cx);
-                                        }),
-                                    )
-                                    .child(div().text_base().text_color(white()).child(entry.name.clone())),
+                            .p_2()
+                            .hover(|style| style.p_5().bg(rgb(0x383838)))
+                            .rounded_lg()
+                            .cursor_pointer()
+                            .on_mouse_down(
+                                MouseButton::Left,
+                                cx.listener(move |this, _ev, window, cx| {
+                                    this.display(entry_for_click.clone(), window, cx);
+                                }),
                             )
-                        },
-                    ),
-                ),
-            )
+                            .child(div().text_base().text_color(white()).child(entry.name.clone())),
+                    )
+                },
+            )))
             .into_any_element()
     }
 }

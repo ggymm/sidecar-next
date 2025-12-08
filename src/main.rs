@@ -1,7 +1,4 @@
-use std::borrow::Cow;
-use std::collections::HashMap;
-use std::fs::read;
-use std::path::PathBuf;
+use std::{borrow::Cow, collections::HashMap, fs::read, path::PathBuf};
 
 use gpui::*;
 use gpui_component::{
@@ -9,7 +6,7 @@ use gpui_component::{
     resizable::{h_resizable, resizable_panel, ResizableState},
     scroll::ScrollbarShow,
     sidebar::{Sidebar, SidebarGroup, SidebarHeader, SidebarMenu, SidebarMenuItem},
-    Collapsible, Icon, Root, StyledExt, Theme, ThemeMode,
+    Collapsible, Icon, Root, Side, StyledExt, Theme, ThemeMode,
 };
 use indexmap::IndexMap;
 use once_cell::sync::Lazy;
@@ -300,8 +297,8 @@ impl MainView {
                 }
             }
 
-            let mut sidebar = Sidebar::left()
-                .width(relative(1.0))
+            let mut sidebar = Sidebar::new(Side::Left)
+                .w(relative(1.0))
                 .header(SidebarHeader::new().child("Sidecar"))
                 .child(Section::Menu(SidebarMenu::new().child(self.menu(cx, "/home"))))
                 .child(Section::Menu(SidebarMenu::new().child(self.menu(cx, "/demo"))));
@@ -340,8 +337,8 @@ impl Render for MainView {
         window: &mut Window,
         cx: &mut Context<Self>,
     ) -> impl IntoElement {
-        let modal_layer = Root::render_modal_layer(window, cx);
-        let drawer_layer = Root::render_drawer_layer(window, cx);
+        let modal_layer = Root::render_dialog_layer(window, cx);
+        let drawer_layer = Root::render_sheet_layer(window, cx);
         let notification_layer = Root::render_notification_layer(window, cx);
 
         div()
@@ -482,7 +479,7 @@ fn main() {
             let window = cx
                 .open_window(options, |window, cx| {
                     let view = cx.new(|cx| MainView::new(window, cx));
-                    cx.new(|cx| Root::new(view.into(), window, cx))
+                    cx.new(|cx| Root::new(view, window, cx))
                 })
                 .expect("failed to open window");
             window

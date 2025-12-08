@@ -1,4 +1,5 @@
 use base64::{engine::general_purpose, Engine};
+
 use gpui::*;
 use gpui_component::input::InputState;
 

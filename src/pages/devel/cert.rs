@@ -1,6 +1,7 @@
+use openssl::x509::X509;
+
 use gpui::*;
 use gpui_component::input::InputState;
-use openssl::x509::X509;
 
 use crate::{
     comps::{card, label, page, textarea},
