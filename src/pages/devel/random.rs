@@ -1,7 +1,7 @@
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use gpui::*;
-use gpui_component::{input::InputState, ContextModal};
+use gpui_component::{input::InputState, WindowExt};
 
 use crate::{
     comps::{button, card, label, page, textarea},

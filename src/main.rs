@@ -224,7 +224,7 @@ impl MainView {
             views,
             title: "首页".into(),
             selected: "/home".into(),
-            resizable_state: ResizableState::new(cx),
+            resizable_state: cx.new(|_| ResizableState::default()),
         }
     }
 
@@ -348,7 +348,8 @@ impl Render for MainView {
             .w_full()
             .h_full()
             .child(
-                h_resizable("layout", self.resizable_state.clone())
+                h_resizable("layout")
+                    .with_state(&self.resizable_state)
                     .child(
                         resizable_panel()
                             .size(px(240.0))

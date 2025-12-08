@@ -4,8 +4,13 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-gpui = "0.2"
-gpui-component = "0.3"
+gpui = { version = "0.2.2" }
+gpui-component = { version = "0.5.0", features = ["tree-sitter-languages"] }
+
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1" }
+tokio = { version = "1", features = ["full"] }
+uuid = { version = "1", features = ["v4"] }
 
 anyhow = "1"
 once_cell = "1"
@@ -32,22 +37,6 @@ sysinfo = "0.37"
 sys-locale = "0.3"
 
 trust-dns-resolver = { version = "0.23", default-features = false, features = ["tokio-runtime"] }
-
-
-[dependencies.serde]
-version = "1.0"
-features = ["derive"]
-
-[dependencies.serde_json]
-version = "1.0"
-
-[dependencies.tokio]
-version = "1.0"
-features = ["full"]
-
-[dependencies.uuid]
-version = "1.0"
-features = ["v4"]
 
 [profile.release]
 lto = true

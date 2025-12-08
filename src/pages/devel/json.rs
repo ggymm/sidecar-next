@@ -21,7 +21,7 @@ impl JsonPage {
         cx: &mut Context<MainView>,
     ) -> AnyView {
         AnyView::from(cx.new(|cx| {
-            let input_original = cx.new(|cx| InputState::new(window, cx).multi_line());
+            let input_original = cx.new(|cx| InputState::new(window, cx).multi_line(true));
             let input_formatted = cx.new(|cx| {
                 InputState::new(window, cx)
                     .code_editor("json")

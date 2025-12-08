@@ -1,7 +1,7 @@
 use std::{fs, path::PathBuf};
 
 use gpui::*;
-use gpui_component::{input::InputState, text::TextView, ContextModal, Disableable, StyledExt};
+use gpui_component::{input::InputState, text::TextView, Disableable, StyledExt};
 use serde::Deserialize;
 
 use crate::{
@@ -107,7 +107,7 @@ impl CustomPage {
 
         let markdown = fs::read_to_string(&path).unwrap_or_default();
         window.open_drawer(cx, move |drawer, window, app| {
-            let content = TextView::markdown("custom-manual", markdown.clone(), window, app).selectable();
+            let content = TextView::markdown("custom-manual", markdown.clone(), window, app).selectable(true);
 
             drawer
                 .title(
@@ -165,8 +165,7 @@ impl Render for CustomPage {
                             .flex_col()
                             .flex_1()
                             .pr_4()
-                            .gap_2()
-                            .scrollable(Axis::Vertical),
+                            .gap_2(),
                         |acc, entry| {
                             let entry_for_click = entry.clone();
                             acc.child(

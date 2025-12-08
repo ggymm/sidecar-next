@@ -1,7 +1,7 @@
 use gpui::*;
 use gpui_component::{
     button::{Button, ButtonCustomVariant, ButtonVariants},
-    input::{InputState, TextInput},
+    input::{Input, InputState},
 };
 
 pub fn page() -> Div {
@@ -31,8 +31,8 @@ pub fn label(title: impl IntoElement) -> Div {
     div().text_sm().text_color(white()).child(title)
 }
 
-pub fn input(state: &Entity<InputState>) -> TextInput {
-    TextInput::new(state)
+pub fn input(state: &Entity<InputState>) -> Input {
+    Input::new(state)
         .h_full()
         .appearance(false)
         .focus_bordered(false)
@@ -41,7 +41,7 @@ pub fn input(state: &Entity<InputState>) -> TextInput {
 
 pub fn textarea(
     state: &Entity<InputState>,
-    config: impl FnOnce(TextInput) -> TextInput,
+    config: impl FnOnce(Input) -> Input,
 ) -> Div {
     div()
         .flex_1()

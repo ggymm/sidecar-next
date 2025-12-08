@@ -20,7 +20,7 @@ impl QrcodePage {
         cx: &mut Context<MainView>,
     ) -> AnyView {
         AnyView::from(cx.new(|cx| {
-            let output = cx.new(|cx| InputState::new(window, cx).multi_line());
+            let output = cx.new(|cx| InputState::new(window, cx).multi_line(true));
 
             Self { path: None, output }
         }))
