@@ -1,0 +1,29 @@
+[package]
+name = "sidecar-app"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+gpui = "0.2.2"
+gpui-component = { version = "0.5.0", features = ["tree-sitter-languages"] }
+
+anyhow = "1"
+indexmap = "2"
+once_cell = "1"
+rust-embed = "8"
+
+base64 = "0.22"
+chrono = "0.4"
+digest = "0.10"
+hex = "0.4"
+image = "0.25"
+md-5 = "0.10"
+openssl = "0.10"
+rqrr = "0.10"
+sha1 = "0.10"
+sha2 = "0.10"
+sysinfo = "0.37"
+uuid = { version = "1", features = ["v4"] }
+
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1" }

@@ -1,0 +1,17 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/sidecar-app",
+    "crates/sidecar-plugins/sidecar-dns",
+]
+
+[workspace.package]
+version = "1.0.0"
+edition = "2024"
+
+[profile.release]
+lto = true
+strip = true
+debug = false
+panic = 'abort'
+codegen-units = 1

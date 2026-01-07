@@ -1,0 +1,30 @@
+[
+  {
+    "name": "跳过Gnome初始化",
+    "keywords": [
+      "Centos",
+      "Gnome"
+    ]
+  },
+  {
+    "name": "创建交换分区",
+    "keywords": [
+      "交换分区"
+    ]
+  },
+  {
+    "name": "设置代理环境变量",
+    "keywords": [
+    ]
+  },
+  {
+    "name": "证书相关操作",
+    "keywords": [
+    ]
+  },
+  {
+    "name": "配置SSL证书",
+    "keywords": [
+    ]
+  }
+]
